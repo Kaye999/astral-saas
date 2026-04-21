@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ethan Kay — Astral Dashboard</title>
+  <style>
+    html,body{margin:0;padding:0;background:#000;min-height:100vh;}
+    #root{min-height:100vh;}
+    #loading{display:flex;align-items:center;justify-content:center;min-height:100vh;color:#FFD700;font-family:'Cinzel',serif;font-size:13px;letter-spacing:3px;text-transform:uppercase;}
+    #err{padding:40px;color:#E07B39;font-family:ui-monospace,monospace;font-size:13px;line-height:1.6;max-width:720px;}
+    #err code{color:#FFD700;background:#111;padding:8px 12px;border-radius:6px;display:inline-block;margin-top:8px;}
+    #err a{color:#7EC8C8;}
+  </style>
+</head>
+<body>
+  <div id="root"><div id="loading">Loading astral dashboard…</div></div>
+
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+
+  <script>
+    function renderError(msg) {
+      const root = document.getElementById('root');
+      while (root.firstChild) root.removeChild(root.firstChild);
+      const wrap = document.createElement('div');
+      wrap.id = 'err';
+      const h = document.createElement('strong');
+      h.textContent = 'Load error.';
+      wrap.appendChild(h);
+      wrap.appendChild(document.createElement('br'));
+      wrap.appendChild(document.createTextNode(msg));
+      wrap.appendChild(document.createElement('br'));
+      wrap.appendChild(document.createElement('br'));
+      wrap.appendChild(document.createTextNode(
+        'Browsers block fetch from file:// for security. Run a local server in this folder:'));
+      wrap.appendChild(document.createElement('br'));
+      const code = document.createElement('code');
+      code.textContent = 'cd /Users/kaye/Projects/astral-saas && python3 -m http.server 8787';
+      wrap.appendChild(code);
+      wrap.appendChild(document.createElement('br'));
+      wrap.appendChild(document.createElement('br'));
+      wrap.appendChild(document.createTextNode('Then open '));
+      const a = document.createElement('a');
+      a.href = 'http://localhost:8787/';
+      a.textContent = 'http://localhost:8787/';
+      wrap.appendChild(a);
+      root.appendChild(wrap);
+    }
+
+    (async () => {
+      try {
+        const [resStar, resMain] = await Promise.all([
+          fetch('Starfield.jsx'),
+          fetch('astrology-transits.jsx'),
+        ]);
+        if (!resStar.ok) throw new Error('Starfield fetch: ' + resStar.status);
+        if (!resMain.ok) throw new Error('main fetch: ' + resMain.status);
+
+        let starSrc = await resStar.text();
+        let mainSrc = await resMain.text();
+
+        // Strip imports/exports — keep both files' top-level consts/functions as globals.
+        starSrc = starSrc.replace(/^\s*import\s+[^;]+from\s+["']react["'];?\s*$/gm, '');
+        starSrc = starSrc.replace(/export\s+default\s+([A-Za-z_$][\w$]*)\s*;?/, '');
+
+        mainSrc = mainSrc.replace(/^\s*import\s+[^;]+from\s+["']react["'];?\s*$/gm, '');
+        let rootName = 'AppShell';
+        mainSrc = mainSrc.replace(/export\s+default\s+([A-Za-z_$][\w$]*)\s*;?/, (_m, name) => { rootName = name; return ''; });
+
+        window.useState = React.useState;
+        window.useEffect = React.useEffect;
+        window.useRef = React.useRef;
+        window.useMemo = React.useMemo;
+        window.useCallback = React.useCallback;
+
+        // Starfield first so it's in scope when the main app renders.
+        const combined = starSrc + '\n;\n' + mainSrc;
+        const transformed = Babel.transform(combined, { presets: ['react'], filename: 'astro.jsx' }).code;
+
+        const script = document.createElement('script');
+        script.textContent =
+          transformed +
+          `;ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(${rootName}));` +
+          `setTimeout(function(){` +
+          `  var mount = document.getElementById("stars-mount");` +
+          `  if (mount && typeof Starfield !== "undefined" && !mount.dataset.mounted) {` +
+          `    mount.dataset.mounted = "1";` +
+          `    ReactDOM.createRoot(mount).render(React.createElement(Starfield));` +
+          `  }` +
+          `}, 50);` +
+          `new MutationObserver(function(){` +
+          `  var mount = document.getElementById("stars-mount");` +
+          `  if (mount && typeof Starfield !== "undefined" && !mount.dataset.mounted) {` +
+          `    mount.dataset.mounted = "1";` +
+          `    ReactDOM.createRoot(mount).render(React.createElement(Starfield));` +
+          `  }` +
+          `}).observe(document.body, {childList:true, subtree:true});`;
+        document.body.appendChild(script);
+      } catch (err) {
+        renderError(String(err && err.message || err));
+      }
+    })();
+  </script>
+</body>
+</html>
