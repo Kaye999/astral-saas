@@ -950,22 +950,70 @@ const CITY_COORDS = {
   "dakar":          { lat:14.72,  lon:-17.47, tzOffset:0  },
 };
 
-// Case-insensitive lookup. Accepts plain "Sydney", "Sydney, Australia",
-// "sydney, au", etc. Returns {lat,lon,tzOffset} or null.
+// Strip country names, compass prefixes, and common filler words before matching.
+const _COUNTRY_WORDS = ["australia","au","usa","us","united states","america","uk","united kingdom","england","britain","canada","ca","nz","new zealand","ireland","india","china","japan","france","germany","italy","spain","brazil","mexico","south africa","singapore"];
+const _COMPASS_PREFIXES = ["north","south","east","west","northern","southern","eastern","western","upper","lower","greater","city of","town of","saint","st","mount","mt","new","old"];
+const _FILLER = ["metropolitan","metro","area","district","county","shire","region"];
+
+function _stripNoise(s) {
+  let out = s;
+  for (const w of _COUNTRY_WORDS) out = out.replace(new RegExp("\\b" + w + "\\b", "g"), "");
+  for (const w of _FILLER)        out = out.replace(new RegExp("\\b" + w + "\\b", "g"), "");
+  return out.replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
+}
+
+function _stripCompass(s) {
+  let out = s;
+  for (const w of _COMPASS_PREFIXES) out = out.replace(new RegExp("\\b" + w + "\\b", "g"), "");
+  return out.replace(/\s+/g, " ").trim();
+}
+
+// Case-insensitive lookup with progressive fallback. Handles:
+//   "Sydney", "Sydney, Australia", "North Sydney", "Greater London",
+//   "New York City", "Saint Petersburg", "City of Westminster" etc.
 function resolveCityCoords(cityString) {
   if (!cityString) return null;
   const raw = String(cityString).trim().toLowerCase();
   if (!raw) return null;
-  // Direct hit
+
+  // 1) exact
   if (CITY_COORDS[raw]) return CITY_COORDS[raw];
-  // Try first comma-separated token (e.g. "London, UK" → "london")
+
+  // 2) first comma-separated token
   const firstTok = raw.split(",")[0].trim();
   if (firstTok && CITY_COORDS[firstTok]) return CITY_COORDS[firstTok];
-  // Try whole string stripped of punctuation
-  const stripped = raw.replace(/[^\w\s]/g, "").trim();
-  if (CITY_COORDS[stripped]) return CITY_COORDS[stripped];
-  const strippedFirst = stripped.split(/\s{2,}|,/)[0].trim();
-  if (CITY_COORDS[strippedFirst]) return CITY_COORDS[strippedFirst];
+
+  // 3) stripped punctuation
+  const noPunct = raw.replace(/[^\w\s]/g, " ").replace(/\s+/g, " ").trim();
+  if (CITY_COORDS[noPunct]) return CITY_COORDS[noPunct];
+
+  // 4) strip country + filler
+  const noCountry = _stripNoise(raw);
+  if (noCountry && CITY_COORDS[noCountry]) return CITY_COORDS[noCountry];
+
+  // 5) strip compass prefix (handles "north sydney", "greater london", "new york")
+  const noCompass = _stripCompass(noCountry);
+  if (noCompass && CITY_COORDS[noCompass]) return CITY_COORDS[noCompass];
+
+  // 6) substring — does any gazetteer key appear as a whole word in the user's input?
+  //    Longest-match wins (prefer "new york" over "york"). Sorted descending by length once.
+  const needle = " " + noCountry + " ";
+  let best = null, bestLen = 0;
+  for (const key of Object.keys(CITY_COORDS)) {
+    if (key.length < 4) continue;           // skip short/ambiguous
+    if (needle.indexOf(" " + key + " ") !== -1 && key.length > bestLen) {
+      best = key; bestLen = key.length;
+    }
+  }
+  if (best) return CITY_COORDS[best];
+
+  // 7) try last token alone (e.g. "North Sydney" → "sydney")
+  const tokens = noCountry.split(" ").filter(Boolean);
+  for (let i = tokens.length - 1; i >= 0; i--) {
+    const tok = tokens[i];
+    if (tok.length >= 4 && CITY_COORDS[tok]) return CITY_COORDS[tok];
+  }
+
   if (typeof console !== "undefined" && console.warn) {
     console.warn("[astral-saas] resolveCityCoords: no match for", cityString, "— falling back to Sydney.");
   }
