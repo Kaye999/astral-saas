@@ -56,22 +56,31 @@
 
     (async () => {
       try {
-        const [resStar, resAstro, resInterp, resMain, resFeatures] = await Promise.all([
+        const [resStar, resAstro, resInterp, resMayan, resHd, resCarto, resMain, resFeatures] = await Promise.all([
           fetch('Starfield.jsx'),
           fetch('engine-astro.js'),
           fetch('interp-tables.js'),
+          fetch('engine-mayan.js'),
+          fetch('engine-hd.js'),
+          fetch('engine-astrocarto.js'),
           fetch('astrology-transits.jsx'),
           fetch('features.js'),
         ]);
         if (!resStar.ok) throw new Error('Starfield fetch: ' + resStar.status);
         if (!resAstro.ok) throw new Error('engine-astro fetch: ' + resAstro.status);
         if (!resInterp.ok) throw new Error('interp-tables fetch: ' + resInterp.status);
+        if (!resMayan.ok) throw new Error('engine-mayan fetch: ' + resMayan.status);
+        if (!resHd.ok) throw new Error('engine-hd fetch: ' + resHd.status);
+        if (!resCarto.ok) throw new Error('engine-astrocarto fetch: ' + resCarto.status);
         if (!resMain.ok) throw new Error('main fetch: ' + resMain.status);
         if (!resFeatures.ok) throw new Error('features fetch: ' + resFeatures.status);
 
         let starSrc = await resStar.text();
         let astroSrc = await resAstro.text();
         let interpSrc = await resInterp.text();
+        let mayanSrc = await resMayan.text();
+        let hdSrc = await resHd.text();
+        let cartoSrc = await resCarto.text();
         let mainSrc = await resMain.text();
         let featuresSrc = await resFeatures.text();
 
@@ -93,7 +102,7 @@
         // engine-astro.js + interp-tables.js are plain JS (no JSX), concatenated
         // before main so their constants + functions are in scope for the
         // React components.
-        const combined = starSrc + '\n;\n' + astroSrc + '\n;\n' + interpSrc + '\n;\n' + mainSrc + '\n;\n' + featuresSrc;
+        const combined = starSrc + '\n;\n' + astroSrc + '\n;\n' + interpSrc + '\n;\n' + mayanSrc + '\n;\n' + hdSrc + '\n;\n' + cartoSrc + '\n;\n' + mainSrc + '\n;\n' + featuresSrc;
         const transformed = Babel.transform(combined, { presets: ['react'], filename: 'astro.jsx' }).code;
 
         const script = document.createElement('script');

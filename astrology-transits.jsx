@@ -1177,12 +1177,48 @@ function App({ user, onReset }) {
   const isVedic = mode === "vedic";
   const isNum = mode === "numerology";
   const isChi = mode === "chinese";
-  const accent = isKab ? "var(--copper)" : isVedic ? "var(--saffron)" : isNum ? "var(--antique)" : isChi ? "var(--lacquer)" : "var(--brass)";
-  const vignetteColor = isKab ? "rgba(184,115,51,0.18)" : isVedic ? "rgba(212,149,107,0.18)" : isNum ? "rgba(184,147,90,0.18)" : isChi ? "rgba(142,44,44,0.18)" : "rgba(200,160,82,0.18)";
-  const modeClass = isKab ? "mode-kab" : isVedic ? "mode-vedic" : isNum ? "mode-num" : isChi ? "mode-chi" : "mode-astro";
-  const modeLabel = isKab ? "Kabbalah" : isVedic ? "Vedic" : isNum ? "Numerology" : isChi ? "Chinese" : "Western";
-  const heroTitle = isKab ? "The Tree of Life" : isVedic ? "The Sidereal Chart" : isNum ? "The Numerical Field" : isChi ? "Four Pillars of Destiny" : "Planetary Transits";
-  const heroSub = isKab ? "Hebrew letter, Sefira, and path — the arc from Yesod toward Tiphareth." : isVedic ? "Lahiri ayanamsa. Sagittarius lagna. Jupiter ruling the chart." : isNum ? "Pythagorean, Chaldean, and gematric readings of the name and date." : isChi ? "Stems and branches. Day master, luck pillars, five elements." : "This week, this month, this year — read through the Capricorn rising lens.";
+  const isHD = mode === "hd";
+  const isMayan = mode === "mayan";
+  const isCarto = mode === "carto";
+  const accent = isKab ? "var(--copper)" : isVedic ? "var(--saffron)" : isNum ? "var(--antique)" : isChi ? "var(--lacquer)" : isHD ? "var(--hd-accent)" : isMayan ? "var(--mayan-accent)" : isCarto ? "var(--carto-accent)" : "var(--brass)";
+  const vignetteColor = isKab ? "rgba(184,115,51,0.18)" : isVedic ? "rgba(212,149,107,0.18)" : isNum ? "rgba(184,147,90,0.18)" : isChi ? "rgba(142,44,44,0.18)" : isHD ? "rgba(155,137,212,0.18)" : isMayan ? "rgba(212,149,107,0.18)" : isCarto ? "rgba(91,143,185,0.18)" : "rgba(200,160,82,0.18)";
+  const modeClass = isKab ? "mode-kab" : isVedic ? "mode-vedic" : isNum ? "mode-num" : isChi ? "mode-chi" : isHD ? "mode-hd" : isMayan ? "mode-mayan" : isCarto ? "mode-carto" : "mode-astro";
+  const modeLabel = isKab ? "Kabbalah" : isVedic ? "Vedic" : isNum ? "Numerology" : isChi ? "Chinese" : isHD ? "Human Design" : isMayan ? "Mayan" : isCarto ? "Astrocartography" : "Western";
+  const heroTitle = isKab ? "The Tree of Life" : isVedic ? "The Sidereal Chart" : isNum ? "The Numerical Field" : isChi ? "Four Pillars of Destiny" : isHD ? "Your Body Graph" : isMayan ? "The Tzolkin Day" : isCarto ? "Planetary Lines on Earth" : "Planetary Transits";
+  const heroSub = isKab ? "Hebrew letter, Sefira, and path — the arc from Yesod toward Tiphareth." : isVedic ? "Lahiri ayanamsa. Sagittarius lagna. Jupiter ruling the chart." : isNum ? "Pythagorean, Chaldean, and gematric readings of the name and date." : isChi ? "Stems and branches. Day master, luck pillars, five elements." : isHD ? "Type, Strategy, Authority, Profile — and the 64 I Ching gates lit in your design." : isMayan ? "Kin, Day Sign, Galactic Tone, and the Tzolkin oracle of your birth day." : isCarto ? "Where on Earth your planets sit on the horizon, the meridian, and the anti-meridian." : "This week, this month, this year — read through the Capricorn rising lens.";
+
+  // ─── ESOTERIC LAYERS: Human Design, Mayan Tzolkin, Astrocartography ─────────
+  const USER_PAID = React.useMemo(() => {
+    try { return typeof window !== "undefined" && window.localStorage && window.localStorage.getItem("astro:paid") === "1"; }
+    catch (e) { return false; }
+  }, []);
+
+  const USER_HD = React.useMemo(() => {
+    try {
+      if (typeof window === "undefined" || !window.SynastraHD) return null;
+      return window.SynastraHD.computeHumanDesign({
+        dob: USER_DOB,
+        time: USER_TIME,
+        timeUnknown: USER_TIME_UNKNOWN,
+        lat: USER_COORDS.lat,
+        lon: USER_COORDS.lon,
+        tzOffset: USER_COORDS.tzOffset,
+      });
+    } catch (e) {
+      console.error("[astral-saas] computeHumanDesign failed:", e);
+      return null;
+    }
+  }, [USER_DOB.y, USER_DOB.m, USER_DOB.d, USER_TIME.h, USER_TIME.m, USER_TIME_UNKNOWN, USER_COORDS.lat, USER_COORDS.lon, USER_COORDS.tzOffset]);
+
+  const USER_MAYAN = React.useMemo(() => {
+    try {
+      if (typeof window === "undefined" || !window.SynastraMayan) return null;
+      return window.SynastraMayan.computeMayan(USER_DOB);
+    } catch (e) {
+      console.error("[astral-saas] computeMayan failed:", e);
+      return null;
+    }
+  }, [USER_DOB.y, USER_DOB.m, USER_DOB.d]);
 
   return (
     <div className={`page ${modeClass}`} style={{minHeight:"100vh",background:"var(--bg-base)",color:"var(--ink)",position:"relative",overflow:"hidden"}}>
@@ -1282,12 +1318,28 @@ function App({ user, onReset }) {
         .chip-row span:last-child{border-right:none;}
         .chip-row span.accent{color:var(--brass);}
 
-        /* ── Accent pillars for Vedic / Num / Chinese ─────────────── */
+        /* ── Accent pillars for Vedic / Num / Chinese / HD / Mayan / Carto ─ */
+        :root{
+          --hd-accent:#9B89D4;
+          --mayan-accent:#D4956B;
+          --carto-accent:#5B8FB9;
+        }
         .mode-astro{--mode-accent:var(--brass);}
         .mode-vedic{--mode-accent:var(--saffron);}
         .mode-kab{--mode-accent:var(--copper);}
         .mode-num{--mode-accent:var(--antique);}
         .mode-chi{--mode-accent:var(--lacquer);}
+        .mode-hd{--mode-accent:var(--hd-accent);}
+        .mode-mayan{--mode-accent:var(--mayan-accent);}
+        .mode-carto{--mode-accent:var(--carto-accent);}
+
+        /* ── Soft paywall overlay (free tier gating) ─────────────── */
+        .gate-wrap{position:relative;}
+        .gate-blur{filter:blur(8px);pointer-events:none;user-select:none;}
+        .gate-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;background:rgba(10,14,26,0.72);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);z-index:3;border-radius:4px;}
+        .gate-teaser{font-family:'Fraunces',serif;font-style:italic;color:var(--ink);font-size:18px;max-width:440px;text-align:center;line-height:1.35;margin:0;padding:0 16px;}
+        .gate-cta{font-family:'Fraunces',serif;font-size:14px;letter-spacing:0.14em;text-transform:uppercase;color:var(--brass);border:1px solid var(--brass);padding:12px 24px;text-decoration:none;transition:background .2s,color .2s;cursor:pointer;background:transparent;}
+        .gate-cta:hover{background:var(--brass);color:var(--bg-base);}
 
         /* ── Settings control (SVG) ───────────────────────────────── */
         .cog{position:fixed;top:22px;right:24px;z-index:40;width:28px;height:28px;border:none;background:transparent;color:var(--brass);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .4s ease;}
@@ -1474,6 +1526,15 @@ function App({ user, onReset }) {
               <span className="accent">Year — {USER_BAZI.year.combined}</span>
               <span>Day Master — {USER_BAZI.day.combined}</span>
               {!USER_TIME_UNKNOWN && (<span>Hour — {USER_BAZI.hour.combined}</span>)}
+            </>) : isHD ? (<>
+              {USER_HD && <span className="accent">Type — {USER_HD.type}</span>}
+              {USER_HD && USER_HD.strategy && <span>Strategy — {USER_HD.strategy}</span>}
+              {USER_HD && USER_HD.authority && <span>Authority — {USER_HD.authority}</span>}
+              {USER_HD && USER_HD.profile && <span>Profile — {USER_HD.profile}</span>}
+            </>) : isMayan ? (<>
+              {USER_MAYAN && <span className="accent">Kin — {USER_MAYAN.kin}</span>}
+              {USER_MAYAN && USER_MAYAN.daySign && <span>Day Sign — {USER_MAYAN.daySign.name}</span>}
+              {USER_MAYAN && USER_MAYAN.tone && <span>Tone — {USER_MAYAN.tone.number} {USER_MAYAN.tone.name}</span>}
             </>) : !isVedic ? (() => {
               const sun  = USER_TROPICAL.planets.find(p => planetKey(p.planet) === "Sun");
               const moon = USER_TROPICAL.planets.find(p => planetKey(p.planet) === "Moon");
@@ -1499,31 +1560,34 @@ function App({ user, onReset }) {
 
         {/* MODE NAV */}
         <nav className="mode-nav rise rise-3" aria-label="Reading mode">
-          <button className={!isKab&&!isVedic&&!isNum&&!isChi?"active":""} onClick={()=>{setMode("astro");setExpanded(null);}}>Western</button>
+          <button className={mode==="astro"?"active":""} onClick={()=>{setMode("astro");setExpanded(null);}}>Western</button>
           <button className={isVedic?"active":""} onClick={()=>{setMode("vedic");setExpanded(null);}}>Vedic</button>
           <button className={isKab?"active":""} onClick={()=>{setMode("kab");setExpanded(null);}}>Kabbalah</button>
           <button className={isNum?"active":""} onClick={()=>{setMode("numerology");setExpanded(null);}}>Numerology</button>
           <button className={isChi?"active":""} onClick={()=>{setMode("chinese");setExpanded(null);}}>Chinese</button>
+          <button className={isHD?"active":""} onClick={()=>{setMode("hd");setExpanded(null);}}>Human Design</button>
+          <button className={isMayan?"active":""} onClick={()=>{setMode("mayan");setExpanded(null);}}>Mayan</button>
+          <button className={isCarto?"active":""} onClick={()=>{setMode("carto");setExpanded(null);}}>Astrocartography</button>
         </nav>
 
         <div className="mode-section" key={mode}>
 
         {/* CITY-UNRESOLVED NOTICE — shown when gazetteer fell back to Sydney */}
-        {(isKab || isVedic || (!isNum && !isChi)) && USER_CITY_FALLBACK && (
+        {(isKab || isVedic || mode==="astro" || isCarto) && USER_CITY_FALLBACK && (
           <div className="chart-notice">
             City "{USER.city}" is not in our built-in gazetteer — using Sydney coordinates. Accuracy of Ascendant, MC and houses may be reduced.
           </div>
         )}
 
         {/* TIME-UNKNOWN NOTICE — affects houses, ascendant, and dasha */}
-        {(isKab || isVedic || (!isNum && !isChi)) && USER_TIME_UNKNOWN && (
+        {(isKab || isVedic || mode==="astro" || isHD || isCarto) && USER_TIME_UNKNOWN && (
           <div className="chart-notice">
             Birth time unknown — houses and rising sign omitted. Enter a time for the full chart.
           </div>
         )}
 
         {/* TIME TABS — only in western/kab mode */}
-        {!isVedic&&!isNum&&!isChi&&(
+        {(mode==="astro" || isKab)&&(
         <div style={{display:"flex",gap:8,justifyContent:"center",marginBottom:20}}>
           {[["weekly","This Week"],["monthly","This Month"],["yearly","This Year"]].map(([k,l])=>(
             <button key={k} className={`tbtn ${tab===k?(isKab?"ak":"aa"):""}`}
@@ -1806,7 +1870,7 @@ function App({ user, onReset }) {
         )}
 
         {/* TRANSIT CARDS — only in western/kab mode */}
-        {!isVedic&&!isNum&&!isChi&&(USER_TRANSITS[tab]||[]).map((t,i)=>{
+        {(mode==="astro" || isKab)&&(USER_TRANSITS[tab]||[]).map((t,i)=>{
           const isOpen=expanded===i;
           const ic=INTENSITY_COLORS[t.intensity];
           const sp=SIGN_PATH[t.sign];
@@ -2589,8 +2653,139 @@ function App({ user, onReset }) {
           </div>
         )}
 
+        {/* ── HUMAN DESIGN SECTION ── */}
+        {isHD && (
+          <div>
+            {!USER_HD ? (
+              <div className="chart-notice">Human Design engine failed to load or birth data is incomplete.</div>
+            ) : USER_PAID ? (
+              typeof window !== "undefined" && window.SynastraHD
+                ? window.SynastraHD.renderHDPanel(USER, USER_HD)
+                : null
+            ) : (
+              <div>
+                {/* Free teaser — Type + Strategy */}
+                <div style={{padding:"22px 24px",background:"rgba(155,137,212,.06)",border:"1px solid rgba(155,137,212,.22)",borderRadius:14,marginBottom:20}}>
+                  <div className="sl" style={{color:"rgba(155,137,212,.7)",marginBottom:10}}>System · Human Design · Bodygraph</div>
+                  <div style={{fontFamily:"'Fraunces',serif",fontSize:28,color:"var(--ink)",fontWeight:600,lineHeight:1.15,marginBottom:8}}>
+                    You are a <span style={{color:"var(--hd-accent)"}}>{USER_HD.type}</span>.
+                  </div>
+                  {USER_HD.strategy && (
+                    <div style={{fontFamily:"'Crimson Pro',serif",fontSize:18,color:"var(--ink-dim)",fontStyle:"italic",marginBottom:6}}>
+                      Strategy — {USER_HD.strategy}
+                    </div>
+                  )}
+                  {USER_HD.authority && (
+                    <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:11,color:"rgba(155,137,212,.75)",letterSpacing:1.4,textTransform:"uppercase"}}>
+                      Authority · {USER_HD.authority}{USER_HD.profile ? ` · Profile ${USER_HD.profile}` : ""}
+                    </div>
+                  )}
+                </div>
+
+                {/* Blurred full reading + upgrade CTA */}
+                <div className="gate-wrap">
+                  <div className="gate-blur">
+                    {typeof window !== "undefined" && window.SynastraHD
+                      ? window.SynastraHD.renderHDPanel(USER, USER_HD)
+                      : null}
+                  </div>
+                  <div className="gate-overlay">
+                    <p className="gate-teaser">The full Body Graph — every gate, channel, defined center, and incarnation cross — is part of The Reading.</p>
+                    <a className="gate-cta" href="#pricing">Unlock &rarr; The Reading · $9/mo</a>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── MAYAN TZOLKIN SECTION ── */}
+        {isMayan && (
+          <div>
+            {!USER_MAYAN ? (
+              <div className="chart-notice">Mayan engine failed to load.</div>
+            ) : USER_PAID ? (
+              typeof window !== "undefined" && window.SynastraMayan
+                ? window.SynastraMayan.renderPanel(USER, USER_MAYAN)
+                : null
+            ) : (
+              <div>
+                {/* Free teaser — Kin + Day Sign */}
+                <div style={{padding:"22px 24px",background:"rgba(212,149,107,.06)",border:"1px solid rgba(212,149,107,.22)",borderRadius:14,marginBottom:20}}>
+                  <div className="sl" style={{color:"rgba(212,149,107,.7)",marginBottom:10}}>System · Tzolkin · 260-day Sacred Round</div>
+                  <div style={{fontFamily:"'Fraunces',serif",fontSize:28,color:"var(--ink)",fontWeight:600,lineHeight:1.15,marginBottom:8}}>
+                    Kin {USER_MAYAN.kin} — <span style={{color:"var(--mayan-accent)"}}>{USER_MAYAN.kinName}</span>
+                  </div>
+                  {USER_MAYAN.daySign && (
+                    <div style={{fontFamily:"'Crimson Pro',serif",fontSize:18,color:"var(--ink-dim)",fontStyle:"italic",marginBottom:6}}>
+                      Day Sign — {USER_MAYAN.daySign.name}{USER_MAYAN.daySign.yucatec ? ` · ${USER_MAYAN.daySign.yucatec}` : ""}
+                    </div>
+                  )}
+                  {USER_MAYAN.daySign && USER_MAYAN.daySign.essence && (
+                    <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:11,color:"rgba(212,149,107,.75)",letterSpacing:1.4,textTransform:"uppercase"}}>
+                      {USER_MAYAN.daySign.essence}
+                    </div>
+                  )}
+                </div>
+
+                {/* Blurred full reading + upgrade CTA */}
+                <div className="gate-wrap">
+                  <div className="gate-blur">
+                    {typeof window !== "undefined" && window.SynastraMayan
+                      ? window.SynastraMayan.renderPanel(USER, USER_MAYAN)
+                      : null}
+                  </div>
+                  <div className="gate-overlay">
+                    <p className="gate-teaser">The Tzolkin oracle — Guide, Analog, Antipode, Occult, Tone, and Galactic Year — is part of The Reading.</p>
+                    <a className="gate-cta" href="#pricing">Unlock &rarr; The Reading · $9/mo</a>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ── ASTROCARTOGRAPHY SECTION ── */}
+        {isCarto && (
+          <div>
+            {!USER_TROPICAL || !USER_TROPICAL.planets || !USER_TROPICAL.planets.length ? (
+              <div className="chart-notice">Astrocartography requires a complete natal chart.</div>
+            ) : USER_PAID ? (
+              typeof window !== "undefined" && window.SynastraAstrocarto
+                ? window.SynastraAstrocarto.renderPanel(USER, USER_TROPICAL)
+                : null
+            ) : (
+              <div>
+                {/* Free teaser — depth tier only */}
+                <div style={{padding:"22px 24px",background:"rgba(91,143,185,.06)",border:"1px solid rgba(91,143,185,.22)",borderRadius:14,marginBottom:20}}>
+                  <div className="sl" style={{color:"rgba(91,143,185,.7)",marginBottom:10}}>System · Astrocartography · Planetary Relocation</div>
+                  <div style={{fontFamily:"'Fraunces',serif",fontSize:24,color:"var(--ink)",fontWeight:600,lineHeight:1.2,marginBottom:8}}>
+                    Your planetary lines cross the globe — <span style={{color:"var(--carto-accent)"}}>where you stand changes which planet rises, culminates, and sets at birth.</span>
+                  </div>
+                  <div style={{fontFamily:"'Crimson Pro',serif",fontSize:15,color:"var(--ink-dim)",fontStyle:"italic"}}>
+                    A map of the Earth, drawn through your natal sky.
+                  </div>
+                </div>
+
+                {/* Blurred full map + upgrade CTA */}
+                <div className="gate-wrap">
+                  <div className="gate-blur">
+                    {typeof window !== "undefined" && window.SynastraAstrocarto
+                      ? window.SynastraAstrocarto.renderPanel(USER, USER_TROPICAL)
+                      : null}
+                  </div>
+                  <div className="gate-overlay" style={{minHeight:320}}>
+                    <p className="gate-teaser">The full world map — every planet's AC, MC, IC, and DC line — plus cities nearest each crossing, is part of The Reading.</p>
+                    <a className="gate-cta" href="#pricing">Unlock &rarr; The Reading · $9/mo</a>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
         {/* HOUSE + NATAL REFERENCE (astro mode) — dynamic from USER_TROPICAL */}
-        {!isKab&&!isVedic&&!isNum&&!isChi&&(
+        {mode==="astro"&&(
           <>
             {/* Ascendant / MC angle strip */}
             {!USER_TIME_UNKNOWN && (USER_TROPICAL.ascendant || USER_TROPICAL.mc) && (
@@ -2655,7 +2850,7 @@ function App({ user, onReset }) {
         <hr className="chapter-rule"/>
 
         <p className="marginalia" style={{textAlign:"center",marginTop:28,fontStyle:"normal"}}>
-          Western — Vedic — Kabbalah — Numerology — Chinese.&nbsp;&nbsp;Tap any entry to open its full reading.&nbsp;&nbsp;Ephemeris verified.
+          Western — Vedic — Kabbalah — Numerology — Chinese — Human Design — Mayan — Astrocartography.&nbsp;&nbsp;Tap any entry to open its full reading.&nbsp;&nbsp;Ephemeris verified.
         </p>
       </div>
     </div>
