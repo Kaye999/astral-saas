@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Synastra — Dark Luxury Minimal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,300..800;1,7..72,300..800&family=Manrope:wght@200..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0C0C0E;
+  --ink:#FAFAFA;
+  --gold:#D4AF37;
+  --line:rgba(250,250,250,0.06);
+  --line-2:rgba(250,250,250,0.12);
+  --dim:rgba(250,250,250,0.56);
+  --dim-2:rgba(250,250,250,0.34);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Manrope',system-ui,sans-serif;font-weight:300;font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;letter-spacing:.005em}
+a{color:inherit;text-decoration:none}
+
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.35}
+
+.mockup-label{position:fixed;top:20px;left:24px;z-index:100;font-family:'Manrope',sans-serif;font-weight:500;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);background:rgba(12,12,14,.65);backdrop-filter:blur(10px);padding:12px 16px;border-radius:1px}
+.mockup-label a{display:block;color:var(--dim);margin-top:5px;font-size:9px;letter-spacing:.22em}
+.mockup-label a:hover{color:var(--ink)}
+
+/* nav */
+.nav{position:relative;z-index:5;max-width:1440px;margin:0 auto;padding:60px 56px 0;display:flex;justify-content:space-between;align-items:center}
+.wordmark{font-family:'Literata',serif;font-weight:400;font-size:20px;letter-spacing:.18em;text-transform:uppercase}
+.nav-links{display:flex;gap:44px;font-family:'Manrope',sans-serif;font-weight:400;font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.nav-links a{position:relative;padding-bottom:4px}
+.nav-links a::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--gold);transition:width .4s ease}
+.nav-links a:hover{color:var(--ink)}
+.nav-links a:hover::after{width:100%}
+
+/* hero */
+.hero{position:relative;z-index:2;max-width:1440px;margin:0 auto;padding:160px 56px 200px;text-align:center}
+.hero .eyebrow{font-family:'Manrope',sans-serif;font-weight:500;font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);margin-bottom:48px}
+.hero h1{font-family:'Literata',serif;font-variation-settings:"opsz" 72;font-weight:300;font-size:clamp(64px,11vw,140px);line-height:.92;letter-spacing:-.035em;max-width:12ch;margin:0 auto}
+.hero h1 em{font-style:italic;font-weight:300;color:var(--gold)}
+.hero .sub{margin:56px auto 0;max-width:52ch;color:var(--dim);font-size:17px;line-height:1.7;font-weight:300;letter-spacing:.01em}
+.hero .cta{margin-top:64px;display:inline-flex;flex-direction:column;align-items:center;gap:22px}
+.btn{display:inline-block;font-family:'Manrope',sans-serif;font-weight:500;font-size:12px;letter-spacing:.28em;text-transform:uppercase;padding:20px 44px;background:var(--ink);color:var(--bg);border:1px solid var(--ink);transition:background .3s,color .3s,border-color .3s;cursor:pointer}
+.btn:hover{background:transparent;color:var(--ink)}
+.btn.outline{background:transparent;color:var(--ink);border-color:var(--line-2)}
+.btn.outline:hover{border-color:var(--gold);color:var(--gold)}
+.link-ghost{font-family:'Manrope',sans-serif;font-weight:400;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);padding-bottom:4px;border-bottom:1px solid transparent;transition:color .3s,border-color .3s}
+.link-ghost:hover{color:var(--ink);border-color:var(--gold)}
+
+/* quote section */
+.quote{position:relative;z-index:2;max-width:900px;margin:0 auto;padding:200px 56px;text-align:center}
+.quote .mark{font-family:'Manrope',sans-serif;font-weight:500;font-size:11px;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);margin-bottom:56px}
+.quote q{display:block;font-family:'Literata',serif;font-variation-settings:"opsz" 72;font-weight:300;font-size:clamp(36px,4.6vw,64px);line-height:1.15;letter-spacing:-.02em;quotes:"“" "”"}
+.quote q::before,.quote q::after{color:var(--gold);opacity:.6}
+.quote .cite{margin-top:48px;font-family:'Manrope',sans-serif;font-weight:400;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--dim)}
+.quote .cite strong{color:var(--ink);font-weight:500}
+.quote .body{margin:72px auto 0;max-width:56ch;color:var(--dim);font-size:16px;line-height:1.8;font-weight:300;letter-spacing:.01em;text-align:left}
+
+/* the eight */
+.eight{position:relative;z-index:2;max-width:1440px;margin:0 auto;padding:160px 56px;text-align:center}
+.section-eyebrow{font-family:'Manrope',sans-serif;font-weight:500;font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--gold);margin-bottom:40px}
+.section-h2{font-family:'Literata',serif;font-variation-settings:"opsz" 72;font-weight:300;font-size:clamp(42px,5.5vw,76px);line-height:1;letter-spacing:-.025em;max-width:18ch;margin:0 auto 24px}
+.section-sub{max-width:50ch;margin:0 auto 112px;color:var(--dim);font-size:16px;line-height:1.7;font-weight:300}
+.eight-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:96px 56px;max-width:1200px;margin:0 auto;text-align:left}
+.trad{position:relative}
+.trad .num{font-family:'Manrope',sans-serif;font-weight:500;font-size:10px;letter-spacing:.32em;color:var(--dim-2);margin-bottom:20px}
+.trad h3{font-family:'Literata',serif;font-variation-settings:"opsz" 72;font-weight:400;font-size:26px;letter-spacing:-.01em;margin-bottom:12px}
+.trad p{color:var(--dim);font-size:14px;line-height:1.65;font-weight:300}
+
+/* dashboard */
+.dash{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:200px 56px;text-align:center}
+.dash-preview{margin-top:96px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:120px;align-items:start;text-align:left;padding-top:72px;border-top:1px solid var(--line)}
+.chart-col{display:flex;flex-direction:column;align-items:center;gap:56px}
+.chart-title{font-family:'Manrope',sans-serif;font-weight:500;font-size:11px;letter-spacing:.32em;text-transform:uppercase;color:var(--gold);text-align:center}
+.chart-sub{font-family:'Literata',serif;font-style:italic;font-weight:300;font-size:16px;color:var(--dim);text-align:center;margin-top:10px;letter-spacing:.01em}
+.wheel{width:100%;max-width:440px;height:auto;display:block}
+.key-row{display:flex;flex-direction:column;gap:0;width:100%;max-width:440px}
+.key{display:flex;justify-content:space-between;align-items:baseline;padding:22px 0;border-top:1px solid var(--line)}
+.key:last-child{border-bottom:1px solid var(--line)}
+.key .k{font-family:'Manrope',sans-serif;font-weight:500;font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--dim)}
+.key .v{font-family:'Literata',serif;font-weight:400;font-size:17px;letter-spacing:-.005em}
+.key .v em{font-style:italic;color:var(--gold);font-weight:300}
+
+.detail-col{display:flex;flex-direction:column;gap:72px;padding-top:24px}
+.item .tag{font-family:'Manrope',sans-serif;font-weight:500;font-size:10px;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);margin-bottom:22px;display:inline-block;padding-bottom:8px;border-bottom:1px solid var(--line-2)}
+.item h4{font-family:'Literata',serif;font-variation-settings:"opsz" 72;font-weight:300;font-size:34px;line-height:1.12;letter-spacing:-.02em;margin-bottom:18px}
+.item p{color:var(--dim);font-size:16px;line-height:1.75;font-weight:300;max-width:46ch}
+.chat .msg{padding:16px 0;display:flex;gap:24px;align-items:baseline}
+.chat .msg + .msg{border-top:1px solid var(--line)}
+.chat .who{font-family:'Manrope',sans-serif;font-weight:500;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--dim);min-width:84px;flex-shrink:0}
+.chat .bub{font-family:'Literata',serif;font-weight:300;font-size:17px;line-height:1.55;letter-spacing:-.005em}
+.chat .msg.them .bub{color:var(--dim);font-style:italic}
+
+/* pricing */
+.pricing{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:200px 56px;text-align:center}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-top:88px;text-align:left}
+.tier{padding:64px 56px 56px;position:relative}
+.tier + .tier{border-left:1px solid var(--line)}
+.tier.feat{background:rgba(212,175,55,0.035)}
+.tier .plan{font-family:'Manrope',sans-serif;font-weight:500;font-size:11px;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);margin-bottom:28px}
+.tier h3{font-family:'Literata',serif;font-variation-settings:"opsz" 72;font-weight:300;font-size:64px;line-height:1;letter-spacing:-.03em;margin-bottom:14px}
+.tier h3 small{font-size:16px;color:var(--dim);font-weight:300;letter-spacing:.04em;margin-left:2px}
+.tier .desc{color:var(--dim);font-size:15px;line-height:1.7;font-weight:300;margin-bottom:48px;max-width:30ch}
+.tier ul{list-style:none;margin-bottom:48px}
+.tier li{padding:14px 0;border-top:1px solid var(--line);font-size:14.5px;letter-spacing:.005em;color:var(--ink);font-weight:300}
+.tier li:last-child{border-bottom:1px solid var(--line)}
+.tier .btn,.tier .btn.outline{display:block;width:100%;text-align:center}
+
+/* footer */
+footer{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:120px 56px 80px;text-align:center}
+footer .mark{font-family:'Literata',serif;font-weight:300;font-size:34px;letter-spacing:-.015em}
+footer .tag{margin-top:14px;font-family:'Manrope',sans-serif;font-weight:400;font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim)}
+footer .copy{margin-top:56px;font-family:'Manrope',sans-serif;font-weight:400;font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:var(--dim-2)}
+
+.reveal{opacity:0;transition:opacity 1.2s ease}
+.reveal.in{opacity:1}
+
+@media (max-width:960px){
+  .nav{padding:48px 28px 0;flex-direction:column;gap:22px}
+  .hero{padding:100px 28px 120px}
+  .quote{padding:120px 28px}
+  .eight{padding:120px 28px}
+  .eight-grid{grid-template-columns:1fr 1fr;gap:60px 32px}
+  .dash{padding:120px 28px}
+  .dash-preview{grid-template-columns:1fr;gap:64px;padding-top:48px}
+  .pricing{padding:120px 28px}
+  .price-grid{grid-template-columns:1fr}
+  .tier + .tier{border-left:none;border-top:1px solid var(--line)}
+  footer{padding:80px 28px 60px}
+}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+
+<div class="mockup-label">
+  Direction 2 — Dark Luxury Minimal
+  <a href="mockup-index.html">← Back to index</a>
+</div>
+
+<header class="nav">
+  <div class="wordmark">Synastra</div>
+  <nav class="nav-links">
+    <a>Traditions</a><a>Readings</a><a>Pricing</a><a>Sign in</a>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="eyebrow reveal">By invitation of the stars</div>
+  <h1 class="reveal">Eight traditions.<br/>One chart.<br/><em>Your</em> chart.</h1>
+  <p class="sub reveal">A quiet, complete reading of who you are — assembled from every major mystical tradition of the last three thousand years, and delivered in one uninterrupted voice.</p>
+  <div class="cta reveal">
+    <a class="btn">Cast my chart</a>
+    <a class="link-ghost">See a sample reading →</a>
+  </div>
+</section>
+
+<section class="quote">
+  <div class="mark reveal">Not a Horoscope</div>
+  <q class="reveal">Millionaires don't use astrology. Billionaires do.</q>
+  <div class="cite reveal">— Attributed to <strong>J.P. Morgan</strong>&nbsp;&nbsp;·&nbsp;&nbsp;1910</div>
+  <p class="body reveal">Evangeline Adams kept rooms at Carnegie Hall and read the charts of Morgan, Mary Pickford, and King Edward VII. In 1914 she was tried for fortune-telling in New York and acquitted, after casting the judge's own chart from the witness stand. This is the tradition Synastra inherits: quiet, precise, and paid for.</p>
+</section>
+
+<section class="eight">
+  <div class="section-eyebrow reveal">The Eight</div>
+  <h2 class="section-h2 reveal">Every major tradition. One reading.</h2>
+  <p class="section-sub reveal">We read each system in its own language, then bring them into a single voice. Nothing is blended. Nothing is diluted.</p>
+  <div class="eight-grid">
+    <div class="trad reveal"><div class="num">01 — Western</div><h3>Tropical</h3><p>Placidus houses. The psychological language of the zodiac.</p></div>
+    <div class="trad reveal"><div class="num">02 — Vedic</div><h3>Jyotish</h3><p>Sidereal. Nakshatras. Dashas. The oldest living astrological system.</p></div>
+    <div class="trad reveal"><div class="num">03 — Kabbalah</div><h3>Sephirot</h3><p>The Tree of Life mapped against your personal chart.</p></div>
+    <div class="trad reveal"><div class="num">04 — Numerology</div><h3>Pythagorean</h3><p>Core numbers. Life path. Expression. Chaldean cross-check.</p></div>
+    <div class="trad reveal"><div class="num">05 — Chinese</div><h3>BaZi</h3><p>Four Pillars of Destiny. Five-element analysis.</p></div>
+    <div class="trad reveal"><div class="num">06 — Human Design</div><h3>Type</h3><p>Strategy. Authority. The synthesis system of the present.</p></div>
+    <div class="trad reveal"><div class="num">07 — Mayan</div><h3>Tzolk'in</h3><p>Day-sign and galactic tone. The 260-day sacred calendar.</p></div>
+    <div class="trad reveal"><div class="num">08 — Astrocartography</div><h3>Relocation</h3><p>Your planetary lines drawn across the map of the earth.</p></div>
+  </div>
+</section>
+
+<section class="dash">
+  <div class="section-eyebrow reveal">Inside</div>
+  <h2 class="section-h2 reveal">What you see once the chart is cast.</h2>
+  <p class="section-sub reveal">A preview from one user's chart. Yours appears the same way — only the placements change.</p>
+  <div class="dash-preview">
+    <div class="chart-col reveal">
+      <div>
+        <div class="chart-title">Natal — Placidus — Tropical</div>
+        <div class="chart-sub">23 August 1997 · Melbourne · 21:09</div>
+      </div>
+      <svg class="wheel" viewBox="0 0 440 440" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(220 220)">
+          <!-- extremely minimal rings -->
+          <circle r="200" fill="none" stroke="rgba(250,250,250,0.10)" stroke-width="0.5"/>
+          <circle r="198" fill="none" stroke="rgba(250,250,250,0.04)" stroke-width="0.5"/>
+          <circle r="1.4" fill="#D4AF37"/>
+          <!-- tiny tick marks at 12 sign boundaries -->
+          <g stroke="rgba(250,250,250,0.10)" stroke-width="0.5">
+            <line x1="196" y1="0" x2="200" y2="0"/>
+            <line x1="-196" y1="0" x2="-200" y2="0"/>
+            <line x1="0" y1="196" x2="0" y2="200"/>
+            <line x1="0" y1="-196" x2="0" y2="-200"/>
+            <line x1="169" y1="98" x2="173" y2="100"/>
+            <line x1="-169" y1="98" x2="-173" y2="100"/>
+            <line x1="169" y1="-98" x2="173" y2="-100"/>
+            <line x1="-169" y1="-98" x2="-173" y2="-100"/>
+            <line x1="98" y1="169" x2="100" y2="173"/>
+            <line x1="-98" y1="169" x2="-100" y2="173"/>
+            <line x1="98" y1="-169" x2="100" y2="-173"/>
+            <line x1="-98" y1="-169" x2="-100" y2="-173"/>
+          </g>
+          <!-- white dots for planets + gold ring for ASC -->
+          <!-- Sun Leo -->
+          <circle cx="-120" cy="65" r="3" fill="#FAFAFA"/>
+          <!-- Moon Libra -->
+          <circle cx="-135" cy="-5" r="3" fill="#FAFAFA"/>
+          <!-- ASC Capricorn -->
+          <circle cx="7" cy="-135" r="4" fill="none" stroke="#D4AF37" stroke-width="1"/>
+          <!-- Mercury -->
+          <circle cx="-112" cy="78" r="2" fill="#FAFAFA"/>
+          <!-- Venus -->
+          <circle cx="-66" cy="122" r="2" fill="#FAFAFA"/>
+          <!-- Mars -->
+          <circle cx="-132" cy="-30" r="2" fill="#FAFAFA"/>
+          <!-- Jupiter -->
+          <circle cx="100" cy="-90" r="2" fill="#FAFAFA"/>
+          <!-- Saturn -->
+          <circle cx="135" cy="-18" r="2" fill="#FAFAFA"/>
+        </g>
+      </svg>
+      <div class="key-row">
+        <div class="key"><span class="k">Sun</span><span class="v">Leo <em>0° 29′</em></span></div>
+        <div class="key"><span class="k">Moon</span><span class="v">Libra <em>2° 01′</em></span></div>
+        <div class="key"><span class="k">Rising</span><span class="v">Capricorn <em>22° 46′</em></span></div>
+        <div class="key"><span class="k">Mercury</span><span class="v">Leo <em>12° 10′</em></span></div>
+        <div class="key"><span class="k">Venus</span><span class="v">Cancer <em>28° 05′</em></span></div>
+        <div class="key"><span class="k">Mars</span><span class="v">Virgo <em>17° 22′</em></span></div>
+        <div class="key"><span class="k">Jupiter</span><span class="v">Aquarius <em>11° 44′ R</em></span></div>
+      </div>
+    </div>
+
+    <div class="detail-col">
+      <div class="item reveal">
+        <div class="tag">Morning Cup · 21 April</div>
+        <h4>Stand at the edge. Don't lean.</h4>
+        <p>The Libra moon is asking you to mediate; the Capricorn rising is asking you to hold the line. Both are right. Make one decision before noon — not three after dinner.</p>
+      </div>
+      <div class="item reveal">
+        <div class="tag">Monthly Forecast · Taurus Season</div>
+        <h4>Slow rooms, solid yeses.</h4>
+        <p>Taurus transits favour your fourth and fifth houses. Expect a binding conversation around the twelfth — the kind that either closes a chapter or signs a contract.</p>
+      </div>
+      <div class="item chat reveal">
+        <div class="tag">Oracle</div>
+        <div class="msg"><span class="who">You</span><span class="bub">Why do I keep falling for people who can't make up their mind?</span></div>
+        <div class="msg them"><span class="who">Synastra</span><span class="bub">Your Libra moon is reading their indecision as depth. It isn't — it's weather. Look at their second house before you look at your heart.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing">
+  <div class="section-eyebrow reveal">Membership</div>
+  <h2 class="section-h2 reveal">Three ways in.</h2>
+  <p class="section-sub reveal">All three access every tradition. Depth unlocks synthesis, synastry, and the unlimited Oracle.</p>
+  <div class="price-grid">
+    <div class="tier reveal">
+      <div class="plan">Glance</div>
+      <h3>Free</h3>
+      <p class="desc">Your natal chart and opening placements. Kept, forever.</p>
+      <ul>
+        <li>Natal wheel · Western</li>
+        <li>Sun, Moon, Rising reading</li>
+        <li>Weekly transit headline</li>
+      </ul>
+      <a class="btn outline">Begin</a>
+    </div>
+    <div class="tier feat reveal">
+      <div class="plan">Reading</div>
+      <h3>$9<small>/mo</small></h3>
+      <p class="desc">All eight traditions. The Morning Cup, every morning.</p>
+      <ul>
+        <li>Complete chart, all Eight</li>
+        <li>Daily Morning Cup</li>
+        <li>Monthly forecast</li>
+        <li>50 Oracle messages / month</li>
+        <li>Major transit alerts</li>
+      </ul>
+      <a class="btn">Start the reading</a>
+    </div>
+    <div class="tier reveal">
+      <div class="plan">Depth</div>
+      <h3>$19<small>/mo</small></h3>
+      <p class="desc">Synthesis. Synastry. Astrocartography. The full Oracle.</p>
+      <ul>
+        <li>Everything in Reading</li>
+        <li>Unlimited Oracle chat</li>
+        <li>Synastry · up to 5 partners</li>
+        <li>Astrocartography atlas</li>
+        <li>Lifetime archive</li>
+      </ul>
+      <a class="btn outline">Go deep</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="mark">Synastra</div>
+  <div class="tag">Eight traditions. One chart. Your chart.</div>
+  <div class="copy">© 2026 Synastra</div>
+</footer>
+
+<script>
+(function(){
+  const c=document.getElementById('stars');const x=c.getContext('2d');
+  let w,h,stars=[];
+  function rs(){w=c.width=innerWidth*devicePixelRatio;h=c.height=innerHeight*devicePixelRatio;c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';stars=[];
+    const n=120; /* minimal = fewer stars */
+    for(let i=0;i<n;i++){stars.push({x:Math.random()*w,y:Math.random()*h,r:Math.random()*0.9*devicePixelRatio,a:Math.random()*0.5+0.08,v:Math.random()*0.0016+0.0008})}
+  }
+  function draw(t){x.clearRect(0,0,w,h);
+    for(const s of stars){
+      const tw=0.6+0.4*Math.sin(t*s.v+s.x);
+      x.globalAlpha=s.a*tw;x.fillStyle='#FAFAFA';
+      x.beginPath();x.arc(s.x,s.y,s.r,0,Math.PI*2);x.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  addEventListener('resize',rs);rs();requestAnimationFrame(draw);
+})();
+(function(){
+  const els=document.querySelectorAll('.reveal');
+  const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.1});
+  els.forEach(el=>io.observe(el));
+})();
+</script>
+</body>
+</html>

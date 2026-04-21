@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Synastra — Visual Directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,300..700&family=IBM+Plex+Mono:wght@400;500&family=Crimson+Pro:ital,wght@0,300..600;1,300..600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07070A;
+  --ink:#FAFAFA;
+  --brass:#C8A052;
+  --dim:rgba(250,250,250,0.54);
+  --dim-2:rgba(250,250,250,0.32);
+  --hair:rgba(250,250,250,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'Crimson Pro',Georgia,serif;font-weight:380;font-size:17px;line-height:1.7;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+.hero{max-width:1120px;margin:0 auto;padding:120px 48px 48px}
+.kicker{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--brass);margin-bottom:24px;display:flex;align-items:center;gap:12px}
+.kicker::before{content:"";width:32px;height:1px;background:var(--brass)}
+h1{font-family:'Fraunces',serif;font-variation-settings:"opsz" 144;font-weight:400;font-size:clamp(44px,6vw,78px);line-height:1;letter-spacing:-.02em;margin-bottom:24px}
+h1 em{font-style:italic;color:var(--brass);font-weight:300}
+.lead{max-width:62ch;color:var(--dim);font-size:19px;line-height:1.7}
+
+.grid{max-width:1280px;margin:40px auto 120px;padding:0 48px;display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+
+.card{position:relative;border:1px solid var(--hair);padding:0;overflow:hidden;transition:border-color .3s,transform .4s;display:flex;flex-direction:column;min-height:520px}
+.card:hover{border-color:var(--brass);transform:translateY(-4px)}
+.preview{height:260px;position:relative;overflow:hidden;border-bottom:1px solid var(--hair)}
+.card .body{padding:32px 30px 30px;display:flex;flex-direction:column;gap:14px;flex:1}
+.card .num{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.32em;color:var(--brass);text-transform:uppercase}
+.card h3{font-family:'Fraunces',serif;font-variation-settings:"opsz" 144;font-weight:400;font-size:30px;line-height:1.05;letter-spacing:-.01em}
+.card p{color:var(--dim);font-size:15.5px;line-height:1.65}
+.card .cta{margin-top:auto;padding-top:18px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--brass);border-top:1px solid var(--hair);padding-top:18px;display:flex;justify-content:space-between;align-items:center}
+.card .cta::after{content:"→";color:var(--ink);transition:transform .3s}
+.card:hover .cta::after{transform:translateX(6px)}
+
+/* preview 1 - editorial */
+.p1{background:#0A0E1A;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-variation-settings:"opsz" 144;font-weight:300;font-style:italic;font-size:46px;color:#FCFAF6;letter-spacing:-.015em;padding:0 24px;text-align:center;line-height:1}
+.p1 .b{color:#C8A052}
+.p1::before{content:"";position:absolute;top:22px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,160,82,0.4),transparent)}
+.p1::after{content:"";position:absolute;bottom:22px;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(200,160,82,0.4),transparent)}
+.p1 .orn{position:absolute;top:12px;left:50%;transform:translateX(-50%);color:#C8A052;font-size:12px;letter-spacing:.3em;font-family:'IBM Plex Mono',monospace;font-style:normal;background:#0A0E1A;padding:0 10px}
+
+/* preview 2 - luxury minimal */
+.p2{background:#0C0C0E;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:300;font-size:80px;color:#FAFAFA;letter-spacing:-.04em;line-height:1}
+.p2::before{content:"MEMBERSHIP";position:absolute;top:18px;left:0;right:0;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.42em;color:#D4AF37;font-weight:500}
+.p2 .dot{width:4px;height:4px;background:#D4AF37;border-radius:50%;margin:0 14px;display:inline-block;vertical-align:middle}
+
+/* preview 3 - mystical */
+.p3{background:radial-gradient(ellipse at 50% 40%,#200808,#0A0005 60%);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:500;font-size:30px;color:#E6C065;letter-spacing:.2em;text-align:center;padding:0 16px;text-shadow:0 0 16px rgba(184,134,11,0.5)}
+.p3::before{content:"✦    ❋    ✦";position:absolute;top:16px;left:0;right:0;text-align:center;color:#B8860B;font-size:12px;letter-spacing:.4em}
+.p3::after{content:"✦    ❋    ✦";position:absolute;bottom:16px;left:0;right:0;text-align:center;color:#B8860B;font-size:12px;letter-spacing:.4em}
+.p3 .frame{position:absolute;inset:32px;border:1px solid rgba(184,134,11,0.45);pointer-events:none}
+.p3 .inner{position:absolute;inset:36px;border:1px solid rgba(184,134,11,0.25);pointer-events:none}
+
+.meta{max-width:1120px;margin:0 auto;padding:0 48px 80px;color:var(--dim-2);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.24em;text-transform:uppercase;display:flex;justify-content:space-between;border-top:1px solid var(--hair);padding-top:24px}
+
+@media (max-width:900px){
+  .grid{grid-template-columns:1fr;gap:20px}
+  .hero{padding:80px 28px 32px}
+  .grid{padding:0 28px 60px}
+  .meta{padding:24px 28px 40px;flex-direction:column;gap:10px}
+}
+</style>
+</head>
+<body>
+<section class="hero">
+  <div class="kicker">Synastra · three visual directions</div>
+  <h1>Pick the <em>voice</em> that fits the product.</h1>
+  <p class="lead">Three standalone mockups — same content, same user, same data — rendered in three distinct aesthetic registers. Each is a complete landing + dashboard on one scrollable page. Click a tile to open it.</p>
+</section>
+
+<div class="grid">
+  <a href="mockup-1-editorial-esoteric.html" class="card">
+    <div class="preview p1">
+      <div class="orn">DIRECTION I</div>
+      <div><em>Eight traditions.</em><br/>One <span class="b">chart.</span></div>
+    </div>
+    <div class="body">
+      <div class="num">01 — Editorial Esoteric</div>
+      <h3>The New Yorker meets a celestial atlas.</h3>
+      <p>Words-forward. Fraunces display, Crimson Pro body, IBM Plex Mono data. Drop caps, hairline chapter rules, pull-quotes in the margin. Brass + ember on midnight indigo. Refined, literary, patient.</p>
+      <div class="cta"><span>Open direction</span></div>
+    </div>
+  </a>
+
+  <a href="mockup-2-dark-luxury-minimal.html" class="card">
+    <div class="preview p2">
+      <div>9<span class="dot"></span>19</div>
+    </div>
+    <div class="body">
+      <div class="num">02 — Dark Luxury Minimal</div>
+      <h3>Tesla configurator meets The Gentlewoman.</h3>
+      <p>Massive whitespace, one focal point per screen. Literata display, Manrope body, a single gold accent. 140px hero type, no ornament, fade-only motion. Quiet confidence — a status object.</p>
+      <div class="cta"><span>Open direction</span></div>
+    </div>
+  </a>
+
+  <a href="mockup-3-mystical-maximalist.html" class="card">
+    <div class="preview p3">
+      <div class="frame"></div>
+      <div class="inner"></div>
+      <div>SYNASTRA<br/>GRIMORIUM</div>
+    </div>
+    <div class="body">
+      <div class="num">03 — Mystical Maximalist</div>
+      <h3>Liber Null reprint meets a modern crypto wallet.</h3>
+      <p>Gilded double-line frames, constellation backgrounds, illuminated drop caps, Latin house labels, breathing sigils. Cormorant SC, Lora italic, EB Garamond drops. Oxblood + gilt + viridian. Unapologetic.</p>
+      <div class="cta"><span>Open direction</span></div>
+    </div>
+  </a>
+</div>
+
+<div class="meta">
+  <div>© 2026 Synastra · visual directions v1</div>
+  <div>compiled 21 April 2026</div>
+</div>
+</body>
+</html>

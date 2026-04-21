@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Synastra — Mystical Maximalist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+SC:wght@300;400;500;600;700&family=Lora:ital,wght@0,400..700;1,400..700&family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0A0005;
+  --ink:#F4E5D0;
+  --oxblood:#6B2B2B;
+  --oxblood-2:#8C3A3A;
+  --gilt:#B8860B;
+  --gilt-2:#E6C065;
+  --viridian:#2F4F2F;
+  --dim:rgba(244,229,208,0.58);
+  --dim-2:rgba(244,229,208,0.32);
+  --line:rgba(184,134,11,0.28);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{background:radial-gradient(ellipse at 50% 0%, #200808 0%, #0A0005 55%) var(--bg);color:var(--ink);font-family:'Lora',Georgia,serif;font-weight:400;font-size:17px;line-height:1.7;font-style:italic;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit;text-decoration:none}
+
+#stars{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.6}
+#constellations{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.14;mix-blend-mode:screen}
+
+.mockup-label{position:fixed;top:18px;left:22px;z-index:100;font-family:'Cormorant SC',serif;font-weight:500;font-size:11px;letter-spacing:.22em;color:var(--gilt-2);background:rgba(10,0,5,.82);border:1px solid var(--gilt);padding:10px 14px;box-shadow:0 0 24px rgba(184,134,11,0.15) inset}
+.mockup-label a{display:block;color:var(--dim);margin-top:4px;font-size:10px;letter-spacing:.18em;font-family:'Lora',serif;font-style:italic}
+.mockup-label a:hover{color:var(--gilt-2)}
+
+/* gilded frame helpers */
+.gilt-frame{position:relative;border:1px solid var(--gilt);padding:6px;background:linear-gradient(135deg,rgba(107,43,43,0.06),rgba(184,134,11,0.04))}
+.gilt-frame::before{content:"";position:absolute;inset:4px;border:1px solid rgba(184,134,11,0.45);pointer-events:none}
+.gilt-frame .corner{position:absolute;width:22px;height:22px;stroke:var(--gilt);fill:none;stroke-width:1}
+.gilt-frame .corner.tl{top:-1px;left:-1px}
+.gilt-frame .corner.tr{top:-1px;right:-1px;transform:scaleX(-1)}
+.gilt-frame .corner.bl{bottom:-1px;left:-1px;transform:scaleY(-1)}
+.gilt-frame .corner.br{bottom:-1px;right:-1px;transform:scale(-1,-1)}
+.gilt-frame .inner{position:relative;padding:28px 30px}
+
+/* nav */
+.nav{position:relative;z-index:5;max-width:1280px;margin:0 auto;padding:40px 44px 0;display:flex;justify-content:space-between;align-items:center}
+.wordmark{font-family:'Cormorant SC',serif;font-weight:500;font-size:24px;letter-spacing:.22em;color:var(--gilt-2);text-shadow:0 0 18px rgba(184,134,11,0.35)}
+.nav-links{display:flex;gap:34px;font-family:'Cormorant SC',serif;font-weight:400;font-size:12px;letter-spacing:.26em;color:var(--dim)}
+.nav-links a:hover{color:var(--gilt-2);text-shadow:0 0 10px rgba(230,192,101,0.5)}
+
+/* hero */
+.hero{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:96px 44px 140px;text-align:center}
+.hero .ornament{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:30px;color:var(--gilt)}
+.hero .ornament svg{width:26px;height:26px}
+.hero .ornament .label{font-family:'Cormorant SC',serif;font-weight:500;font-size:11px;letter-spacing:.4em;color:var(--gilt-2)}
+.hero h1{font-family:'Cormorant SC',serif;font-weight:500;font-size:clamp(48px,7vw,96px);line-height:1;letter-spacing:.04em;color:var(--ink);margin-bottom:28px;font-style:normal}
+.hero h1 em{font-family:'Lora',serif;font-style:italic;font-weight:500;color:var(--gilt-2);letter-spacing:0;text-transform:none}
+.hero .sub{font-family:'Lora',serif;font-style:italic;font-weight:400;max-width:54ch;margin:0 auto 44px;color:var(--dim);font-size:18px;line-height:1.75}
+.cta-row{display:inline-flex;gap:20px;align-items:center;flex-wrap:wrap;justify-content:center}
+
+.btn{font-family:'Cormorant SC',serif;font-weight:500;font-size:12px;letter-spacing:.28em;padding:16px 32px;color:var(--ink);border:1px solid var(--gilt);background:linear-gradient(180deg,rgba(107,43,43,0.5),rgba(107,43,43,0.15));position:relative;cursor:pointer;transition:box-shadow .3s,background .3s;text-transform:uppercase}
+.btn:hover{box-shadow:0 0 28px rgba(184,134,11,0.35);background:linear-gradient(180deg,rgba(140,58,58,0.7),rgba(107,43,43,0.3))}
+.btn.gilt{background:linear-gradient(180deg,#B8860B,#7a5900);color:#1a0a0a;border-color:var(--gilt-2);font-weight:600}
+.btn.gilt:hover{box-shadow:0 0 36px rgba(230,192,101,0.5)}
+.btn-ghost{font-family:'Cormorant SC',serif;font-weight:500;font-size:12px;letter-spacing:.28em;color:var(--gilt-2);padding:16px 10px;border-bottom:1px solid var(--gilt);text-transform:uppercase}
+.btn-ghost:hover{color:var(--ink)}
+
+/* section divider */
+.divider{max-width:1280px;margin:0 auto;padding:0 44px;display:flex;align-items:center;justify-content:center;gap:22px;color:var(--gilt)}
+.divider::before,.divider::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gilt),transparent)}
+.divider svg{width:42px;height:42px;animation:breathe 3s ease-in-out infinite}
+@keyframes breathe{0%,100%{opacity:.7;filter:drop-shadow(0 0 4px rgba(184,134,11,0.4))}50%{opacity:1;filter:drop-shadow(0 0 12px rgba(184,134,11,0.8))}}
+
+/* quote */
+.quote{position:relative;z-index:2;max-width:1100px;margin:0 auto;padding:110px 44px}
+.quote-inner{padding:52px 56px 48px;text-align:center;position:relative}
+.quote-inner::before{content:"☽";position:absolute;top:-20px;left:50%;transform:translateX(-50%);background:var(--bg);padding:0 16px;color:var(--gilt-2);font-size:24px}
+.pullquote{font-family:'Cormorant SC',serif;font-weight:500;font-size:clamp(32px,4vw,52px);line-height:1.15;letter-spacing:.02em;color:var(--oxblood-2);text-shadow:0 0 32px rgba(107,43,43,0.45)}
+.pullquote .mark{color:var(--gilt-2);font-size:1.4em;vertical-align:-0.15em;font-style:normal}
+.attribution{margin-top:34px;font-family:'Cormorant SC',serif;font-weight:400;font-size:12px;letter-spacing:.32em;color:var(--gilt-2)}
+.attribution strong{color:var(--ink);font-weight:600}
+.evangeline{margin-top:52px;font-family:'Lora',serif;font-style:italic;font-size:17px;color:var(--dim);line-height:1.8;max-width:60ch;margin-left:auto;margin-right:auto;text-align:left;padding-left:64px;position:relative}
+.evangeline .dc{position:absolute;left:0;top:0;font-family:'EB Garamond',serif;font-weight:700;font-style:normal;font-size:56px;color:var(--ink);background:var(--oxblood);padding:4px 14px;line-height:1;border:1px solid var(--gilt)}
+
+/* the eight */
+.eight{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:100px 44px}
+.section-head{text-align:center;margin-bottom:64px}
+.section-head .kicker{font-family:'Cormorant SC',serif;font-weight:500;font-size:12px;letter-spacing:.4em;color:var(--gilt-2);margin-bottom:16px}
+.section-head h2{font-family:'Cormorant SC',serif;font-weight:500;font-size:clamp(36px,4.6vw,60px);line-height:1.05;letter-spacing:.02em;color:var(--ink);font-style:normal}
+.section-head h2 em{font-family:'Lora',serif;font-style:italic;font-weight:500;color:var(--gilt-2);text-transform:none;letter-spacing:0}
+.section-head .sub{margin-top:18px;font-family:'Lora',serif;font-style:italic;color:var(--dim);font-size:17px;max-width:56ch;margin-left:auto;margin-right:auto}
+.eight-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.trad{position:relative;padding:4px;border:1px solid var(--gilt);background:linear-gradient(160deg,rgba(107,43,43,0.14),rgba(10,0,5,0.6))}
+.trad::before{content:"";position:absolute;inset:3px;border:1px solid rgba(184,134,11,0.35);pointer-events:none}
+.trad-inner{position:relative;padding:30px 24px 28px;text-align:center}
+.trad .glyph{font-family:'Cormorant SC',serif;font-weight:500;font-size:48px;color:var(--gilt-2);text-shadow:0 0 24px rgba(184,134,11,0.55);margin-bottom:10px;line-height:1}
+.trad h3{font-family:'Cormorant SC',serif;font-weight:500;font-size:20px;letter-spacing:.22em;color:var(--ink);font-style:normal;margin-bottom:8px}
+.trad p{font-family:'Lora',serif;font-style:italic;font-size:13.5px;color:var(--dim);line-height:1.6}
+.trad:hover{box-shadow:0 0 32px rgba(184,134,11,0.25) inset, 0 0 24px rgba(107,43,43,0.25)}
+.trad .sigil{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--bg);padding:0 8px;color:var(--gilt-2);font-family:'Cormorant SC',serif;font-size:10px;letter-spacing:.3em}
+
+/* dashboard */
+.dash{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:120px 44px}
+.dash-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;margin-top:56px}
+
+.chart-card{padding:6px;border:1px solid var(--gilt);background:radial-gradient(ellipse at 50% 50%,rgba(107,43,43,0.25),rgba(10,0,5,0.85))}
+.chart-card-inner{border:1px solid rgba(184,134,11,0.42);padding:30px;position:relative}
+.chart-title{font-family:'Cormorant SC',serif;font-weight:500;font-size:12px;letter-spacing:.34em;color:var(--gilt-2);text-align:center}
+.chart-sub{font-family:'Lora',serif;font-style:italic;color:var(--dim);text-align:center;margin-top:8px;margin-bottom:18px;font-size:15px}
+.wheel-wrap{display:flex;justify-content:center}
+.wheel{width:100%;max-width:460px;height:auto;display:block}
+
+.panels{display:flex;flex-direction:column;gap:28px}
+.panel{padding:5px;border:1px solid var(--gilt);background:linear-gradient(180deg,rgba(107,43,43,0.12),rgba(10,0,5,0.55))}
+.panel-inner{border:1px solid rgba(184,134,11,0.36);padding:24px 26px;position:relative}
+.panel .cat{font-family:'Cormorant SC',serif;font-weight:500;font-size:11px;letter-spacing:.34em;color:var(--gilt-2);margin-bottom:10px}
+.panel h4{font-family:'Cormorant SC',serif;font-weight:500;font-size:22px;color:var(--ink);letter-spacing:.05em;font-style:normal;margin-bottom:14px}
+.panel p{font-family:'Lora',serif;font-style:italic;font-size:16px;color:var(--dim);line-height:1.7}
+.panel p .dc2{float:left;font-family:'EB Garamond',serif;font-weight:700;font-style:normal;font-size:42px;line-height:.9;margin:4px 10px 0 0;color:var(--ink);background:var(--oxblood);padding:4px 10px;border:1px solid var(--gilt)}
+
+.placements{font-family:'Cormorant SC',serif;font-weight:400;font-size:14px;letter-spacing:.04em;color:var(--ink);font-style:normal}
+.placements .row{display:grid;grid-template-columns:30px 1fr auto;gap:10px 16px;padding:10px 0;border-top:1px solid var(--line);align-items:baseline}
+.placements .row:last-child{border-bottom:1px solid var(--line)}
+.placements .g{color:var(--gilt-2);font-size:20px;text-align:center}
+.placements .n{letter-spacing:.12em}
+.placements .d{font-family:'Lora',serif;font-style:italic;font-size:13px;color:var(--dim)}
+
+.chat .msg{display:flex;gap:16px;align-items:flex-start;padding:12px 0}
+.chat .who{font-family:'Cormorant SC',serif;font-weight:500;font-size:10px;letter-spacing:.32em;color:var(--gilt-2);min-width:78px;padding-top:4px}
+.chat .bub{font-family:'Lora',serif;font-style:italic;font-size:16px;color:var(--ink);line-height:1.6;flex:1}
+.chat .msg.them .bub{color:var(--dim)}
+.chat .input{margin-top:8px;padding-top:12px;border-top:1px solid var(--line);font-family:'Lora',serif;font-style:italic;color:var(--dim-2);display:flex;gap:10px;align-items:center}
+.chat .input::before{content:"✦";color:var(--gilt-2)}
+
+/* sephirot mini diagram */
+.sephirot{position:absolute;right:12px;top:12px;width:40px;height:60px;opacity:.5}
+
+/* pricing */
+.pricing{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:120px 44px}
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px}
+.tier{padding:5px;border:1px solid var(--gilt);position:relative;background:linear-gradient(180deg,rgba(10,0,5,0.65),rgba(107,43,43,0.1))}
+.tier-inner{border:1px solid rgba(184,134,11,0.38);padding:36px 32px 34px;text-align:center;position:relative}
+.tier.feat{background:linear-gradient(180deg,rgba(107,43,43,0.35),rgba(184,134,11,0.12))}
+.tier.feat .ribbon{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--oxblood);border:1px solid var(--gilt);color:var(--ink);font-family:'Cormorant SC',serif;font-size:10px;letter-spacing:.32em;padding:4px 14px;text-transform:uppercase}
+.tier h3{font-family:'Cormorant SC',serif;font-weight:500;font-size:24px;letter-spacing:.26em;color:var(--gilt-2);font-style:normal;margin-bottom:16px}
+.tier .price{font-family:'Cormorant SC',serif;font-weight:500;font-size:56px;line-height:1;color:var(--ink);font-style:normal;margin-bottom:4px}
+.tier .price small{font-family:'Lora',serif;font-style:italic;font-size:16px;color:var(--dim);font-weight:400}
+.tier .desc{font-family:'Lora',serif;font-style:italic;font-size:15px;color:var(--dim);margin:14px auto 26px;max-width:28ch;line-height:1.6}
+.tier ul{list-style:none;margin-bottom:28px;text-align:left}
+.tier li{font-family:'Lora',serif;font-style:italic;font-size:14.5px;color:var(--ink);padding:9px 0;border-top:1px solid var(--line);display:flex;gap:10px;align-items:baseline}
+.tier li:last-child{border-bottom:1px solid var(--line)}
+.tier li::before{content:"✧";color:var(--gilt-2);font-style:normal}
+
+/* footer */
+footer{position:relative;z-index:2;max-width:1280px;margin:0 auto;padding:80px 44px 60px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px}
+footer .mark{font-family:'Cormorant SC',serif;font-weight:500;font-size:30px;letter-spacing:.28em;color:var(--gilt-2);text-shadow:0 0 20px rgba(184,134,11,0.4)}
+footer .tag{font-family:'Lora',serif;font-style:italic;color:var(--dim);font-size:17px}
+footer .meta{font-family:'Cormorant SC',serif;font-size:10px;letter-spacing:.4em;color:var(--dim-2);margin-top:18px}
+footer .flourish{color:var(--gilt);font-size:22px;margin-bottom:6px}
+
+.reveal{opacity:0;transform:translateY(10px);transition:opacity 1s ease,transform 1s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+.sigil-breath{animation:breathe 3s ease-in-out infinite}
+
+@media (max-width:960px){
+  .nav{padding:28px 22px 0;flex-direction:column;gap:14px}
+  .hero{padding:60px 22px 80px}
+  .quote{padding:70px 22px}
+  .quote-inner{padding:36px 24px 32px}
+  .evangeline{padding-left:52px}
+  .eight{padding:60px 22px}
+  .eight-grid{grid-template-columns:1fr 1fr;gap:16px}
+  .dash{padding:70px 22px}
+  .dash-grid{grid-template-columns:1fr;gap:28px}
+  .pricing{padding:70px 22px}
+  .price-grid{grid-template-columns:1fr;gap:36px}
+  footer{padding:60px 22px 40px}
+}
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<svg id="constellations" viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice">
+  <!-- decorative constellation lines -->
+  <g stroke="#B8860B" stroke-width="0.6" fill="none" opacity="0.7">
+    <!-- orion-ish -->
+    <circle cx="200" cy="180" r="1.5" fill="#B8860B"/>
+    <circle cx="260" cy="210" r="1.5" fill="#B8860B"/>
+    <circle cx="240" cy="260" r="1.5" fill="#B8860B"/>
+    <circle cx="260" cy="310" r="1.5" fill="#B8860B"/>
+    <circle cx="220" cy="330" r="1.5" fill="#B8860B"/>
+    <circle cx="180" cy="290" r="1.5" fill="#B8860B"/>
+    <path d="M200 180 L260 210 L240 260 L260 310 L220 330 L180 290 Z"/>
+    <!-- big dipper -->
+    <circle cx="1200" cy="220" r="1.5" fill="#B8860B"/>
+    <circle cx="1260" cy="240" r="1.5" fill="#B8860B"/>
+    <circle cx="1320" cy="230" r="1.5" fill="#B8860B"/>
+    <circle cx="1380" cy="260" r="1.5" fill="#B8860B"/>
+    <circle cx="1420" cy="300" r="1.5" fill="#B8860B"/>
+    <circle cx="1380" cy="340" r="1.5" fill="#B8860B"/>
+    <circle cx="1320" cy="310" r="1.5" fill="#B8860B"/>
+    <path d="M1200 220 L1260 240 L1320 230 L1380 260 L1420 300 L1380 340 L1320 310 Z"/>
+    <!-- cross -->
+    <circle cx="900" cy="720" r="1.5" fill="#B8860B"/>
+    <circle cx="930" cy="770" r="1.5" fill="#B8860B"/>
+    <circle cx="920" cy="830" r="1.5" fill="#B8860B"/>
+    <circle cx="870" cy="780" r="1.5" fill="#B8860B"/>
+    <path d="M900 720 L930 770 L920 830 M870 780 L930 770"/>
+    <!-- cassiopeia-like -->
+    <circle cx="420" cy="820" r="1.5" fill="#B8860B"/>
+    <circle cx="500" cy="780" r="1.5" fill="#B8860B"/>
+    <circle cx="570" cy="840" r="1.5" fill="#B8860B"/>
+    <circle cx="640" cy="790" r="1.5" fill="#B8860B"/>
+    <circle cx="710" cy="830" r="1.5" fill="#B8860B"/>
+    <path d="M420 820 L500 780 L570 840 L640 790 L710 830"/>
+  </g>
+</svg>
+
+<div class="mockup-label">
+  Direction 3 — Mystical Maximalist
+  <a href="mockup-index.html">← Back to index</a>
+</div>
+
+<header class="nav">
+  <div class="wordmark">✦ SYNASTRA ✦</div>
+  <nav class="nav-links">
+    <a>THE EIGHT</a><a>READINGS</a><a>PRICING</a><a>SIGN IN</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="ornament reveal">
+    <svg class="sigil-breath" viewBox="0 0 24 24"><g stroke="currentColor" fill="none" stroke-width="1"><circle cx="12" cy="12" r="10"/><path d="M12 2l3 9 7 1-5.5 5 2 8-6.5-4.5L5.5 25l2-8L2 12l7-1z"/></g></svg>
+    <span class="label">Liber Astralis · Volumen I</span>
+    <svg class="sigil-breath" viewBox="0 0 24 24"><g stroke="currentColor" fill="none" stroke-width="1"><circle cx="12" cy="12" r="10"/><path d="M12 2l3 9 7 1-5.5 5 2 8-6.5-4.5L5.5 25l2-8L2 12l7-1z"/></g></svg>
+  </div>
+  <h1 class="reveal">EIGHT TRADITIONS<br/>ONE CHART<br/><em>your</em> CHART</h1>
+  <p class="sub reveal">A grimoire made modern. Every great mystical lineage of the last three thousand years — Western, Vedic, Kabbalistic, numerological, Chinese, Mayan, Human Design, and the atlas of your planetary lines — gathered into a single illuminated reading.</p>
+  <div class="cta-row reveal">
+    <a class="btn gilt">✦ Cast My Chart ✦</a>
+    <a class="btn-ghost">See a Sample Reading</a>
+  </div>
+</section>
+
+<div class="divider reveal">
+  <svg viewBox="0 0 42 42"><g stroke="currentColor" fill="none" stroke-width="1"><circle cx="21" cy="21" r="18"/><path d="M21 3l4.5 13.5H39l-11 8 4.2 13-11.2-8-11.2 8 4.2-13-11-8h13.5z"/><circle cx="21" cy="21" r="3" fill="currentColor"/></g></svg>
+</div>
+
+<!-- QUOTE -->
+<section class="quote">
+  <div class="quote-inner gilt-frame reveal">
+    <svg class="corner tl" viewBox="0 0 22 22"><path d="M1 1 L1 8 M1 1 L8 1 M1 1 Q8 8 14 8"/></svg>
+    <svg class="corner tr" viewBox="0 0 22 22"><path d="M1 1 L1 8 M1 1 L8 1 M1 1 Q8 8 14 8"/></svg>
+    <svg class="corner bl" viewBox="0 0 22 22"><path d="M1 1 L1 8 M1 1 L8 1 M1 1 Q8 8 14 8"/></svg>
+    <svg class="corner br" viewBox="0 0 22 22"><path d="M1 1 L1 8 M1 1 L8 1 M1 1 Q8 8 14 8"/></svg>
+    <div class="pullquote"><span class="mark">“</span>Millionaires do not use astrology.<br/>Billionaires do.<span class="mark">”</span></div>
+    <div class="attribution">— attributed to <strong>J. P. MORGAN</strong> · ANNO DOMINI MCMX</div>
+    <p class="evangeline"><span class="dc">E</span>vangeline Adams kept rooms at Carnegie Hall and cast charts for Morgan, Mary Pickford, King Edward VII, and the Duponts. In 1914 she was tried in New York for fortune-telling and acquitted — after reading the judge's own chart from the witness stand. Her notes on the 1907 Panic were dated months before it occurred. This is the line Synastra inherits.</p>
+  </div>
+</section>
+
+<div class="divider reveal">
+  <svg viewBox="0 0 42 42"><g stroke="currentColor" fill="none" stroke-width="1"><circle cx="21" cy="21" r="16"/><circle cx="21" cy="21" r="11"/><circle cx="21" cy="6" r="2" fill="currentColor"/><circle cx="21" cy="36" r="2" fill="currentColor"/><circle cx="6" cy="21" r="2" fill="currentColor"/><circle cx="36" cy="21" r="2" fill="currentColor"/><path d="M21 5 L21 37 M5 21 L37 21"/></g></svg>
+</div>
+
+<!-- THE EIGHT -->
+<section class="eight">
+  <div class="section-head reveal">
+    <div class="kicker">✦ CAPUT I · THE EIGHT TRADITIONS ✦</div>
+    <h2>Every lineage. <em>Honestly kept.</em></h2>
+    <p class="sub">Eight systems. Each one read by a practitioner of its own line. Each one preserved in its own language — and then, only then, synthesised into your reading.</p>
+  </div>
+  <div class="eight-grid">
+    <div class="trad reveal"><div class="trad-inner"><div class="sigil">I</div><div class="glyph">♃</div><h3>WESTERN</h3><p>Tropical zodiac, Placidus houses — the psychological grammar of myth.</p></div></div>
+    <div class="trad reveal"><div class="trad-inner"><div class="sigil">II</div><div class="glyph">ॐ</div><h3>VEDIC</h3><p>Jyotish. Nakshatras. Dashas. The oldest living system.</p></div></div>
+    <div class="trad reveal"><div class="trad-inner"><div class="sigil">III</div><div class="glyph">א</div><h3>KABBALAH</h3><p>The Tree of Life mapped upon your natal configuration.</p></div></div>
+    <div class="trad reveal"><div class="trad-inner"><div class="sigil">IV</div><div class="glyph">7</div><h3>NUMEROLOGY</h3><p>Pythagorean core with Chaldean cross-checks. Path & expression.</p></div></div>
+    <div class="trad reveal"><div class="trad-inner"><div class="sigil">V</div><div class="glyph">甲</div><h3>BA ZI</h3><p>The Chinese Four Pillars of Destiny. Five-element dialogue.</p></div></div>
+    <div class="trad reveal"><div class="trad-inner"><div class="sigil">VI</div><div class="glyph">◬</div><h3>HUMAN DESIGN</h3><p>Type. Strategy. Authority. The modern synthesis.</p></div></div>
+    <div class="trad reveal"><div class="trad-inner"><div class="sigil">VII</div><div class="glyph">✦</div><h3>MAYAN</h3><p>Tzolk'in day-sign and galactic tone. 260 sacred days.</p></div></div>
+    <div class="trad reveal"><div class="trad-inner"><div class="sigil">VIII</div><div class="glyph">⌘</div><h3>ASTROCARTOGRAPHY</h3><p>Your planetary lines drawn across the living earth.</p></div></div>
+  </div>
+</section>
+
+<div class="divider reveal">
+  <svg viewBox="0 0 42 42"><g stroke="currentColor" fill="none" stroke-width="1"><path d="M21 2l5 17h17l-14 11 5 17-13-11-13 11 5-17L3 19h17z"/></g></svg>
+</div>
+
+<!-- DASHBOARD -->
+<section class="dash">
+  <div class="section-head reveal">
+    <div class="kicker">✦ CAPUT II · THE ILLUMINATED READING ✦</div>
+    <h2>The book that opens <em>once the chart is cast.</em></h2>
+    <p class="sub">Sample pages from one reader's chart — Ethan, Leo sun, Libra moon, Capricorn rising. Yours will differ. The architecture holds.</p>
+  </div>
+  <div class="dash-grid">
+    <div class="chart-card reveal">
+      <div class="chart-card-inner">
+        <div class="chart-title">✦ NATALIS · PLACIDUS · TROPICALIS ✦</div>
+        <div class="chart-sub">Born 23 August MCMXCVII · Melbourne · 21h 09m</div>
+        <div class="wheel-wrap">
+          <svg class="wheel" viewBox="0 0 460 460" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="parch" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#3a1a12" stop-opacity="0.8"/>
+                <stop offset="70%" stop-color="#1a0808" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#0A0005" stop-opacity="0"/>
+              </radialGradient>
+              <style>
+                .zg{font-family:'Cormorant SC',serif;font-weight:500;fill:#E6C065;font-size:18px;letter-spacing:.08em}
+                .pg{font-family:'Cormorant SC',serif;font-weight:600;fill:#F4E5D0;font-size:15px}
+                .lat{font-family:'Cormorant SC',serif;font-weight:500;fill:#B8860B;font-size:8px;letter-spacing:.2em}
+              </style>
+            </defs>
+            <circle cx="230" cy="230" r="215" fill="url(#parch)"/>
+            <g transform="translate(230 230)">
+              <!-- outer double ring -->
+              <circle r="210" fill="none" stroke="#B8860B" stroke-width="1.2"/>
+              <circle r="202" fill="none" stroke="#B8860B" stroke-width="0.6"/>
+              <circle r="180" fill="none" stroke="#B8860B" stroke-width="0.6"/>
+              <circle r="170" fill="none" stroke="#B8860B" stroke-width="1"/>
+              <circle r="118" fill="none" stroke="rgba(184,134,11,0.45)" stroke-width="0.6"/>
+              <circle r="68" fill="none" stroke="rgba(184,134,11,0.5)" stroke-width="0.6"/>
+              <!-- house division lines (12) -->
+              <g stroke="rgba(184,134,11,0.35)" stroke-width="0.5">
+                <line x1="-210" y1="0" x2="210" y2="0"/>
+                <line x1="0" y1="-210" x2="0" y2="210"/>
+                <line x1="-182" y1="-105" x2="182" y2="105"/>
+                <line x1="-105" y1="-182" x2="105" y2="182"/>
+                <line x1="-105" y1="182" x2="105" y2="-182"/>
+                <line x1="-182" y1="105" x2="182" y2="-105"/>
+              </g>
+              <!-- Latin house labels between rings -->
+              <g class="lat">
+                <text x="0" y="-192" text-anchor="middle">DOMUS X</text>
+                <text x="93" y="-160" text-anchor="middle" transform="rotate(30 93 -160)">XI</text>
+                <text x="160" y="-92" text-anchor="middle" transform="rotate(60 160 -92)">XII</text>
+                <text x="192" y="4" text-anchor="middle">ASC · I</text>
+                <text x="160" y="95" text-anchor="middle" transform="rotate(-60 160 95)">II</text>
+                <text x="93" y="163" text-anchor="middle" transform="rotate(-30 93 163)">III</text>
+                <text x="0" y="198" text-anchor="middle">IC · IV</text>
+                <text x="-93" y="163" text-anchor="middle" transform="rotate(30 -93 163)">V</text>
+                <text x="-160" y="95" text-anchor="middle" transform="rotate(60 -160 95)">VI</text>
+                <text x="-192" y="4" text-anchor="middle">DSC · VII</text>
+                <text x="-160" y="-92" text-anchor="middle" transform="rotate(-60 -160 -92)">VIII</text>
+                <text x="-93" y="-160" text-anchor="middle" transform="rotate(-30 -93 -160)">IX</text>
+              </g>
+              <!-- Zodiac glyphs (large + stylized) -->
+              <g>
+                <text class="zg" x="195" y="4" text-anchor="middle">♈</text>
+                <text class="zg" x="169" y="105" text-anchor="middle">♉</text>
+                <text class="zg" x="99" y="174" text-anchor="middle">♊</text>
+                <text class="zg" x="0" y="199" text-anchor="middle">♋</text>
+                <text class="zg" x="-99" y="174" text-anchor="middle">♌</text>
+                <text class="zg" x="-169" y="105" text-anchor="middle">♍</text>
+                <text class="zg" x="-195" y="4" text-anchor="middle">♎</text>
+                <text class="zg" x="-169" y="-95" text-anchor="middle">♏</text>
+                <text class="zg" x="-99" y="-164" text-anchor="middle">♐</text>
+                <text class="zg" x="0" y="-189" text-anchor="middle">♑</text>
+                <text class="zg" x="99" y="-164" text-anchor="middle">♒</text>
+                <text class="zg" x="169" y="-95" text-anchor="middle">♓</text>
+              </g>
+              <!-- Planetary glyphs with decorative marks -->
+              <!-- Sun Leo -->
+              <g>
+                <text class="pg" x="-92" y="52" text-anchor="middle">☉</text>
+                <text x="-92" y="68" text-anchor="middle" fill="#B8860B" font-size="8" font-family="Cormorant SC">✦</text>
+              </g>
+              <!-- Moon Libra -->
+              <g>
+                <text class="pg" x="-104" y="-4" text-anchor="middle">☽</text>
+                <text x="-104" y="-18" text-anchor="middle" fill="#B8860B" font-size="8" font-family="Cormorant SC">✦</text>
+              </g>
+              <!-- ASC Capricorn -->
+              <g>
+                <text class="pg" x="6" y="-105" text-anchor="middle" fill="#E6C065">↑</text>
+                <text x="6" y="-90" text-anchor="middle" fill="#B8860B" font-size="8" font-family="Cormorant SC">✦</text>
+              </g>
+              <!-- Mercury Leo -->
+              <g><text class="pg" x="-80" y="62" text-anchor="middle">☿</text></g>
+              <!-- Venus Cancer -->
+              <g><text class="pg" x="-50" y="90" text-anchor="middle">♀</text></g>
+              <!-- Mars Virgo -->
+              <g><text class="pg" x="-102" y="-24" text-anchor="middle">♂</text></g>
+              <!-- Jupiter Aquarius -->
+              <g><text class="pg" x="80" y="-68" text-anchor="middle">♃</text></g>
+              <!-- Saturn Aries -->
+              <g><text class="pg" x="103" y="-14" text-anchor="middle">♄</text></g>
+              <!-- center ornament: pentacle -->
+              <g stroke="#B8860B" stroke-width="0.7" fill="none">
+                <circle r="10"/>
+                <path d="M0 -10 L6 10 L-9 -3 L9 -3 L-6 10 Z"/>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="panels">
+      <div class="panel reveal">
+        <div class="panel-inner">
+          <svg class="sephirot" viewBox="0 0 30 50"><g stroke="#B8860B" fill="none" stroke-width="0.6"><circle cx="15" cy="5" r="3"/><circle cx="6" cy="14" r="3"/><circle cx="24" cy="14" r="3"/><circle cx="15" cy="22" r="3"/><circle cx="6" cy="30" r="3"/><circle cx="24" cy="30" r="3"/><circle cx="15" cy="38" r="3"/><path d="M15 5 L6 14 L15 22 L24 14 Z M6 14 L6 30 L15 38 L24 30 L24 14 M15 22 L15 38"/></g></svg>
+          <div class="cat">✦ PLACEMENTA · THE SEVEN ✦</div>
+          <h4>Signs by which you are known.</h4>
+          <div class="placements">
+            <div class="row"><span class="g">☉</span><span class="n">SUN IN LEO</span><span class="d">0° 29′ · 5H</span></div>
+            <div class="row"><span class="g">☽</span><span class="n">MOON IN LIBRA</span><span class="d">2° 01′ · 9H</span></div>
+            <div class="row"><span class="g">↑</span><span class="n">RISING CAPRICORN</span><span class="d">22° 46′</span></div>
+            <div class="row"><span class="g">☿</span><span class="n">MERCURY IN LEO</span><span class="d">12° 10′ · 7H</span></div>
+            <div class="row"><span class="g">♀</span><span class="n">VENUS IN CANCER</span><span class="d">28° 05′ · 6H</span></div>
+            <div class="row"><span class="g">♂</span><span class="n">MARS IN VIRGO</span><span class="d">17° 22′ · 8H</span></div>
+            <div class="row"><span class="g">♃</span><span class="n">JUPITER AQUARIUS</span><span class="d">11° 44′ R · 1H</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel reveal">
+        <div class="panel-inner">
+          <div class="cat">✦ POCULUM MATUTINUM · XXI APRIL ✦</div>
+          <h4>Stand at the edge. Do not lean.</h4>
+          <p><span class="dc2">T</span>he Libra moon asks for mediation; the Capricorn rising demands a spine. Both are correct; the paradox is the point. A clean decision made before noon will pay for itself by week's end. Cease asking three people what they think.</p>
+        </div>
+      </div>
+
+      <div class="panel reveal">
+        <div class="panel-inner">
+          <div class="cat">✦ PROGNOSTICON · TAURUS SEASON ✦</div>
+          <h4>Slow rooms. Solid yeses.</h4>
+          <p>Earth season favours your fourth and fifth houses. Expect a binding conversation around the twelfth — the kind that closes a chapter or signs a contract. Coin arrives through a relationship, not a pitch.</p>
+        </div>
+      </div>
+
+      <div class="panel reveal chat">
+        <div class="panel-inner">
+          <div class="cat">✦ ORACULUM ✦</div>
+          <div class="msg"><span class="who">QUAERIS</span><span class="bub">Why do I keep falling for people who cannot make up their minds?</span></div>
+          <div class="msg them"><span class="who">RESPONSUM</span><span class="bub">Your Libra moon reads their indecision as depth. It is not — it is weather. Observe their second house before you trust your heart.</span></div>
+          <div class="input">Address the Oracle…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider reveal">
+  <svg viewBox="0 0 42 42"><g stroke="currentColor" fill="none" stroke-width="1"><path d="M3 21 L39 21 M21 3 L21 39"/><circle cx="21" cy="21" r="12"/><circle cx="21" cy="21" r="4" fill="currentColor"/></g></svg>
+</div>
+
+<!-- PRICING -->
+<section class="pricing">
+  <div class="section-head reveal">
+    <div class="kicker">✦ CAPUT III · MEMBERSHIP ✦</div>
+    <h2>Three doors. <em>One chart.</em></h2>
+    <p class="sub">Each tier reads the full eight. Depth unlocks synthesis, synastry, astrocartography, and the unlimited Oracle.</p>
+  </div>
+  <div class="price-grid">
+    <div class="tier reveal">
+      <div class="tier-inner">
+        <h3>GLANCE</h3>
+        <div class="price">Free</div>
+        <div class="desc">Your natal chart and opening placements — kept forever.</div>
+        <ul>
+          <li>Natal wheel · Western</li>
+          <li>Sun · Moon · Rising reading</li>
+          <li>Weekly transit headline</li>
+        </ul>
+        <a class="btn">✦ Begin ✦</a>
+      </div>
+    </div>
+    <div class="tier feat reveal">
+      <div class="ribbon">✦ RECOMMENDED ✦</div>
+      <div class="tier-inner">
+        <h3>READING</h3>
+        <div class="price">$9<small>/month</small></div>
+        <div class="desc">Every tradition. The Morning Cup, every morning.</div>
+        <ul>
+          <li>Complete chart · all Eight</li>
+          <li>Daily Morning Cup</li>
+          <li>Monthly forecast</li>
+          <li>50 Oracle messages / month</li>
+          <li>Major transit alerts</li>
+        </ul>
+        <a class="btn gilt">✦ Start the Reading ✦</a>
+      </div>
+    </div>
+    <div class="tier reveal">
+      <div class="tier-inner">
+        <h3>DEPTH</h3>
+        <div class="price">$19<small>/month</small></div>
+        <div class="desc">Synthesis. Synastry. The astrocartographic atlas.</div>
+        <ul>
+          <li>Everything in Reading</li>
+          <li>Unlimited Oracle</li>
+          <li>Synastry · up to 5 partners</li>
+          <li>Astrocartography atlas</li>
+          <li>Lifetime archive</li>
+        </ul>
+        <a class="btn">✦ Go Deep ✦</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="flourish">✦ ❋ ✦</div>
+  <div class="mark">SYNASTRA</div>
+  <div class="tag">Eight traditions. One chart. Your chart.</div>
+  <div class="meta">© MMXXVI · COMPILED UNDER A WAXING MOON</div>
+</footer>
+
+<script>
+(function(){
+  const c=document.getElementById('stars');const x=c.getContext('2d');
+  let w,h,stars=[];
+  function rs(){w=c.width=innerWidth*devicePixelRatio;h=c.height=innerHeight*devicePixelRatio;c.style.width=innerWidth+'px';c.style.height=innerHeight+'px';stars=[];
+    const n=380; /* maximalist = denser */
+    for(let i=0;i<n;i++){stars.push({
+      x:Math.random()*w,y:Math.random()*h,
+      r:Math.random()*1.4*devicePixelRatio,
+      a:Math.random()*0.85+0.1,
+      v:Math.random()*0.003+0.0008,
+      dx:(Math.random()-0.5)*0.04,
+      gold:Math.random()<0.22
+    })}
+  }
+  function draw(t){x.clearRect(0,0,w,h);
+    for(const s of stars){
+      s.x+=s.dx;
+      if(s.x<0)s.x=w;if(s.x>w)s.x=0;
+      const tw=0.5+0.5*Math.sin(t*s.v+s.y);
+      x.globalAlpha=s.a*tw;
+      x.fillStyle=s.gold?'#E6C065':'#F4E5D0';
+      x.beginPath();x.arc(s.x,s.y,s.r,0,Math.PI*2);x.fill();
+    }
+    requestAnimationFrame(draw);
+  }
+  addEventListener('resize',rs);rs();requestAnimationFrame(draw);
+})();
+(function(){
+  const els=document.querySelectorAll('.reveal');
+  const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.1});
+  els.forEach(el=>io.observe(el));
+})();
+</script>
+</body>
+</html>
