@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Synastra — A shared chart</title>
+  <meta name="description" content="Someone shared their Synastra chart with you. Five traditions, one birth — Western, Vedic, Kabbalah, Numerology, Chinese BaZi.">
+
+  <meta property="og:title" content="A Synastra chart — shared with you">
+  <meta property="og:description" content="Five readings, one birth. Open to see the chart, or cast your own.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Synastra">
+  <meta property="og:image" content="https://astral-saas.vercel.app/og-share.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="A Synastra chart — shared with you">
+  <meta name="twitter:description" content="Five readings, one birth. Western · Vedic · Kabbalah · Numerology · Chinese BaZi.">
+  <meta name="twitter:image" content="https://astral-saas.vercel.app/og-share.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0A0E1A; --bg-deep:#060912; --bg-raise:#131828;
+      --ink:#FCFAF6; --ink-dim:#CFC5B1; --ink-faint:#7B7361;
+      --rule:rgba(252,250,246,0.08);
+      --brass:#C8A052; --ember:#A84B3E;
+    }
+    *{box-sizing:border-box;}
+    html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:'Crimson Pro',serif;min-height:100vh;}
+    body{background:radial-gradient(ellipse 80% 60% at 50% 20%, rgba(200,160,82,0.08), transparent 60%), var(--bg);}
+    .wrap{max-width:620px;margin:0 auto;padding:72px 24px 96px;}
+    .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--brass);margin-bottom:12px;}
+    h1{font-family:'Fraunces',serif;font-variation-settings:"opsz" 144;font-size:56px;font-weight:600;letter-spacing:-0.028em;margin:0 0 14px;line-height:1.02;color:var(--ink);}
+    .sub{font-family:'Crimson Pro',serif;font-style:italic;font-size:18px;color:var(--ink-dim);line-height:1.5;margin:0 0 22px;}
+    .rule{width:48px;height:1px;background:var(--brass);border:0;margin:28px 0;}
+    .meta{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;color:var(--ink-faint);text-transform:uppercase;margin:6px 0;}
+    .meta b{color:var(--ink-dim);font-weight:500;}
+    .actions{margin-top:40px;display:flex;flex-direction:column;gap:14px;}
+    .btn{display:inline-block;padding:16px 22px;border:1px solid var(--brass);background:transparent;color:var(--brass);font-family:'Fraunces',serif;font-size:14px;letter-spacing:0.18em;text-transform:uppercase;cursor:pointer;text-decoration:none;text-align:center;transition:background .25s,color .25s;}
+    .btn:hover{background:var(--brass);color:var(--bg);}
+    .btn-ghost{border-color:var(--rule);color:var(--ink-faint);}
+    .btn-ghost:hover{color:var(--ink);border-color:var(--ink);background:transparent;}
+    .foot{margin-top:64px;padding-top:24px;border-top:1px solid var(--rule);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--ink-faint);text-align:center;}
+    .foot a{color:var(--brass);text-decoration:none;}
+    .err{color:var(--ember);font-style:italic;font-family:'Crimson Pro',serif;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="eyebrow">An Astral Atlas — shared</div>
+    <h1 id="title">Someone shared a chart with you.</h1>
+    <p class="sub" id="sub">Synastra reads a single birth moment across five traditions — Western, Vedic, Kabbalah, numerology, Chinese BaZi. Open the full reading, or cast your own.</p>
+
+    <hr class="rule">
+
+    <div id="meta-block"></div>
+
+    <div class="actions">
+      <a class="btn" id="open-btn" href="#">Open the chart</a>
+      <a class="btn btn-ghost" href="/">Cast my own chart instead</a>
+    </div>
+
+    <div class="foot">
+      <a href="/">synastra.app</a> — five readings, one birth
+    </div>
+  </div>
+
+  <script>
+    (function(){
+      function parse(){
+        try {
+          var sp = new URLSearchParams(window.location.search);
+          var s = sp.get('s');
+          if (!s) return null;
+          return JSON.parse(decodeURIComponent(atob(s)));
+        } catch(e){ return null; }
+      }
+      function pad(n){ return String(n).padStart(2,'0'); }
+      function makeMeta(label, value){
+        var row = document.createElement('div');
+        row.className = 'meta';
+        var b = document.createElement('b');
+        b.textContent = label;
+        row.appendChild(b);
+        row.appendChild(document.createTextNode(' \u00B7 ' + value));
+        return row;
+      }
+
+      var data = parse();
+      var meta = document.getElementById('meta-block');
+      var openBtn = document.getElementById('open-btn');
+      var title = document.getElementById('title');
+      var sub = document.getElementById('sub');
+
+      if (!data) {
+        var err = document.createElement('div');
+        err.className = 'err';
+        err.textContent = 'This share link is malformed or missing.';
+        meta.appendChild(err);
+        openBtn.style.display = 'none';
+        return;
+      }
+
+      var firstName = data.name || (data.fullName || '').split(' ')[0] || 'Seeker';
+      title.textContent = firstName + '\u2019s Synastra chart.';
+      sub.textContent = 'They\u2019ve shared their birth data with you \u2014 Synastra reads it across five traditions. Open to see the full atlas.';
+
+      var dobStr = data.dob ? (data.dob.y + '\u2011' + pad(data.dob.m) + '\u2011' + pad(data.dob.d)) : '\u2014';
+      var timeStr = data.timeUnknown ? 'time unknown' : (data.time ? pad(data.time.h) + ':' + pad(data.time.m) : '\u2014');
+      var cityStr = data.city || '\u2014';
+
+      meta.appendChild(makeMeta('Born', dobStr));
+      meta.appendChild(makeMeta('Time', timeStr));
+      meta.appendChild(makeMeta('Place', cityStr));
+
+      openBtn.href = '/' + window.location.search;
+    })();
+  </script>
+</body>
+</html>

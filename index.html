@@ -3,7 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Ethan Kay — Astral Dashboard</title>
+  <title>Synastra — Your Chart, Five Traditions</title>
+  <meta name="description" content="Synastra reveals your Western, Vedic, Kabbalistic, numerological and Chinese chart in one personalised dashboard.">
+  <meta property="og:title" content="Synastra — Your Chart, Five Traditions">
+  <meta property="og:description" content="One personalised dashboard across Western · Vedic · Kabbalah · Numerology · Chinese BaZi.">
+  <meta property="og:type" content="website">
   <style>
     html,body{margin:0;padding:0;background:#000;min-height:100vh;}
     #root{min-height:100vh;}
@@ -52,21 +56,24 @@
 
     (async () => {
       try {
-        const [resStar, resAstro, resInterp, resMain] = await Promise.all([
+        const [resStar, resAstro, resInterp, resMain, resFeatures] = await Promise.all([
           fetch('Starfield.jsx'),
           fetch('engine-astro.js'),
           fetch('interp-tables.js'),
           fetch('astrology-transits.jsx'),
+          fetch('features.js'),
         ]);
         if (!resStar.ok) throw new Error('Starfield fetch: ' + resStar.status);
         if (!resAstro.ok) throw new Error('engine-astro fetch: ' + resAstro.status);
         if (!resInterp.ok) throw new Error('interp-tables fetch: ' + resInterp.status);
         if (!resMain.ok) throw new Error('main fetch: ' + resMain.status);
+        if (!resFeatures.ok) throw new Error('features fetch: ' + resFeatures.status);
 
         let starSrc = await resStar.text();
         let astroSrc = await resAstro.text();
         let interpSrc = await resInterp.text();
         let mainSrc = await resMain.text();
+        let featuresSrc = await resFeatures.text();
 
         // Strip imports/exports — keep both files' top-level consts/functions as globals.
         starSrc = starSrc.replace(/^\s*import\s+[^;]+from\s+["']react["'];?\s*$/gm, '');
@@ -86,7 +93,7 @@
         // engine-astro.js + interp-tables.js are plain JS (no JSX), concatenated
         // before main so their constants + functions are in scope for the
         // React components.
-        const combined = starSrc + '\n;\n' + astroSrc + '\n;\n' + interpSrc + '\n;\n' + mainSrc;
+        const combined = starSrc + '\n;\n' + astroSrc + '\n;\n' + interpSrc + '\n;\n' + mainSrc + '\n;\n' + featuresSrc;
         const transformed = Babel.transform(combined, { presets: ['react'], filename: 'astro.jsx' }).code;
 
         const script = document.createElement('script');
