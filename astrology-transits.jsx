@@ -937,6 +937,208 @@ const TRANSITS = {
 const INTENSITY_LABEL = ["","Low","Moderate","Notable","Strong","Peak"];
 const INTENSITY_COLORS = ["","#718096","#718096","#D69E2E","#E07B39","#F6AD55"];
 
+// ─── CITY → COORDS ────────────────────────────────────────────────────────────
+// Minimal built-in gazetteer for birth-place resolution.
+// Each value: { lat, lon, tzOffset } — tzOffset is hours east of UTC
+// (standard time; no DST math — the UI treats birth-moment tz as the civil
+// offset that was on the wall-clock at birth).
+const CITY_COORDS = {
+  // ── Australia / NZ ───────────────────────────────────────────────
+  "sydney":         { lat:-33.87, lon:151.21, tzOffset:10 },
+  "melbourne":      { lat:-37.81, lon:144.96, tzOffset:10 },
+  "brisbane":       { lat:-27.47, lon:153.03, tzOffset:10 },
+  "perth":          { lat:-31.95, lon:115.86, tzOffset:8  },
+  "adelaide":       { lat:-34.93, lon:138.60, tzOffset:9.5 },
+  "canberra":       { lat:-35.28, lon:149.13, tzOffset:10 },
+  "hobart":         { lat:-42.88, lon:147.33, tzOffset:10 },
+  "darwin":         { lat:-12.46, lon:130.85, tzOffset:9.5 },
+  "gold coast":     { lat:-28.02, lon:153.40, tzOffset:10 },
+  "newcastle":      { lat:-32.93, lon:151.78, tzOffset:10 },
+  "auckland":       { lat:-36.85, lon:174.76, tzOffset:12 },
+  "wellington":     { lat:-41.29, lon:174.78, tzOffset:12 },
+  "christchurch":   { lat:-43.53, lon:172.64, tzOffset:12 },
+
+  // ── UK / Ireland ─────────────────────────────────────────────────
+  "london":         { lat:51.51,  lon:-0.13,  tzOffset:0  },
+  "edinburgh":      { lat:55.95,  lon:-3.19,  tzOffset:0  },
+  "glasgow":        { lat:55.86,  lon:-4.25,  tzOffset:0  },
+  "manchester":     { lat:53.48,  lon:-2.24,  tzOffset:0  },
+  "birmingham":     { lat:52.49,  lon:-1.90,  tzOffset:0  },
+  "liverpool":      { lat:53.41,  lon:-2.99,  tzOffset:0  },
+  "cardiff":        { lat:51.48,  lon:-3.18,  tzOffset:0  },
+  "belfast":        { lat:54.60,  lon:-5.93,  tzOffset:0  },
+  "bristol":        { lat:51.45,  lon:-2.58,  tzOffset:0  },
+  "leeds":          { lat:53.80,  lon:-1.55,  tzOffset:0  },
+  "oxford":         { lat:51.75,  lon:-1.26,  tzOffset:0  },
+  "cambridge":      { lat:52.20,  lon:0.12,   tzOffset:0  },
+  "dublin":         { lat:53.35,  lon:-6.26,  tzOffset:0  },
+
+  // ── Europe ───────────────────────────────────────────────────────
+  "paris":          { lat:48.86,  lon:2.35,   tzOffset:1  },
+  "berlin":         { lat:52.52,  lon:13.40,  tzOffset:1  },
+  "madrid":         { lat:40.42,  lon:-3.70,  tzOffset:1  },
+  "barcelona":      { lat:41.39,  lon:2.17,   tzOffset:1  },
+  "rome":           { lat:41.90,  lon:12.50,  tzOffset:1  },
+  "milan":          { lat:45.46,  lon:9.19,   tzOffset:1  },
+  "amsterdam":      { lat:52.37,  lon:4.90,   tzOffset:1  },
+  "brussels":       { lat:50.85,  lon:4.35,   tzOffset:1  },
+  "lisbon":         { lat:38.72,  lon:-9.14,  tzOffset:0  },
+  "stockholm":      { lat:59.33,  lon:18.07,  tzOffset:1  },
+  "helsinki":       { lat:60.17,  lon:24.94,  tzOffset:2  },
+  "oslo":           { lat:59.91,  lon:10.75,  tzOffset:1  },
+  "copenhagen":     { lat:55.68,  lon:12.57,  tzOffset:1  },
+  "reykjavik":      { lat:64.15,  lon:-21.94, tzOffset:0  },
+  "warsaw":         { lat:52.23,  lon:21.01,  tzOffset:1  },
+  "prague":         { lat:50.08,  lon:14.44,  tzOffset:1  },
+  "vienna":         { lat:48.21,  lon:16.37,  tzOffset:1  },
+  "budapest":       { lat:47.50,  lon:19.04,  tzOffset:1  },
+  "zurich":         { lat:47.38,  lon:8.54,   tzOffset:1  },
+  "geneva":         { lat:46.20,  lon:6.14,   tzOffset:1  },
+  "athens":         { lat:37.98,  lon:23.73,  tzOffset:2  },
+  "moscow":         { lat:55.76,  lon:37.62,  tzOffset:3  },
+  "saint petersburg":{lat:59.93,  lon:30.34,  tzOffset:3  },
+  "kyiv":           { lat:50.45,  lon:30.52,  tzOffset:2  },
+  "bucharest":      { lat:44.43,  lon:26.10,  tzOffset:2  },
+  "sofia":          { lat:42.70,  lon:23.32,  tzOffset:2  },
+
+  // ── North America ────────────────────────────────────────────────
+  "new york":       { lat:40.71,  lon:-74.01, tzOffset:-5 },
+  "los angeles":    { lat:34.05,  lon:-118.24,tzOffset:-8 },
+  "chicago":        { lat:41.88,  lon:-87.63, tzOffset:-6 },
+  "san francisco":  { lat:37.77,  lon:-122.42,tzOffset:-8 },
+  "seattle":        { lat:47.61,  lon:-122.33,tzOffset:-8 },
+  "boston":         { lat:42.36,  lon:-71.06, tzOffset:-5 },
+  "miami":          { lat:25.77,  lon:-80.19, tzOffset:-5 },
+  "washington":     { lat:38.90,  lon:-77.04, tzOffset:-5 },
+  "washington dc":  { lat:38.90,  lon:-77.04, tzOffset:-5 },
+  "atlanta":        { lat:33.75,  lon:-84.39, tzOffset:-5 },
+  "houston":        { lat:29.76,  lon:-95.37, tzOffset:-6 },
+  "dallas":         { lat:32.78,  lon:-96.80, tzOffset:-6 },
+  "phoenix":        { lat:33.45,  lon:-112.07,tzOffset:-7 },
+  "denver":         { lat:39.74,  lon:-104.99,tzOffset:-7 },
+  "las vegas":      { lat:36.17,  lon:-115.14,tzOffset:-8 },
+  "philadelphia":   { lat:39.95,  lon:-75.17, tzOffset:-5 },
+  "detroit":        { lat:42.33,  lon:-83.05, tzOffset:-5 },
+  "minneapolis":    { lat:44.98,  lon:-93.27, tzOffset:-6 },
+  "toronto":        { lat:43.65,  lon:-79.38, tzOffset:-5 },
+  "vancouver":      { lat:49.28,  lon:-123.12,tzOffset:-8 },
+  "montreal":       { lat:45.50,  lon:-73.57, tzOffset:-5 },
+  "calgary":        { lat:51.05,  lon:-114.07,tzOffset:-7 },
+  "ottawa":         { lat:45.42,  lon:-75.70, tzOffset:-5 },
+  "mexico city":    { lat:19.43,  lon:-99.13, tzOffset:-6 },
+  "guadalajara":    { lat:20.67,  lon:-103.35,tzOffset:-6 },
+  "honolulu":       { lat:21.31,  lon:-157.86,tzOffset:-10},
+
+  // ── South America ────────────────────────────────────────────────
+  "sao paulo":      { lat:-23.55, lon:-46.63, tzOffset:-3 },
+  "são paulo":      { lat:-23.55, lon:-46.63, tzOffset:-3 },
+  "rio de janeiro": { lat:-22.91, lon:-43.17, tzOffset:-3 },
+  "buenos aires":   { lat:-34.61, lon:-58.38, tzOffset:-3 },
+  "santiago":       { lat:-33.45, lon:-70.67, tzOffset:-4 },
+  "lima":           { lat:-12.05, lon:-77.04, tzOffset:-5 },
+  "bogota":         { lat:4.71,   lon:-74.07, tzOffset:-5 },
+  "caracas":        { lat:10.48,  lon:-66.90, tzOffset:-4 },
+  "quito":          { lat:-0.18,  lon:-78.47, tzOffset:-5 },
+  "montevideo":     { lat:-34.90, lon:-56.16, tzOffset:-3 },
+  "la paz":         { lat:-16.50, lon:-68.12, tzOffset:-4 },
+
+  // ── Asia ─────────────────────────────────────────────────────────
+  "tokyo":          { lat:35.68,  lon:139.76, tzOffset:9  },
+  "osaka":          { lat:34.69,  lon:135.50, tzOffset:9  },
+  "kyoto":          { lat:35.01,  lon:135.77, tzOffset:9  },
+  "seoul":          { lat:37.57,  lon:126.98, tzOffset:9  },
+  "busan":          { lat:35.18,  lon:129.08, tzOffset:9  },
+  "shanghai":       { lat:31.23,  lon:121.47, tzOffset:8  },
+  "beijing":        { lat:39.90,  lon:116.41, tzOffset:8  },
+  "guangzhou":      { lat:23.13,  lon:113.26, tzOffset:8  },
+  "shenzhen":       { lat:22.54,  lon:114.06, tzOffset:8  },
+  "hong kong":      { lat:22.32,  lon:114.17, tzOffset:8  },
+  "taipei":         { lat:25.03,  lon:121.57, tzOffset:8  },
+  "singapore":      { lat:1.35,   lon:103.82, tzOffset:8  },
+  "kuala lumpur":   { lat:3.14,   lon:101.69, tzOffset:8  },
+  "bangkok":        { lat:13.76,  lon:100.50, tzOffset:7  },
+  "jakarta":        { lat:-6.21,  lon:106.85, tzOffset:7  },
+  "manila":         { lat:14.60,  lon:120.98, tzOffset:8  },
+  "hanoi":          { lat:21.03,  lon:105.85, tzOffset:7  },
+  "ho chi minh city":{lat:10.82,  lon:106.63, tzOffset:7  },
+  "phnom penh":     { lat:11.56,  lon:104.92, tzOffset:7  },
+  "yangon":         { lat:16.87,  lon:96.20,  tzOffset:6.5 },
+  "colombo":        { lat:6.93,   lon:79.86,  tzOffset:5.5 },
+  "kathmandu":      { lat:27.72,  lon:85.32,  tzOffset:5.75},
+  "dhaka":          { lat:23.81,  lon:90.41,  tzOffset:6  },
+
+  // ── India / Pakistan ─────────────────────────────────────────────
+  "mumbai":         { lat:19.08,  lon:72.88,  tzOffset:5.5 },
+  "delhi":          { lat:28.61,  lon:77.21,  tzOffset:5.5 },
+  "new delhi":      { lat:28.61,  lon:77.21,  tzOffset:5.5 },
+  "bangalore":      { lat:12.97,  lon:77.59,  tzOffset:5.5 },
+  "bengaluru":      { lat:12.97,  lon:77.59,  tzOffset:5.5 },
+  "chennai":        { lat:13.08,  lon:80.27,  tzOffset:5.5 },
+  "kolkata":        { lat:22.57,  lon:88.36,  tzOffset:5.5 },
+  "hyderabad":      { lat:17.38,  lon:78.49,  tzOffset:5.5 },
+  "pune":           { lat:18.52,  lon:73.86,  tzOffset:5.5 },
+  "ahmedabad":      { lat:23.02,  lon:72.57,  tzOffset:5.5 },
+  "jaipur":         { lat:26.92,  lon:75.79,  tzOffset:5.5 },
+  "karachi":        { lat:24.86,  lon:67.01,  tzOffset:5  },
+  "lahore":         { lat:31.55,  lon:74.34,  tzOffset:5  },
+  "islamabad":      { lat:33.68,  lon:73.05,  tzOffset:5  },
+
+  // ── Middle East ──────────────────────────────────────────────────
+  "dubai":          { lat:25.20,  lon:55.27,  tzOffset:4  },
+  "abu dhabi":      { lat:24.47,  lon:54.37,  tzOffset:4  },
+  "doha":           { lat:25.29,  lon:51.53,  tzOffset:3  },
+  "riyadh":         { lat:24.71,  lon:46.68,  tzOffset:3  },
+  "jeddah":         { lat:21.49,  lon:39.19,  tzOffset:3  },
+  "kuwait city":    { lat:29.38,  lon:47.99,  tzOffset:3  },
+  "muscat":         { lat:23.59,  lon:58.41,  tzOffset:4  },
+  "tehran":         { lat:35.69,  lon:51.39,  tzOffset:3.5 },
+  "istanbul":       { lat:41.01,  lon:28.98,  tzOffset:3  },
+  "ankara":         { lat:39.93,  lon:32.86,  tzOffset:3  },
+  "tel aviv":       { lat:32.08,  lon:34.78,  tzOffset:2  },
+  "jerusalem":      { lat:31.77,  lon:35.23,  tzOffset:2  },
+  "amman":          { lat:31.95,  lon:35.93,  tzOffset:2  },
+  "beirut":         { lat:33.89,  lon:35.50,  tzOffset:2  },
+  "baghdad":        { lat:33.31,  lon:44.37,  tzOffset:3  },
+
+  // ── Africa ───────────────────────────────────────────────────────
+  "cairo":          { lat:30.04,  lon:31.24,  tzOffset:2  },
+  "alexandria":     { lat:31.20,  lon:29.92,  tzOffset:2  },
+  "lagos":          { lat:6.52,   lon:3.38,   tzOffset:1  },
+  "abuja":          { lat:9.07,   lon:7.49,   tzOffset:1  },
+  "nairobi":        { lat:-1.29,  lon:36.82,  tzOffset:3  },
+  "addis ababa":    { lat:9.03,   lon:38.74,  tzOffset:3  },
+  "cape town":      { lat:-33.92, lon:18.42,  tzOffset:2  },
+  "johannesburg":   { lat:-26.20, lon:28.05,  tzOffset:2  },
+  "durban":         { lat:-29.86, lon:31.02,  tzOffset:2  },
+  "casablanca":     { lat:33.57,  lon:-7.59,  tzOffset:1  },
+  "marrakech":      { lat:31.63,  lon:-7.99,  tzOffset:1  },
+  "tunis":          { lat:36.81,  lon:10.18,  tzOffset:1  },
+  "accra":          { lat:5.56,   lon:-0.20,  tzOffset:0  },
+  "dakar":          { lat:14.72,  lon:-17.47, tzOffset:0  },
+};
+
+// Case-insensitive lookup. Accepts plain "Sydney", "Sydney, Australia",
+// "sydney, au", etc. Returns {lat,lon,tzOffset} or null.
+function resolveCityCoords(cityString) {
+  if (!cityString) return null;
+  const raw = String(cityString).trim().toLowerCase();
+  if (!raw) return null;
+  // Direct hit
+  if (CITY_COORDS[raw]) return CITY_COORDS[raw];
+  // Try first comma-separated token (e.g. "London, UK" → "london")
+  const firstTok = raw.split(",")[0].trim();
+  if (firstTok && CITY_COORDS[firstTok]) return CITY_COORDS[firstTok];
+  // Try whole string stripped of punctuation
+  const stripped = raw.replace(/[^\w\s]/g, "").trim();
+  if (CITY_COORDS[stripped]) return CITY_COORDS[stripped];
+  const strippedFirst = stripped.split(/\s{2,}|,/)[0].trim();
+  if (CITY_COORDS[strippedFirst]) return CITY_COORDS[strippedFirst];
+  if (typeof console !== "undefined" && console.warn) {
+    console.warn("[astral-saas] resolveCityCoords: no match for", cityString, "— falling back to Sydney.");
+  }
+  return null;
+}
+
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
 function App({ user, onReset }) {
   const [tab, setTab] = useState("weekly");
@@ -965,6 +1167,151 @@ function App({ user, onReset }) {
     () => computeBaZi(USER_DOB, USER_TIME, USER_TIME_UNKNOWN, USER_GENDER, FIRST_NAME, CURRENT_YEAR),
     [USER_DOB.y, USER_DOB.m, USER_DOB.d, USER_TIME.h, USER_TIME.m, USER_TIME_UNKNOWN, USER_GENDER]
   );
+
+  // ─── ASTRONOMICAL CHART ────────────────────────────────────────────────────
+  // Resolve city → coords; if unknown, fall back to Sydney and flag for a notice.
+  const USER_COORDS_RESOLVED = React.useMemo(
+    () => resolveCityCoords(USER.city),
+    [USER.city]
+  );
+  const USER_CITY_FALLBACK = !USER_COORDS_RESOLVED && !!USER.city;
+  const USER_COORDS = USER_COORDS_RESOLVED || { lat:-33.87, lon:151.21, tzOffset:10 };
+
+  const USER_TROPICAL = React.useMemo(() => {
+    try {
+      return computeTropicalChart({
+        dob: USER_DOB,
+        time: USER_TIME,
+        timeUnknown: USER_TIME_UNKNOWN,
+        lat: USER_COORDS.lat,
+        lon: USER_COORDS.lon,
+        tzOffset: USER_COORDS.tzOffset,
+      });
+    } catch (e) {
+      console.error("[astral-saas] computeTropicalChart failed:", e);
+      return { planets: [], ascendant: null, mc: null, houses: null };
+    }
+  }, [USER_DOB.y, USER_DOB.m, USER_DOB.d, USER_TIME.h, USER_TIME.m, USER_TIME_UNKNOWN, USER_COORDS.lat, USER_COORDS.lon, USER_COORDS.tzOffset]);
+
+  const USER_SIDEREAL = React.useMemo(() => {
+    try {
+      return computeSiderealChart({
+        dob: USER_DOB,
+        time: USER_TIME,
+        timeUnknown: USER_TIME_UNKNOWN,
+        lat: USER_COORDS.lat,
+        lon: USER_COORDS.lon,
+        tzOffset: USER_COORDS.tzOffset,
+      });
+    } catch (e) {
+      console.error("[astral-saas] computeSiderealChart failed:", e);
+      return { planets: [], ascendant: null, mc: null, houses: null, nakshatra: null };
+    }
+  }, [USER_DOB.y, USER_DOB.m, USER_DOB.d, USER_TIME.h, USER_TIME.m, USER_TIME_UNKNOWN, USER_COORDS.lat, USER_COORDS.lon, USER_COORDS.tzOffset]);
+
+  const USER_DASHAS = React.useMemo(() => {
+    if (USER_TIME_UNKNOWN) return null;
+    if (!USER_SIDEREAL || !USER_SIDEREAL.planets || !USER_SIDEREAL.planets.length) return null;
+    const moon = USER_SIDEREAL.planets.find(p => typeof p.planet === "string" && p.planet.startsWith("Moon"));
+    if (!moon) return null;
+    try {
+      const birthDate = new Date(Date.UTC(
+        USER_DOB.y, USER_DOB.m - 1, USER_DOB.d,
+        USER_TIME.h, USER_TIME.m
+      ));
+      return computeMahadasha(moon.longitude, birthDate);
+    } catch (e) {
+      console.error("[astral-saas] computeMahadasha failed:", e);
+      return null;
+    }
+  }, [USER_SIDEREAL, USER_DOB.y, USER_DOB.m, USER_DOB.d, USER_TIME.h, USER_TIME.m, USER_TIME_UNKNOWN]);
+
+  // "Now-active" dasha — scan allDashas for whichever period contains Date.now()
+  const USER_CURRENT_DASHA = React.useMemo(() => {
+    if (!USER_DASHAS || !USER_DASHAS.allDashas) return null;
+    const now = Date.now();
+    for (const d of USER_DASHAS.allDashas) {
+      if (d.start.getTime() <= now && now < d.end.getTime()) return d;
+    }
+    return USER_DASHAS.allDashas[0]; // fallback
+  }, [USER_DASHAS]);
+
+  // Pancha Mahapurusha Yoga detector — simple version.
+  const USER_YOGAS = React.useMemo(() => {
+    if (USER_TIME_UNKNOWN || !USER_SIDEREAL || !USER_SIDEREAL.planets.length) return [];
+    return detectPanchaMahapurusha(USER_SIDEREAL);
+  }, [USER_SIDEREAL, USER_TIME_UNKNOWN]);
+
+  // ─── KABBALAH DYNAMIC PLACEMENTS ───────────────────────────────────────────
+  // Build per-planet Kabbalah natal entries from USER_TROPICAL + the Sefira/path maps.
+  const USER_NATAL_KAB = React.useMemo(() => {
+    if (!USER_TROPICAL || !USER_TROPICAL.planets.length) return [];
+    const glyph = { Sun:"☉", Moon:"☽", Mercury:"☿", Venus:"♀", Mars:"♂",
+                    Jupiter:"♃", Saturn:"♄", Uranus:"♅", Neptune:"♆", Pluto:"♇" };
+    return USER_TROPICAL.planets.map(p => {
+      const key = planetKey(p.planet);
+      const sefiraName = PLANET_SEFIRA[key];
+      const sefNum = sefiraName && Object.keys(SEFIROT).find(k => SEFIROT[k].name === sefiraName);
+      const color = sefNum ? SEFIROT[sefNum].color : "#B39DDB";
+      const pathData = KABBALAH_SIGN_PATH_MEANING[p.sign];
+      const houseStr = (!USER_TIME_UNKNOWN && p.house) ? ` · ${ordinal(p.house)} House` : "";
+      const label = `${glyph[key] || ""} ${p.sign} ${key}${houseStr}`.trim();
+      const pathStr = pathData ? `${pathData.path}th · ${pathData.letter} · ${pathData.tarot}` : "";
+      const sefirotStr = sefiraName && sefNum ? `${sefiraName} (${sefNum})` : (sefiraName || "");
+      return {
+        label,
+        path: pathStr,
+        sefirot: sefirotStr,
+        color,
+        shortNote: pathData ? `${key} in ${p.sign} walks the ${pathData.tarot} path — ${sefiraName||""} through the letter ${pathData.letter}.` : `${key} in ${p.sign}.`,
+        fullNote: pathData ? pathData.body : "",
+        pillarRole: pathData ? pathData.pillarRole : "",
+        shadow: sefNum && SEFIROT[sefNum] ? `The shadow of ${sefiraName} when unintegrated: force without direction or form without spirit. When you notice this Sefira expressing through compensation rather than presence, that is the signal to return to conscious practice of the pillar-role.` : "",
+      };
+    });
+  }, [USER_TROPICAL, USER_TIME_UNKNOWN]);
+
+  // Convergence: independent methods mapped onto Sefirot from the user's chart.
+  const USER_CONVERGENCE = React.useMemo(() => {
+    const rows = [];
+    const push = (method, sefira, note, strength) => {
+      if (!sefira) return;
+      const sNum = Object.keys(SEFIROT).find(k => SEFIROT[k].name === sefira);
+      rows.push({ method, result: sNum ? `${sefira} (${sNum})` : sefira, note, strength });
+    };
+    // Life Path → Sefira (single digit)
+    if (USER_NUM && SEFIROT[USER_NUM.lifePath]) {
+      push(`Life Path ${USER_NUM.lifePath}`, SEFIROT[USER_NUM.lifePath].name, "Direct numerological placement on the Tree", 5);
+    }
+    // Expression → Sefira (single digit)
+    if (USER_NUM && SEFIROT[USER_NUM.expression]) {
+      push(`Expression ${USER_NUM.expression}`, SEFIROT[USER_NUM.expression].name, "How you manifest outward in the world", 5);
+    }
+    // Soul Urge → Sefira (single digit)
+    if (USER_NUM && SEFIROT[USER_NUM.soulUrge]) {
+      push(`Soul Urge ${USER_NUM.soulUrge}`, SEFIROT[USER_NUM.soulUrge].name, "Primary inner drive behind decisions", 4);
+    }
+    // Sun sign → Planet-Sefira for Sun (Tiphareth), annotate by the sign's path
+    const sunP  = USER_TROPICAL.planets.find(p => planetKey(p.planet) === "Sun");
+    const moonP = USER_TROPICAL.planets.find(p => planetKey(p.planet) === "Moon");
+    const marsP = USER_TROPICAL.planets.find(p => planetKey(p.planet) === "Mars");
+    if (sunP)  push(`Sun in ${sunP.sign}`,    PLANET_SEFIRA.Sun,  "Solar Higher Self — destination Sefira", 5);
+    if (moonP) push(`Moon in ${moonP.sign}`,  PLANET_SEFIRA.Moon, "Emotional body via lunar essence",        5);
+    if (marsP) push(`Mars in ${marsP.sign}`,  PLANET_SEFIRA.Mars, "Natal drive, Left Pillar force",          4);
+    // Rising ruler — map western ascendant sign ruler to Sefira
+    const SIGN_RULER = {
+      Aries:"Mars", Taurus:"Venus", Gemini:"Mercury", Cancer:"Moon",
+      Leo:"Sun", Virgo:"Mercury", Libra:"Venus", Scorpio:"Mars",
+      Sagittarius:"Jupiter", Capricorn:"Saturn", Aquarius:"Saturn", Pisces:"Jupiter",
+    };
+    if (USER_TROPICAL.ascendant) {
+      const rulerPlanet = SIGN_RULER[USER_TROPICAL.ascendant.sign];
+      const rulerSefira = PLANET_SEFIRA[rulerPlanet];
+      if (rulerSefira) push(`Rising ruler (${rulerPlanet})`, rulerSefira, `Vehicle Sefira · ${USER_TROPICAL.ascendant.sign} Rising → ${rulerPlanet}`, 4);
+    }
+    return rows;
+  }, [USER_NUM, USER_TROPICAL]);
+
   const isKab = mode === "kab";
   const isVedic = mode === "vedic";
   const isNum = mode === "numerology";
@@ -1173,7 +1520,14 @@ function App({ user, onReset }) {
         .yoga-card,.pillar-card,.num-card{background:transparent;border:none;border-bottom:1px solid var(--rule);border-radius:0;padding:22px 0;margin-bottom:0;}
         .dasha-row{display:grid;grid-template-columns:auto 1fr auto;gap:16px;align-items:center;padding:12px 0;border-bottom:1px solid var(--rule);}
 
-        .phase2-banner{border:1px solid var(--rule);border-left:2px solid var(--brass);color:var(--ink-dim);font-family:'Crimson Pro',serif;font-style:italic;font-size:14px;padding:12px 18px;border-radius:0;margin:0 0 28px;text-align:left;line-height:1.5;}
+        .chart-notice{border:1px solid var(--rule);border-left:2px solid var(--brass);color:var(--ink-dim);font-family:'Crimson Pro',serif;font-style:italic;font-size:14px;padding:12px 18px;border-radius:0;margin:0 0 20px;text-align:left;line-height:1.5;}
+        .natal-entry{padding:20px 0;border-bottom:1px solid var(--rule);}
+        .natal-entry h3{font-family:'Fraunces',serif;font-variation-settings:"opsz" 48;font-weight:600;font-size:18px;color:var(--ink);margin:0 0 6px;letter-spacing:-0.01em;}
+        .natal-entry .natal-meta{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--brass);margin-bottom:8px;}
+        .natal-entry p.bt{margin:0 0 8px;}
+        .natal-entry p.bt:last-child{margin-bottom:0;}
+        .angle-card{border:1px solid var(--rule);border-left:2px solid var(--brass);padding:12px 16px;margin:14px 0 20px;font-family:'Crimson Pro',serif;color:var(--ink-dim);font-size:15px;}
+        .angle-card strong{color:var(--brass);font-weight:600;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;margin-right:10px;}
 
         /* ── Onboarding (refined editorial column) ───────────────── */
         .onboard-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:48px 24px;background:var(--bg-base);position:relative;overflow:hidden;color:var(--ink);font-family:'Crimson Pro',serif;}
@@ -1247,7 +1601,7 @@ function App({ user, onReset }) {
           <p className="marginalia" style={{marginBottom:10}}>
             {USER_FULL_NAME} — {formatDOB(USER_DOB)}{USER_TIME_UNKNOWN?" — time withheld":` — ${pad2(USER_TIME.h)}:${pad2(USER_TIME.m)}`}{USER.city?` — ${USER.city}`:""}
           </p>
-          <div><span className="verified-badge">{USER.isDemo?"Demo chart — Ethan Kay":"Personalised — Numerology & BaZi"}</span></div>
+          <div><span className="verified-badge">{USER.isDemo?"Demo chart — Ethan Kay":"Personalised chart"}</span></div>
 
           {/* Placement chip row */}
           <div className="chip-row rise rise-2">
@@ -1259,15 +1613,26 @@ function App({ user, onReset }) {
               <span className="accent">Year — {USER_BAZI.year.combined}</span>
               <span>Day Master — {USER_BAZI.day.combined}</span>
               {!USER_TIME_UNKNOWN && (<span>Hour — {USER_BAZI.hour.combined}</span>)}
-            </>) : !isVedic ? (<>
-              <span className="accent">☉ Leo 0° · 8th House · Tiphareth</span>
-              <span>☽ Libra 2° · 10th House · Yesod</span>
-              <span>↑ Capricorn 22° · Ayin · Binah</span>
-            </>) : (<>
-              <span className="accent">☉ Cancer 6° · 8th House</span>
-              <span>☽ Virgo 8° · 10th · Uttara Phalguni</span>
-              <span>↑ Sagittarius 28° · Jupiter ruled</span>
-            </>)}
+            </>) : !isVedic ? (() => {
+              const sun  = USER_TROPICAL.planets.find(p => planetKey(p.planet) === "Sun");
+              const moon = USER_TROPICAL.planets.find(p => planetKey(p.planet) === "Moon");
+              const asc  = USER_TROPICAL.ascendant;
+              return (<>
+                {sun  && <span className="accent">☉ {sun.sign} {Math.floor(sun.deg)}°{sun.house?` · ${ordinal(sun.house)} House`:""}</span>}
+                {moon && <span>☽ {moon.sign} {Math.floor(moon.deg)}°{moon.house?` · ${ordinal(moon.house)} House`:""}</span>}
+                {asc  && <span>↑ {asc.sign} {Math.floor(asc.deg)}°</span>}
+              </>);
+            })() : (() => {
+              const sun  = USER_SIDEREAL.planets.find(p => planetKey(p.planet) === "Sun");
+              const moon = USER_SIDEREAL.planets.find(p => planetKey(p.planet) === "Moon");
+              const asc  = USER_SIDEREAL.ascendant;
+              const nak  = USER_SIDEREAL.nakshatra;
+              return (<>
+                {sun  && <span className="accent">☉ {sun.sign} {Math.floor(sun.deg)}°{sun.house?` · ${ordinal(sun.house)} House`:""}</span>}
+                {moon && <span>☽ {moon.sign} {Math.floor(moon.deg)}°{nak?` · ${nak.name}`:""}</span>}
+                {asc  && <span>↑ {asc.sign} {Math.floor(asc.deg)}°</span>}
+              </>);
+            })()}
           </div>
         </div>
 
@@ -1282,10 +1647,17 @@ function App({ user, onReset }) {
 
         <div className="mode-section" key={mode}>
 
-        {/* PHASE 2 BANNER — Western/Vedic/Kabbalah show demo chart for non-demo users */}
-        {!USER.isDemo && (isKab || isVedic || (!isNum && !isChi)) && (
-          <div className="phase2-banner">
-            Demo chart shown. Live Western &amp; Vedic calculation for your birth data is being built (Phase 2). Numerology + Chinese are fully personalised to you.
+        {/* CITY-UNRESOLVED NOTICE — shown when gazetteer fell back to Sydney */}
+        {(isKab || isVedic || (!isNum && !isChi)) && USER_CITY_FALLBACK && (
+          <div className="chart-notice">
+            City "{USER.city}" is not in our built-in gazetteer — using Sydney coordinates. Accuracy of Ascendant, MC and houses may be reduced.
+          </div>
+        )}
+
+        {/* TIME-UNKNOWN NOTICE — affects houses, ascendant, and dasha */}
+        {(isKab || isVedic || (!isNum && !isChi)) && USER_TIME_UNKNOWN && (
+          <div className="chart-notice">
+            Birth time unknown — houses and rising sign omitted. Enter a time for the full chart.
           </div>
         )}
 
@@ -1317,152 +1689,235 @@ function App({ user, onReset }) {
             {vedicTab==="chart"&&(
               <div>
                 <div style={{marginBottom:14,padding:"10px 14px",background:"rgba(232,168,124,.06)",border:"1px solid rgba(232,168,124,.2)",borderRadius:10}}>
-                  <div className="sl" style={{color:"rgba(232,168,124,.7)"}}>System · Lahiri Ayanamsa 23.85° · Sidereal Zodiac · Whole Sign</div>
+                  <div className="sl" style={{color:"rgba(232,168,124,.7)"}}>System · Lahiri Ayanamsa · Sidereal Zodiac · Whole Sign</div>
                   <p className="bt" style={{color:"rgba(255,255,255,.7)",fontSize:13,marginTop:4}}>
-                    Vedic astrology uses the fixed star positions (sidereal zodiac), shifting all planets back ~24° from the Western tropical chart. Your Sagittarius Lagna and Jupiter as chart ruler fundamentally reframes your identity from Capricorn's disciplined builder to the philosophical empire-visionary.
+                    Vedic astrology uses the fixed star positions (sidereal zodiac), shifting all planets back ~24° from the Western tropical chart. {USER_SIDEREAL.ascendant && `Your ${USER_SIDEREAL.ascendant.sign} Lagna reframes the Western rising sign through Vedic eyes.`}
                   </p>
                 </div>
 
-                {/* Planet table */}
-                {VEDIC_PLANETS.map((p,i)=>{
+                {/* Lagna summary card */}
+                {USER_SIDEREAL.ascendant && !USER_TIME_UNKNOWN && (
+                  <div className="angle-card" style={{marginTop:0,marginBottom:14,borderLeftColor:"#E8A87C"}}>
+                    <div><strong style={{color:"#E8A87C"}}>Lagna</strong>{USER_SIDEREAL.ascendant.sign} {fmtDeg(USER_SIDEREAL.ascendant.deg)}</div>
+                    {USER_SIDEREAL.mc && <div style={{marginTop:4}}><strong style={{color:"#E8A87C"}}>MC (sidereal)</strong>{USER_SIDEREAL.mc.sign} {fmtDeg(USER_SIDEREAL.mc.deg)}</div>}
+                  </div>
+                )}
+
+                {/* Planet table — computed */}
+                {USER_SIDEREAL.planets.map((p,i)=>{
+                  const key = planetKey(p.planet);
+                  const sigInterp = (PLANET_IN_SIGN[key] && PLANET_IN_SIGN[key][p.sign]) || "";
                   return (
-                    <div key={i} style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(232,168,124,.12)",borderRadius:12,marginBottom:8,overflow:"hidden"}}>
+                    <div key={p.planet} style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(232,168,124,.12)",borderRadius:12,marginBottom:8,overflow:"hidden"}}>
                       <div style={{padding:"11px 14px"}}>
                         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:6}}>
                           <div style={{display:"flex",alignItems:"center",gap:10}}>
                             <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:12,fontWeight:600,color:"#E8A87C"}}>{p.planet}</span>
-                            <span style={{fontFamily:"'Crimson Pro',serif",fontSize:13,color:"rgba(255,255,255,.7)"}}>{p.sign} {p.deg}</span>
+                            <span style={{fontFamily:"'Crimson Pro',serif",fontSize:13,color:"rgba(255,255,255,.7)"}}>{p.sign} {fmtDeg(p.deg)}</span>
                           </div>
-                          <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(232,168,124,.6)",
-                            background:"rgba(232,168,124,.08)",border:"1px solid rgba(232,168,124,.2)",
-                            padding:"2px 8px",borderRadius:12,letterSpacing:.5}}>
-                            House {p.house}
-                          </span>
+                          {p.house != null && (
+                            <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(232,168,124,.6)",
+                              background:"rgba(232,168,124,.08)",border:"1px solid rgba(232,168,124,.2)",
+                              padding:"2px 8px",borderRadius:12,letterSpacing:.5}}>
+                              House {p.house}
+                            </span>
+                          )}
                         </div>
-                        <p style={{fontFamily:"'Crimson Pro',serif",fontSize:13,color:"rgba(255,255,255,.6)",margin:"6px 0 0",lineHeight:1.6}}>{p.note}</p>
+                        {sigInterp && <p style={{fontFamily:"'Crimson Pro',serif",fontSize:13,color:"rgba(255,255,255,.6)",margin:"6px 0 0",lineHeight:1.6}}>{sigInterp}</p>}
                       </div>
                     </div>
                   );
                 })}
 
-                {/* Vedic vs Western comparison */}
+                {/* Rahu / Ketu — only if present */}
+                {USER_SIDEREAL.rahu && (
+                  <div style={{background:"rgba(127,255,212,.04)",border:"1px solid rgba(127,255,212,.15)",borderRadius:12,marginBottom:8,padding:"11px 14px"}}>
+                    <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:12,fontWeight:600,color:"#7FFFD4"}}>Rahu ☊ </span>
+                    <span style={{fontFamily:"'Crimson Pro',serif",fontSize:13,color:"rgba(255,255,255,.7)"}}>
+                      {USER_SIDEREAL.rahu.sign} {fmtDeg(USER_SIDEREAL.rahu.deg)}{USER_SIDEREAL.rahu.house?` · House ${USER_SIDEREAL.rahu.house}`:""}
+                    </span>
+                  </div>
+                )}
+                {USER_SIDEREAL.ketu && (
+                  <div style={{background:"rgba(155,137,212,.04)",border:"1px solid rgba(155,137,212,.15)",borderRadius:12,marginBottom:8,padding:"11px 14px"}}>
+                    <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:12,fontWeight:600,color:"#B39DDB"}}>Ketu ☋ </span>
+                    <span style={{fontFamily:"'Crimson Pro',serif",fontSize:13,color:"rgba(255,255,255,.7)"}}>
+                      {USER_SIDEREAL.ketu.sign} {fmtDeg(USER_SIDEREAL.ketu.deg)}{USER_SIDEREAL.ketu.house?` · House ${USER_SIDEREAL.ketu.house}`:""}
+                    </span>
+                  </div>
+                )}
+
+                {/* Vedic vs Western comparison — computed from both charts */}
                 <div style={{marginTop:16,padding:"14px",background:"rgba(232,168,124,.04)",border:"1px solid rgba(232,168,124,.15)",borderRadius:12}}>
                   <div className="sl" style={{color:"rgba(232,168,124,.6)",marginBottom:10}}>Western vs Vedic · Key Differences</div>
-                  {[
-                    {planet:"Sun ☉",   western:"Leo · 8H",        vedic:"Cancer · 8H",       note:"Identity shifts from Leo's sovereign performer to Cancer's private power. Strength is internal, not displayed."},
-                    {planet:"Moon ☽",  western:"Libra · 10H",     vedic:"Virgo · 10H",       note:"Public emotional nature shifts from diplomatic Libra to analytical Virgo. Reputation built on precision and discernment."},
-                    {planet:"Rising ↑",western:"Capricorn · Saturn",vedic:"Sagittarius · Jupiter",note:"Chart ruler shifts from Saturn (discipline, structure) to Jupiter (vision, expansion, philosophy). Fundamental identity reframe."},
-                    {planet:"Mars ♂",  western:"Leo · 8H",        vedic:"Cancer · 8H",       note:"Mars moves from Leo's bold fire to Cancer's emotional, protective drive. Ambition is security-motivated beneath the surface."},
-                    {planet:"Saturn ♄",western:"Cancer · 7H",     vedic:"Gemini · 7H",       note:"Partnership Saturn shifts from emotional Cancer to intellectual Gemini — partnerships need mental compatibility, not just loyalty."},
-                  ].map((r,i)=>(
-                    <div key={i} style={{padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,.05)"}}>
+                  {USER_TROPICAL.planets.map((tp, i) => {
+                    const key = planetKey(tp.planet);
+                    const vp = USER_SIDEREAL.planets.find(x => planetKey(x.planet) === key);
+                    if (!vp) return null;
+                    if (tp.sign === vp.sign && tp.house === vp.house) return null;
+                    return (
+                      <div key={tp.planet} style={{padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,.05)"}}>
+                        <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap",marginBottom:4}}>
+                          <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:10,color:"#E8A87C",minWidth:70}}>{tp.planet}</span>
+                          <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(255,215,0,.6)",background:"rgba(255,215,0,.08)",padding:"2px 7px",borderRadius:10}}>{tp.sign}{tp.house?` · ${tp.house}H`:""}</span>
+                          <span style={{color:"rgba(255,255,255,.3)",fontSize:10}}>→</span>
+                          <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(232,168,124,.8)",background:"rgba(232,168,124,.08)",padding:"2px 7px",borderRadius:10}}>{vp.sign}{vp.house?` · ${vp.house}H`:""}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {USER_TROPICAL.ascendant && USER_SIDEREAL.ascendant && USER_TROPICAL.ascendant.sign !== USER_SIDEREAL.ascendant.sign && (
+                    <div style={{padding:"8px 0",borderBottom:"1px solid rgba(255,255,255,.05)"}}>
                       <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap",marginBottom:4}}>
-                        <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:10,color:"#E8A87C",minWidth:70}}>{r.planet}</span>
-                        <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(255,215,0,.6)",background:"rgba(255,215,0,.08)",padding:"2px 7px",borderRadius:10}}>{r.western}</span>
+                        <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:10,color:"#E8A87C",minWidth:70}}>Rising ↑</span>
+                        <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(255,215,0,.6)",background:"rgba(255,215,0,.08)",padding:"2px 7px",borderRadius:10}}>{USER_TROPICAL.ascendant.sign}</span>
                         <span style={{color:"rgba(255,255,255,.3)",fontSize:10}}>→</span>
-                        <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(232,168,124,.8)",background:"rgba(232,168,124,.08)",padding:"2px 7px",borderRadius:10}}>{r.vedic}</span>
+                        <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(232,168,124,.8)",background:"rgba(232,168,124,.08)",padding:"2px 7px",borderRadius:10}}>{USER_SIDEREAL.ascendant.sign}</span>
                       </div>
-                      <p style={{fontFamily:"'Crimson Pro',serif",fontSize:12,color:"rgba(255,255,255,.55)",margin:0,lineHeight:1.6}}>{r.note}</p>
+                      <p style={{fontFamily:"'Crimson Pro',serif",fontSize:12,color:"rgba(255,255,255,.55)",margin:0,lineHeight:1.6}}>Chart ruler shifts from the Western tropical ascendant ruler to the Vedic sidereal ascendant ruler — a fundamental identity reframe between the two systems.</p>
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             )}
 
-            {/* NAKSHATRA */}
-            {vedicTab==="nakshatra"&&(
-              <div>
-                <div style={{padding:"16px",background:"rgba(232,168,124,.06)",border:"1px solid rgba(232,168,124,.25)",borderRadius:14,marginBottom:14}}>
-                  <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:10,flexWrap:"wrap"}}>
-                    <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:16,color:"#E8A87C",fontWeight:700}}>Uttara Phalguni</span>
-                    <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(232,168,124,.6)",letterSpacing:1,background:"rgba(232,168,124,.1)",padding:"3px 9px",borderRadius:12}}>Moon Nakshatra</span>
-                    <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(255,215,0,.7)",background:"rgba(255,215,0,.08)",padding:"3px 9px",borderRadius:12}}>Lord: Sun</span>
+            {/* NAKSHATRA — computed from sidereal Moon */}
+            {vedicTab==="nakshatra"&&(() => {
+              const nak = USER_SIDEREAL.nakshatra;
+              if (USER_TIME_UNKNOWN) {
+                return (
+                  <div className="chart-notice">
+                    Birth time unknown — nakshatra of the Moon depends on exact sidereal longitude. Enter a birth time to reveal your Moon nakshatra and pada.
                   </div>
-                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
-                    {[
-                      {k:"Symbol",v:NAKSHATRA.symbol},
-                      {k:"Deity",v:NAKSHATRA.deity},
-                      {k:"Quality",v:NAKSHATRA.quality},
-                      {k:"Pada",v:`2nd Pada`},
-                    ].map(({k,v})=>(
-                      <div key={k} style={{background:"rgba(255,255,255,.03)",borderRadius:8,padding:"8px 10px"}}>
-                        <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:8,color:"rgba(255,255,255,.35)",letterSpacing:1.5,marginBottom:3}}>{k.toUpperCase()}</div>
-                        <div style={{fontFamily:"'Crimson Pro',serif",fontSize:12,color:"rgba(255,255,255,.75)"}}>{v}</div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="sl" style={{color:"rgba(232,168,124,.6)"}}>Nakshatra Meaning</div>
-                  <p className="bt" style={{color:"rgba(255,255,255,.8)",fontSize:13}}>{NAKSHATRA.meaning}</p>
-                </div>
-                <div style={{padding:"14px",background:"rgba(255,215,0,.04)",border:"1px solid rgba(255,215,0,.15)",borderRadius:12}}>
-                  <div className="sl" style={{color:"rgba(255,215,0,.6)"}}>† For You</div>
-                  <p className="bt" style={{color:"rgba(255,255,255,.85)",fontSize:13}}>{NAKSHATRA.forYou}</p>
-                </div>
-
-                <div style={{marginTop:14,padding:"14px",background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.07)",borderRadius:12}}>
-                  <div className="sl" style={{color:"rgba(255,255,255,.3)",marginBottom:10}}>The 27 Nakshatras — Moon's position highlighted</div>
-                  <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:4}}>
-                    {["Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu","Pushya","Ashlesha","Magha","Purva Phalguni","Uttara Phalguni","Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha","Mula","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishtha","Shatabhisha","Purva Bhadrapada","Uttara Bhadrapada","Revati"].map((n,i)=>(
-                      <div key={i} style={{
-                        padding:"4px 6px",borderRadius:6,textAlign:"center",
-                        background:n==="Uttara Phalguni"?"rgba(232,168,124,.15)":"rgba(255,255,255,.02)",
-                        border:`1px solid ${n==="Uttara Phalguni"?"rgba(232,168,124,.35)":"rgba(255,255,255,.05)"}`,
-                      }}>
-                        <div style={{fontFamily:"'Crimson Pro',serif",fontSize:10,
-                          color:n==="Uttara Phalguni"?"#E8A87C":"rgba(255,255,255,.35)"}}>{n}</div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* DASHA */}
-            {vedicTab==="dasha"&&(
-              <div>
-                <div style={{marginBottom:14,padding:"12px 14px",background:"rgba(127,255,212,.06)",border:"1px solid rgba(127,255,212,.2)",borderRadius:12}}>
-                  <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:8,flexWrap:"wrap"}}>
-                    <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:14,color:"#7FFFD4",fontWeight:700}}>Rahu Mahadasha</span>
-                    <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(127,255,212,.7)",background:"rgba(127,255,212,.1)",padding:"3px 9px",borderRadius:12,letterSpacing:1}}>ACTIVE · May 2022 – May 2040</span>
-                  </div>
-                  <p className="bt" style={{color:"rgba(255,255,255,.85)",fontSize:13}}>{RAHU_DASHA_NOTE}</p>
-                </div>
-                <div style={{marginBottom:14,padding:"12px 14px",background:"rgba(255,215,0,.04)",border:"1px solid rgba(255,215,0,.15)",borderRadius:12}}>
-                  <div className="sl" style={{color:"rgba(255,215,0,.6)"}}>Antardasha · Current Sub-Period</div>
-                  <p className="bt" style={{color:"rgba(255,255,255,.8)",fontSize:13}}>{ANTARDASHA_NOTE}</p>
-                </div>
-
-                <div className="sl" style={{color:"rgba(255,255,255,.3)",marginBottom:10}}>Full Mahadasha Sequence</div>
-                {DASHAS.map((d,i)=>(
-                  <div key={i} className="dasha-row" style={{opacity:d.active?1:i<3?0.35:0.65}}>
-                    <div style={{width:28,height:28,borderRadius:"50%",background:`${d.color}22`,border:`1.5px solid ${d.color}66`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
-                      <div style={{width:8,height:8,borderRadius:"50%",background:d.active?d.color:`${d.color}44`}}/>
+                );
+              }
+              if (!nak) {
+                return <div className="chart-notice">Nakshatra could not be computed from this chart.</div>;
+              }
+              const nakData = NAKSHATRA_ESSENCE[nak.name] || {};
+              return (
+                <div>
+                  <div style={{padding:"16px",background:"rgba(232,168,124,.06)",border:"1px solid rgba(232,168,124,.25)",borderRadius:14,marginBottom:14}}>
+                    <div style={{display:"flex",gap:10,alignItems:"center",marginBottom:10,flexWrap:"wrap"}}>
+                      <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:16,color:"#E8A87C",fontWeight:700}}>{nak.name}</span>
+                      <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(232,168,124,.6)",letterSpacing:1,background:"rgba(232,168,124,.1)",padding:"3px 9px",borderRadius:12}}>Moon Nakshatra</span>
+                      <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(255,215,0,.7)",background:"rgba(255,215,0,.08)",padding:"3px 9px",borderRadius:12}}>Lord: {nak.lord}</span>
+                      <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(232,168,124,.6)",background:"rgba(232,168,124,.08)",padding:"3px 9px",borderRadius:12}}>Pada {nak.pada}</span>
                     </div>
-                    <div style={{flex:1}}>
-                      <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
-                        <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:11,color:d.active?d.color:"rgba(255,255,255,.6)",fontWeight:d.active?700:400}}>{d.lord}</span>
-                        {d.active&&<span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:8,color:d.color,background:`${d.color}15`,padding:"2px 7px",borderRadius:10,letterSpacing:1}}>ACTIVE NOW</span>}
-                        <span style={{fontFamily:"'Crimson Pro',serif",fontSize:11,color:"rgba(255,255,255,.3)"}}>{d.start} → {d.end}</span>
-                        <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(255,255,255,.25)"}}>{d.years}y</span>
+                    {(nakData.symbol || nakData.deity) && (
+                      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:12}}>
+                        {[
+                          {k:"Symbol",v:nakData.symbol},
+                          {k:"Deity",v:nakData.deity},
+                          {k:"Lord",v:nak.lord},
+                          {k:"Pada",v:`${nak.pada}${nak.pada===1?"st":nak.pada===2?"nd":nak.pada===3?"rd":"th"} Pada`},
+                        ].filter(x=>x.v).map(({k,v})=>(
+                          <div key={k} style={{background:"rgba(255,255,255,.03)",borderRadius:8,padding:"8px 10px"}}>
+                            <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:8,color:"rgba(255,255,255,.35)",letterSpacing:1.5,marginBottom:3}}>{k.toUpperCase()}</div>
+                            <div style={{fontFamily:"'Crimson Pro',serif",fontSize:12,color:"rgba(255,255,255,.75)"}}>{v}</div>
+                          </div>
+                        ))}
                       </div>
+                    )}
+                    {nakData.body && (<>
+                      <div className="sl" style={{color:"rgba(232,168,124,.6)"}}>Nakshatra Meaning</div>
+                      <p className="bt" style={{color:"rgba(255,255,255,.8)",fontSize:13}}>{nakData.body}</p>
+                    </>)}
+                  </div>
+                  {nakData.forMoon && (
+                    <div style={{padding:"14px",background:"rgba(255,215,0,.04)",border:"1px solid rgba(255,215,0,.15)",borderRadius:12}}>
+                      <div className="sl" style={{color:"rgba(255,215,0,.6)"}}>† For {FIRST_NAME} — Moon here</div>
+                      <p className="bt" style={{color:"rgba(255,255,255,.85)",fontSize:13}}>{nakData.forMoon}</p>
                     </div>
-                    <div style={{width:60,height:4,borderRadius:2,background:"rgba(255,255,255,.06)",overflow:"hidden",flexShrink:0}}>
-                      <div style={{height:"100%",borderRadius:2,background:d.active?d.color:`${d.color}44`,width:`${(d.years/20)*100}%`}}/>
+                  )}
+
+                  <div style={{marginTop:14,padding:"14px",background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.07)",borderRadius:12}}>
+                    <div className="sl" style={{color:"rgba(255,255,255,.3)",marginBottom:10}}>The 27 Nakshatras — Moon's position highlighted</div>
+                    <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:4}}>
+                      {["Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra","Punarvasu","Pushya","Ashlesha","Magha","Purva Phalguni","Uttara Phalguni","Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha","Mula","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishtha","Shatabhisha","Purva Bhadrapada","Uttara Bhadrapada","Revati"].map((n,i)=>{
+                        const active = n === nak.name;
+                        return (
+                          <div key={i} style={{
+                            padding:"4px 6px",borderRadius:6,textAlign:"center",
+                            background:active?"rgba(232,168,124,.15)":"rgba(255,255,255,.02)",
+                            border:`1px solid ${active?"rgba(232,168,124,.35)":"rgba(255,255,255,.05)"}`,
+                          }}>
+                            <div style={{fontFamily:"'Crimson Pro',serif",fontSize:10,
+                              color:active?"#E8A87C":"rgba(255,255,255,.35)"}}>{n}</div>
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
+                </div>
+              );
+            })()}
 
-            {/* YOGAS */}
+            {/* DASHA — computed from moon nakshatra */}
+            {vedicTab==="dasha"&&(() => {
+              if (USER_TIME_UNKNOWN || !USER_DASHAS) {
+                return (
+                  <div className="chart-notice">
+                    Birth time unknown — Vimshottari Mahadasha depends on the Moon's exact sidereal longitude at birth. Enter a time to reveal your dasha sequence.
+                  </div>
+                );
+              }
+              const active = USER_CURRENT_DASHA || USER_DASHAS.allDashas[0];
+              const activeColor = DASHA_COLOR[active.lord] || "#E8A87C";
+              const currentNote = dashaNoteFor(active.lord, FIRST_NAME);
+              return (
+                <div>
+                  <div style={{marginBottom:14,padding:"12px 14px",background:`${activeColor}0F`,border:`1px solid ${activeColor}33`,borderRadius:12}}>
+                    <div style={{display:"flex",gap:8,alignItems:"center",marginBottom:8,flexWrap:"wrap"}}>
+                      <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:14,color:activeColor,fontWeight:700}}>{active.lord} Mahadasha</span>
+                      <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:activeColor,background:`${activeColor}1A`,padding:"3px 9px",borderRadius:12,letterSpacing:1}}>ACTIVE · {fmtMonYr(active.start)} – {fmtMonYr(active.end)}</span>
+                    </div>
+                    <p className="bt" style={{color:"rgba(255,255,255,.85)",fontSize:13}}>{currentNote}</p>
+                  </div>
+
+                  <div className="sl" style={{color:"rgba(255,255,255,.3)",marginBottom:10}}>Full Mahadasha Sequence</div>
+                  {USER_DASHAS.allDashas.map((d, i) => {
+                    const color = DASHA_COLOR[d.lord] || "#CCCCCC";
+                    const isActive = d.lord === active.lord && d.start.getTime() === active.start.getTime();
+                    const passed = d.end.getTime() < Date.now();
+                    return (
+                      <div key={i} className="dasha-row" style={{opacity:isActive?1:passed?0.35:0.65}}>
+                        <div style={{width:28,height:28,borderRadius:"50%",background:`${color}22`,border:`1.5px solid ${color}66`,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                          <div style={{width:8,height:8,borderRadius:"50%",background:isActive?color:`${color}44`}}/>
+                        </div>
+                        <div style={{flex:1}}>
+                          <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
+                            <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:11,color:isActive?color:"rgba(255,255,255,.6)",fontWeight:isActive?700:400}}>{d.lord}</span>
+                            {isActive && <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:8,color:color,background:`${color}15`,padding:"2px 7px",borderRadius:10,letterSpacing:1}}>ACTIVE NOW</span>}
+                            <span style={{fontFamily:"'Crimson Pro',serif",fontSize:11,color:"rgba(255,255,255,.3)"}}>{fmtMonYr(d.start)} → {fmtMonYr(d.end)}</span>
+                            <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(255,255,255,.25)"}}>{d.years}y</span>
+                          </div>
+                        </div>
+                        <div style={{width:60,height:4,borderRadius:2,background:"rgba(255,255,255,.06)",overflow:"hidden",flexShrink:0}}>
+                          <div style={{height:"100%",borderRadius:2,background:isActive?color:`${color}44`,width:`${(d.years/20)*100}%`}}/>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
+
+            {/* YOGAS — computed detection (simple Pancha Mahapurusha scan) */}
             {vedicTab==="yogas"&&(
               <div>
                 <div style={{marginBottom:14,padding:"10px 14px",background:"rgba(232,168,124,.05)",border:"1px solid rgba(232,168,124,.15)",borderRadius:10}}>
                   <p className="bt" style={{color:"rgba(255,255,255,.65)",fontSize:13}}>
-                    Yogas are special planetary combinations in Vedic astrology that indicate specific life conditions, strengths, or challenges. Your chart contains several significant yogas — particularly around expansion, wealth, and the capacity to overcome opposition.
+                    Yogas are special planetary combinations in Vedic astrology that indicate specific life conditions, strengths, or challenges. The detector below scans for the Pancha Mahapurusha yogas — Mars, Mercury, Jupiter, Venus, or Saturn placed in their own sign or exaltation within a kendra (1st, 4th, 7th, or 10th).
                   </p>
                 </div>
-                {YOGAS.map((y,i)=>(
+                {USER_TIME_UNKNOWN ? (
+                  <div className="chart-notice">Birth time unknown — yoga detection requires the Ascendant. Enter a time to run the scan.</div>
+                ) : USER_YOGAS.length === 0 ? (
+                  <div className="yoga-card">
+                    <p className="bt" style={{color:"rgba(255,255,255,.7)",fontSize:13}}>No Pancha Mahapurusha yogas detected in this chart. Full yoga-detection (Dhana, Viparita Raja, etc.) will arrive in a later pass.</p>
+                  </div>
+                ) : USER_YOGAS.map((y,i)=>(
                   <div key={i} className="yoga-card">
                     <div style={{display:"flex",gap:10,alignItems:"flex-start",marginBottom:8,flexWrap:"wrap"}}>
                       <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:13,color:"#E8A87C",fontWeight:600}}>{y.name}</span>
@@ -1481,7 +1936,7 @@ function App({ user, onReset }) {
                 <div style={{marginTop:16,padding:"14px",background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.07)",borderRadius:12}}>
                   <div className="sl" style={{color:"rgba(255,255,255,.3)",marginBottom:8}}>Western vs Vedic · How to use both</div>
                   <p className="bt" style={{color:"rgba(255,255,255,.6)",fontSize:13}}>
-                    Western astrology excels at psychological depth, timing of inner experiences, and the texture of personality. Vedic astrology excels at life event prediction, career and financial timing, and karmic purpose. Your Rahu Mahadasha (active until 2040) and your Hamsa Yoga together suggest this 18-year window is your primary material ascent period. Use the Western chart to understand how you feel about it. Use the Vedic chart to understand what is actually happening.
+                    Western astrology excels at psychological depth, timing of inner experiences, and the texture of personality. Vedic astrology excels at life event prediction, career and financial timing, and karmic purpose. Use the Western chart to understand how you feel about it. Use the Vedic chart to understand what is actually happening.
                   </p>
                 </div>
               </div>
@@ -1692,7 +2147,7 @@ function App({ user, onReset }) {
                 <p className="bt" style={{color:"rgba(255,255,255,.55)",fontSize:13,fontStyle:"italic",marginBottom:12}}>
                   Where independent methods converge — that is your actual position on the Tree. Strength rating indicates confidence level of each method.
                 </p>
-                {PROFILE.convergence.map((c,i)=>(
+                {USER_CONVERGENCE.map((c,i)=>(
                   <div key={i} className="crow">
                     <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:10,color:"rgba(255,255,255,.5)",letterSpacing:.5,flex:1.3}}>{c.method}</span>
                     <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:11,color:"#B39DDB",fontWeight:600,minWidth:110,textAlign:"center"}}>{c.result}</span>
@@ -1712,41 +2167,17 @@ function App({ user, onReset }) {
               </div>
             )}
 
-            {/* NATAL PLANETS */}
+            {/* NATAL PLANETS — dynamic per-user Kabbalah breakdown */}
             {profileTab==="natal"&&(
               <div>
-                {PROFILE.natal.map((n,i)=>{
-                  const [open,setOpen] = useState(false);
-                  return(
-                    <div key={i} style={{marginBottom:10,background:"rgba(255,255,255,.025)",border:`1px solid ${n.color}22`,borderRadius:12,overflow:"hidden",cursor:"pointer"}}
-                      onClick={()=>setOpen(!open)}>
-                      <div style={{padding:"12px 14px"}}>
-                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                          <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
-                            <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:12,color:n.color,fontWeight:700}}>{n.label}</span>
-                            <span className="kbadge" style={{fontSize:9,borderColor:`${n.color}33`,color:n.color,background:`${n.color}10`}}>{n.sefirot}</span>
-                          </div>
-                          <span style={{color:open?n.color:"rgba(255,255,255,.25)",transform:open?"rotate(180deg)":"none",display:"inline-block",transition:"transform .2s",fontSize:12}}>▾</span>
-                        </div>
-                        <p style={{fontFamily:"'Crimson Pro',serif",fontSize:13,color:"rgba(255,255,255,.6)",margin:"6px 0 0",fontStyle:"italic"}}>{n.shortNote}</p>
-                      </div>
-                      {open&&(
-                        <div style={{padding:"0 14px 14px"}}>
-                          <hr style={{border:"none",borderTop:`1px solid ${n.color}18`,margin:"0 0 10px"}}/>
-                          <div className="sl" style={{color:`${n.color}80`}}>Path · {n.path}</div>
-                          <p className="bt" style={{color:"rgba(255,255,255,.85)",marginBottom:12}}>{n.fullNote}</p>
-                          <div style={{padding:"10px 12px",background:"rgba(0,0,0,.2)",border:`1px solid ${n.color}18`,borderRadius:8}}>
-                            <div className="sl" style={{color:"rgba(255,100,100,.6)",marginBottom:4}}>Shadow · Qlipha</div>
-                            <p className="bt" style={{color:"rgba(255,255,255,.65)",fontSize:13}}>{n.shadow}</p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
+                {USER_NATAL_KAB.map((n,i)=>(
+                  <KabNatalCard key={n.label+i} n={n} />
+                ))}
                 <div style={{padding:"10px 12px",background:"rgba(155,137,212,.04)",border:"1px solid rgba(155,137,212,.1)",borderRadius:8,marginTop:4}}>
-                  <div className="sl" style={{color:"rgba(155,137,212,.5)",marginBottom:4}}>Life Path 9 · Personal Year 4</div>
-                  <p className="bt" style={{color:"rgba(255,255,255,.7)",fontSize:13}}>Life Path 9 = Yesod. Personal Year 4 = Chesed. You are in a Chesed year precisely as Jupiter prepares to enter your 7th house in June. The numerological and astronomical cycles are aligned. The architecture of 2026 is not accidental.</p>
+                  <div className="sl" style={{color:"rgba(155,137,212,.5)",marginBottom:4}}>Life Path {USER_NUM.lifePath} · Personal Year {USER_NUM.personalYear}</div>
+                  <p className="bt" style={{color:"rgba(255,255,255,.7)",fontSize:13}}>
+                    Life Path {USER_NUM.lifePath} = {SEFIROT[USER_NUM.lifePath]?.name || "—"}. Personal Year {USER_NUM.personalYear} = {SEFIROT[USER_NUM.personalYear]?.name || "—"}. The numerological cycle and the natal chart meet on the same Tree. Read them as two reports of the same position.
+                  </p>
                 </div>
               </div>
             )}
@@ -2280,31 +2711,62 @@ function App({ user, onReset }) {
           </div>
         )}
 
-        {/* HOUSE + NATAL REFERENCE (astro mode) */}
+        {/* HOUSE + NATAL REFERENCE (astro mode) — dynamic from USER_TROPICAL */}
         {!isKab&&!isVedic&&!isNum&&!isChi&&(
           <>
-            <div style={{marginTop:24,padding:15,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",borderRadius:12}}>
-              <div className="sl" style={{color:"rgba(255,255,255,.25)",marginBottom:10}}>House System · Capricorn Rising (Whole Sign) · Verified</div>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"3px 16px"}}>
-                {Object.entries(SIGN_TO_HOUSE).map(([sign,house])=>(
-                  <div key={sign} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"4px 0",borderBottom:"1px solid rgba(255,255,255,.04)"}}>
-                    <span style={{fontFamily:"'Crimson Pro',serif",fontSize:12,color:"rgba(255,255,255,.5)"}}>{sign}</span>
-                    <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(126,200,200,.65)",letterSpacing:.5}}>{house}</span>
-                  </div>
-                ))}
+            {/* Ascendant / MC angle strip */}
+            {!USER_TIME_UNKNOWN && (USER_TROPICAL.ascendant || USER_TROPICAL.mc) && (
+              <div className="angle-card" style={{marginTop:24}}>
+                {USER_TROPICAL.ascendant && (
+                  <div><strong>Rising</strong>{USER_TROPICAL.ascendant.sign} {fmtDeg(USER_TROPICAL.ascendant.deg)}</div>
+                )}
+                {USER_TROPICAL.mc && (
+                  <div style={{marginTop:4}}><strong>MC</strong>{USER_TROPICAL.mc.sign} {fmtDeg(USER_TROPICAL.mc.deg)}</div>
+                )}
               </div>
-            </div>
-            <div style={{marginTop:12,padding:15,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",borderRadius:12}}>
-              <div className="sl" style={{color:"rgba(255,255,255,.25)",marginBottom:10}}>Full Natal Placements · 23 Jul 2004 · 6:30am Sydney</div>
-              <div style={{display:"grid",gridTemplateColumns:"repeat(1,1fr)",gap:"3px"}}>
-                {NATAL_PLANETS.map((p,i)=>(
-                  <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"5px 0",borderBottom:"1px solid rgba(255,255,255,.04)",flexWrap:"wrap",gap:4}}>
-                    <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:10,color:"rgba(255,215,0,.7)",minWidth:100}}>{p.planet}</span>
-                    <span style={{fontFamily:"'Crimson Pro',serif",fontSize:12,color:"rgba(255,255,255,.7)",flex:1}}>{p.sign} {p.deg}</span>
-                    <span className="hbadge" style={{fontSize:9}}>{p.house} House</span>
-                  </div>
-                ))}
+            )}
+
+            {/* Houses overview — only when time is known */}
+            {!USER_TIME_UNKNOWN && USER_TROPICAL.houses && USER_TROPICAL.ascendant && (
+              <div style={{marginTop:8,padding:15,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",borderRadius:12}}>
+                <div className="sl" style={{color:"rgba(255,255,255,.25)",marginBottom:10}}>House System · {USER_TROPICAL.ascendant.sign} Rising · Whole Sign</div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:"3px 16px"}}>
+                  {Object.entries(USER_TROPICAL.houses).map(([n,sign])=>(
+                    <div key={n} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"4px 0",borderBottom:"1px solid rgba(255,255,255,.04)"}}>
+                      <span style={{fontFamily:"'Crimson Pro',serif",fontSize:12,color:"rgba(255,255,255,.5)"}}>{ordinal(parseInt(n,10))} House — {sign}</span>
+                      <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(126,200,200,.65)",letterSpacing:.5}}>{HOUSE_ESSENCE[parseInt(n,10)]?.title || ""}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
+            )}
+
+            {/* Full editorial natal placements */}
+            <div style={{marginTop:16,padding:15,background:"rgba(255,255,255,.025)",border:"1px solid rgba(255,255,255,.06)",borderRadius:12}}>
+              <div className="sl" style={{color:"rgba(255,255,255,.25)",marginBottom:10}}>
+                Full Natal Placements · {formatDOB(USER_DOB)}{USER_TIME_UNKNOWN?" · time unknown":` · ${pad2(USER_TIME.h)}:${pad2(USER_TIME.m)}`}{USER.city?` · ${USER.city}`:""}
+              </div>
+              {USER_TROPICAL.planets.map(p => {
+                const key = planetKey(p.planet);
+                const signData = SIGN_ESSENCE[p.sign];
+                const houseNum = p.house;
+                const houseData = (!USER_TIME_UNKNOWN && houseNum) ? HOUSE_ESSENCE[houseNum] : null;
+                const sigInterp = (PLANET_IN_SIGN[key] && PLANET_IN_SIGN[key][p.sign]) || "";
+                const hseInterp = (houseData && PLANET_IN_HOUSE[key] && PLANET_IN_HOUSE[key][houseNum]) || "";
+                return (
+                  <div className="natal-entry" key={p.planet}>
+                    <h3>
+                      {p.planet} in {p.sign} {fmtDeg(p.deg)}
+                      {houseData ? ` · ${ordinal(houseNum)} House (${houseData.title})` : ""}
+                    </h3>
+                    {signData && (
+                      <div className="natal-meta">{signData.title} · {signData.element}{signData.ruler?` · ruler ${signData.ruler}`:""}</div>
+                    )}
+                    {sigInterp && <p className="bt">{sigInterp}</p>}
+                    {hseInterp && <p className="bt">{hseInterp}</p>}
+                  </div>
+                );
+              })}
             </div>
           </>
         )}
@@ -2322,6 +2784,42 @@ function App({ user, onReset }) {
   );
 }
 
+// ─── KAB NATAL CARD ─────────────────────────────────────────────────────────
+// Split out so the per-card open state doesn't break React's hook rules when
+// the dynamic USER_NATAL_KAB length changes.
+function KabNatalCard({ n }) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <div style={{marginBottom:10,background:"rgba(255,255,255,.025)",border:`1px solid ${n.color}22`,borderRadius:12,overflow:"hidden",cursor:"pointer"}}
+      onClick={()=>setOpen(!open)}>
+      <div style={{padding:"12px 14px"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+          <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
+            <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:12,color:n.color,fontWeight:700}}>{n.label}</span>
+            {n.sefirot && <span className="kbadge" style={{fontSize:9,borderColor:`${n.color}33`,color:n.color,background:`${n.color}10`}}>{n.sefirot}</span>}
+          </div>
+          <span style={{color:open?n.color:"rgba(255,255,255,.25)",transform:open?"rotate(180deg)":"none",display:"inline-block",transition:"transform .2s",fontSize:12}}>▾</span>
+        </div>
+        <p style={{fontFamily:"'Crimson Pro',serif",fontSize:13,color:"rgba(255,255,255,.6)",margin:"6px 0 0",fontStyle:"italic"}}>{n.shortNote}</p>
+      </div>
+      {open && (
+        <div style={{padding:"0 14px 14px"}}>
+          <hr style={{border:"none",borderTop:`1px solid ${n.color}18`,margin:"0 0 10px"}}/>
+          {n.path && <div className="sl" style={{color:`${n.color}80`}}>Path · {n.path}</div>}
+          {n.fullNote && <p className="bt" style={{color:"rgba(255,255,255,.85)",marginBottom:12}}>{n.fullNote}</p>}
+          {n.pillarRole && <p className="bt" style={{color:"rgba(255,255,255,.7)",fontSize:13,fontStyle:"italic",marginBottom:12}}>{n.pillarRole}</p>}
+          {n.shadow && (
+            <div style={{padding:"10px 12px",background:"rgba(0,0,0,.2)",border:`1px solid ${n.color}18`,borderRadius:8}}>
+              <div className="sl" style={{color:"rgba(255,100,100,.6)",marginBottom:4}}>Shadow · Qlipha</div>
+              <p className="bt" style={{color:"rgba(255,255,255,.65)",fontSize:13}}>{n.shadow}</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── UTILITIES ─────────────────────────────────────────────────────────────
 function pad2(n) { return String(n).padStart(2,"0"); }
 function formatDOB(dob) {
@@ -2329,6 +2827,99 @@ function formatDOB(dob) {
   const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
   return `${dob.d} ${months[(dob.m||1)-1]} ${dob.y}`;
 }
+
+// Ordinal — 1 → "1st", 2 → "2nd", 11 → "11th" etc.
+function ordinal(n) {
+  const s = ["th","st","nd","rd"];
+  const v = n % 100;
+  return n + (s[(v-20)%10] || s[v] || s[0]);
+}
+// Friendly degree formatter — 12.345 → "12°21'"
+function fmtDeg(deg) {
+  if (deg == null || isNaN(deg)) return "—";
+  const whole = Math.floor(deg);
+  const minutes = Math.floor((deg - whole) * 60);
+  return `${whole}°${pad2(minutes)}'`;
+}
+// Short month-year label for Date — "May 2022"
+function fmtMonYr(d) {
+  if (!(d instanceof Date) || isNaN(d)) return "—";
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+// Strip decorative suffix from a planet name: "Sun ☉" → "Sun", "Lagna ↑" → "Lagna"
+function planetKey(planetName) {
+  if (!planetName) return "";
+  return String(planetName).split(/\s+/)[0];
+}
+
+// ─── PANCHA MAHAPURUSHA YOGA ──────────────────────────────────────────────
+// Simple detector: for each of Mars, Mercury, Jupiter, Venus, Saturn — check
+// if the planet is in its own sign OR exaltation AND in a kendra (1, 4, 7, 10).
+const _OWN_SIGNS = {
+  Mars:    ["Aries","Scorpio"],
+  Mercury: ["Gemini","Virgo"],
+  Jupiter: ["Sagittarius","Pisces"],
+  Venus:   ["Taurus","Libra"],
+  Saturn:  ["Capricorn","Aquarius"],
+};
+const _EXALT_SIGNS = {
+  Mars: "Capricorn", Mercury: "Virgo", Jupiter: "Cancer",
+  Venus: "Pisces",   Saturn: "Libra",
+};
+const _PMP_YOGA = {
+  Mars:    { name:"Ruchaka Yoga", type:"Pancha Mahapurusha",
+    desc:"Mars in its own sign or exaltation, placed in a kendra — bestows warrior discipline, physical courage, and the capacity to lead through decisive action." },
+  Mercury: { name:"Bhadra Yoga", type:"Pancha Mahapurusha",
+    desc:"Mercury in its own sign or exaltation, placed in a kendra — bestows exceptional intelligence, mercantile acumen, and communicative mastery." },
+  Jupiter: { name:"Hamsa Yoga", type:"Pancha Mahapurusha",
+    desc:"Jupiter in its own sign or exaltation, placed in a kendra — bestows wisdom, nobility, philosophical depth, and the capacity to inspire others." },
+  Venus:   { name:"Malavya Yoga", type:"Pancha Mahapurusha",
+    desc:"Venus in its own sign or exaltation, placed in a kendra — bestows beauty, refinement, prosperity through partnership, and aesthetic genius." },
+  Saturn:  { name:"Sasa Yoga", type:"Pancha Mahapurusha",
+    desc:"Saturn in its own sign or exaltation, placed in a kendra — bestows authority, endurance, strategic mastery, and institutional power." },
+};
+function detectPanchaMahapurusha(siderealChart) {
+  if (!siderealChart || !siderealChart.planets) return [];
+  const kendras = new Set([1,4,7,10]);
+  const hits = [];
+  for (const p of siderealChart.planets) {
+    const name = planetKey(p.planet);
+    if (!_OWN_SIGNS[name]) continue;
+    const inOwn    = _OWN_SIGNS[name].includes(p.sign);
+    const inExalt  = _EXALT_SIGNS[name] === p.sign;
+    const inKendra = p.house != null && kendras.has(p.house);
+    if ((inOwn || inExalt) && inKendra) {
+      const y = _PMP_YOGA[name];
+      hits.push({
+        name:    y.name,
+        type:    y.type,
+        desc:    `${y.desc} In your chart: ${name} in ${p.sign} ${inExalt?"(exalted)":"(own sign)"} in the ${ordinal(p.house)} house (a kendra).`,
+        strength: inExalt ? 5 : 4,
+      });
+    }
+  }
+  return hits;
+}
+
+// Personalise a dasha period description using DASHA_PERIOD_MEANING.
+// Returns the prose body with {firstName} templated in, prefixed by the
+// "<Lord> Mahadasha (<years> years)" title.
+function dashaNoteFor(lord, firstName) {
+  if (!lord) return "";
+  const d = (typeof DASHA_PERIOD_MEANING !== "undefined") && DASHA_PERIOD_MEANING[lord];
+  if (!d) return "";
+  const FN = firstName || "You";
+  const body = (d.body || "").replace(/\{firstName\}/g, FN);
+  return `${lord} Mahadasha (${d.years} years) — ${body}`;
+}
+
+// Colour assigned to each dasha lord in the vedic mahadasha ribbon.
+const DASHA_COLOR = {
+  Sun: "#FFD700", Moon: "#C8B8E8", Mars: "#FF6B6B", Rahu: "#7FFFD4",
+  Jupiter: "#FFA500", Saturn: "#8B9DC3", Mercury: "#89CFF0", Ketu: "#9370DB",
+  Venus: "#F8B8D0",
+};
 
 // ─── NUMEROLOGY ENGINE (dynamic per user) ─────────────────────────────────
 function computeNumerology(fullName, dob, currentYear, firstName) {

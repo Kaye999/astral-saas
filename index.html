@@ -18,6 +18,7 @@
 
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
 
   <script>
@@ -51,14 +52,20 @@
 
     (async () => {
       try {
-        const [resStar, resMain] = await Promise.all([
+        const [resStar, resAstro, resInterp, resMain] = await Promise.all([
           fetch('Starfield.jsx'),
+          fetch('engine-astro.js'),
+          fetch('interp-tables.js'),
           fetch('astrology-transits.jsx'),
         ]);
         if (!resStar.ok) throw new Error('Starfield fetch: ' + resStar.status);
+        if (!resAstro.ok) throw new Error('engine-astro fetch: ' + resAstro.status);
+        if (!resInterp.ok) throw new Error('interp-tables fetch: ' + resInterp.status);
         if (!resMain.ok) throw new Error('main fetch: ' + resMain.status);
 
         let starSrc = await resStar.text();
+        let astroSrc = await resAstro.text();
+        let interpSrc = await resInterp.text();
         let mainSrc = await resMain.text();
 
         // Strip imports/exports — keep both files' top-level consts/functions as globals.
@@ -76,7 +83,10 @@
         window.useCallback = React.useCallback;
 
         // Starfield first so it's in scope when the main app renders.
-        const combined = starSrc + '\n;\n' + mainSrc;
+        // engine-astro.js + interp-tables.js are plain JS (no JSX), concatenated
+        // before main so their constants + functions are in scope for the
+        // React components.
+        const combined = starSrc + '\n;\n' + astroSrc + '\n;\n' + interpSrc + '\n;\n' + mainSrc;
         const transformed = Babel.transform(combined, { presets: ['react'], filename: 'astro.jsx' }).code;
 
         const script = document.createElement('script');
