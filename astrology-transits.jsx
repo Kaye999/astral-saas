@@ -1014,10 +1014,81 @@ function resolveCityCoords(cityString) {
     if (tok.length >= 4 && CITY_COORDS[tok]) return CITY_COORDS[tok];
   }
 
-  if (typeof console !== "undefined" && console.warn) {
-    console.warn("[astral-saas] resolveCityCoords: no match for", cityString, "— falling back to Sydney.");
-  }
   return null;
+}
+
+// ─── LIVE GEOCODE via OpenStreetMap Nominatim ────────────────────────────────
+// Used as a fallback when the local gazetteer can't resolve a city.
+// Free, no API key required, covers every place in the world.
+// Rate limit: 1 req/sec (we call once per unique city per user, so fine).
+// Results are cached in localStorage so we never hit the API twice for the same input.
+
+const GEOCODE_CACHE_KEY = "astro:geocode:cache";
+
+function _loadGeocodeCache() {
+  try { return JSON.parse(localStorage.getItem(GEOCODE_CACHE_KEY) || "{}"); }
+  catch { return {}; }
+}
+function _saveGeocodeCache(cache) {
+  try { localStorage.setItem(GEOCODE_CACHE_KEY, JSON.stringify(cache)); } catch {}
+}
+
+// Approximate timezone offset (hours east of UTC) from longitude.
+// Good enough for standard time; doesn't handle DST or political anomalies
+// (India, Nepal, Iran, parts of Australia). User can override in future.
+function _tzFromLon(lon) {
+  return Math.round(lon / 15);
+}
+
+// Known-country-primary-timezone overrides for countries where longitude
+// approximation is wrong (politically-set timezones).
+const _COUNTRY_TZ_OVERRIDES = {
+  "in": 5.5,        // India — single tz, +5:30
+  "np": 5.75,       // Nepal — +5:45
+  "ir": 3.5,        // Iran — +3:30
+  "af": 4.5,        // Afghanistan — +4:30
+  "mm": 6.5,        // Myanmar — +6:30
+  "lk": 5.5,        // Sri Lanka — +5:30
+  "nz": 12,         // NZ — whole country UTC+12
+  "pg": 10,         // Papua New Guinea — UTC+10 (main island); Bougainville is +11 but close enough
+  "cn": 8,          // China — whole country UTC+8 (regardless of geography)
+  "ng": 1,          // Nigeria — +1
+};
+
+async function geocodeCityLive(cityString) {
+  if (!cityString) return null;
+  const key = String(cityString).trim().toLowerCase();
+  if (!key) return null;
+
+  // Cache hit
+  const cache = _loadGeocodeCache();
+  if (cache[key]) return cache[key];
+
+  try {
+    const url = "https://nominatim.openstreetmap.org/search?format=json&limit=1&addressdetails=1&q=" + encodeURIComponent(cityString);
+    const res = await fetch(url, {
+      headers: { "Accept": "application/json" },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!Array.isArray(data) || data.length === 0) return null;
+
+    const hit = data[0];
+    const lat = parseFloat(hit.lat);
+    const lon = parseFloat(hit.lon);
+    if (!isFinite(lat) || !isFinite(lon)) return null;
+
+    const countryCode = (hit.address?.country_code || "").toLowerCase();
+    const tzOffset = _COUNTRY_TZ_OVERRIDES[countryCode] ?? _tzFromLon(lon);
+
+    const resolved = { lat, lon, tzOffset, source: "nominatim", country: countryCode, displayName: hit.display_name };
+    cache[key] = resolved;
+    _saveGeocodeCache(cache);
+    return resolved;
+  } catch (err) {
+    console.warn("[astral-saas] geocodeCityLive failed:", err);
+    return null;
+  }
 }
 
 // ─── COMPONENT ────────────────────────────────────────────────────────────────
@@ -1051,9 +1122,25 @@ function App({ user, onReset }) {
 
   // ─── ASTRONOMICAL CHART ────────────────────────────────────────────────────
   // Resolve city → coords; if unknown, fall back to Sydney and flag for a notice.
+  const [liveGeocode, setLiveGeocode] = useState(null);
+
+  React.useEffect(() => {
+    if (!USER.city) { setLiveGeocode(null); return; }
+    const local = resolveCityCoords(USER.city);
+    if (local) { setLiveGeocode(null); return; }
+    // Check cache first (sync)
+    const cache = _loadGeocodeCache();
+    const cached = cache[String(USER.city).trim().toLowerCase()];
+    if (cached) { setLiveGeocode(cached); return; }
+    // Async Nominatim lookup
+    let cancelled = false;
+    geocodeCityLive(USER.city).then(r => { if (!cancelled) setLiveGeocode(r); });
+    return () => { cancelled = true; };
+  }, [USER.city]);
+
   const USER_COORDS_RESOLVED = React.useMemo(
-    () => resolveCityCoords(USER.city),
-    [USER.city]
+    () => resolveCityCoords(USER.city) || liveGeocode,
+    [USER.city, liveGeocode]
   );
   const USER_CITY_FALLBACK = !USER_COORDS_RESOLVED && !!USER.city;
   const USER_COORDS = USER_COORDS_RESOLVED || { lat:-33.87, lon:151.21, tzOffset:10 };
