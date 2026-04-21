@@ -57,17 +57,6 @@ const VEDIC_SIGN_TO_HOUSE = {
   Leo:9,         Virgo:10,    Libra:11,   Scorpio:12,
 };
 
-const NAKSHATRA = {
-  name: "Uttara Phalguni",
-  pada: 2,
-  lord: "Sun",
-  symbol: "The back legs of a bed / fig tree",
-  deity: "Aryaman (god of patronage, contracts, and unions)",
-  quality: "Fixed / Kshatriya",
-  meaning: "The star of patronage — bestows independence through collaboration. Uttara Phalguni natives are natural leaders who build lasting structures through loyal alliances. The 'giving tree' — you sustain others through your own rootedness.",
-  forYou: "Your Moon sits in Uttara Phalguni — your emotional nature is fundamentally about building enduring things through right partnership. This is not the nakshatra of solo performance; it's the nakshatra of the king who builds the kingdom through the loyalty he inspires. Vantage and TEM's partnership structures carry this nakshatra's signature.",
-};
-
 const DASHAS = [
   { lord:"Sun",     start:"Jul 2004", end:"May 2005", years:0.8,  active:false, color:"#FFD700" },
   { lord:"Moon",    start:"May 2005", end:"May 2015", years:10,   active:false, color:"#C8B8E8" },
@@ -122,13 +111,8 @@ function calcG(name) {
 function reduceS(n) {
   let x=n; while(x>10){x=String(x).split("").reduce((s,d)=>s+parseInt(d),0);} return x;
 }
-const G = {
-  ethan:    { label:"Ethan",           raw:calcG("Ethan"),           reduced:reduceS(calcG("Ethan"))           },
-  joshua:   { label:"Joshua",          raw:calcG("Joshua"),          reduced:reduceS(calcG("Joshua"))          },
-  kay:      { label:"Kay",             raw:calcG("Kay"),             reduced:reduceS(calcG("Kay"))             },
-  ethanKay: { label:"Ethan Kay",       raw:calcG("Ethan Kay"),       reduced:reduceS(calcG("Ethan Kay"))       },
-  full:     { label:"Ethan Joshua Kay",raw:calcG("Ethan Joshua Kay"),reduced:reduceS(calcG("Ethan Joshua Kay"))},
-};
+// (The per-user gematria is computed inside App via USER_GEMATRIA memo —
+//  see `const USER_GEMATRIA = React.useMemo(...)` in the component.)
 
 // ─── SEFIROT ─────────────────────────────────────────────────────────────────
 const SEFIROT = {
@@ -223,9 +207,6 @@ const PROFILE = {
     { method:"Soul Urge 8",                result:"Hod (8)",        note:"Primary intellect tool for the crossing",     strength:4 },
     { method:"Mars (Leo/8H)",              result:"Geburah (5)",    note:"Natal drive, fused with Tiphareth in 8H",     strength:4 },
     { method:"Personal Year 4 (2026)",     result:"Chesed (4)",     note:"Active Sefira this year — Jupiter's domain",  strength:3 },
-    { method:"Gematria — Ethan Kay",       result:`Tiphareth (${G.ethanKay.reduced})`, note:`Operating name · raw ${G.ethanKay.raw} → destination`, strength:5 },
-    { method:"Gematria — Ethan Joshua Kay",result:`Chokmah (${G.full.reduced})`,       note:`Legal name · raw ${G.full.raw} → root essence`,        strength:4 },
-    { method:"Gematria — Joshua",          result:`Geburah (${G.joshua.reduced})`,     note:`Warrior name · raw ${G.joshua.raw} → crossing force`,  strength:3 },
   ],
 
   natal: [
@@ -271,7 +252,7 @@ const PROFILE = {
       sefirot:"Binah (3)",
       color:"#7EC8C8",
       shortNote:"Partnership architecture — every alliance tested for load-bearing capacity.",
-      fullNote:"Binah (Saturn) in Cancer (Cheth/Chariot) in the 7th house of partnerships is one of the most structurally demanding placements in the chart. Binah is the force that gives form to all things — the great mother of limitation, structure, and enduring shape. In Cancer, Binah operates through emotional containment and protective boundaries. In the 7th house, it applies this force to every significant relationship you enter. The result: partnerships in your life are not casual. They are tested, slowly, for genuine load-bearing capacity. The ones that pass the test become permanent. The ones that fail reveal their weakness early and exit. This is why your equity agreements (Vantage 50/50, TEM shareholders) need to be structurally airtight from the beginning — Saturn in the 7th does not allow partnership structures to be fixed retroactively. The Chariot path (Cheth) means your partnerships are vehicles of will — not emotional bonds or social connections, but directed vessels carrying a shared purpose forward.",
+      fullNote:"Binah (Saturn) in Cancer (Cheth/Chariot) in the 7th house of partnerships is one of the most structurally demanding placements in the chart. Binah is the force that gives form to all things — the great mother of limitation, structure, and enduring shape. In Cancer, Binah operates through emotional containment and protective boundaries. In the 7th house, it applies this force to every significant relationship you enter. The result: partnerships in your life are not casual. They are tested, slowly, for genuine load-bearing capacity. The ones that pass the test become permanent. The ones that fail reveal their weakness early and exit. This is why the partnership structures in your life — equity agreements, long-term contracts, core relationships — need to be structurally airtight from the beginning. Saturn in the 7th does not allow partnership structures to be fixed retroactively. The Chariot path (Cheth) means your partnerships are vehicles of will — not emotional bonds or social connections, but directed vessels carrying a shared purpose forward.",
       shadow:"The shadow of Binah in the 7th is the chronically delayed or avoided partnership — the refusal to commit to significant alliances because no candidate passes the unconscious Binah-standard. Saturn in the 7th can produce a fortress mentality around partnerships, where the protection against bad alliances becomes the prevention of all alliances. The working: Saturn's standard is not perfection, it is integrity. A partner who is structurally sound but not perfect is a Binah partner. Let the standard be 'can this hold?' rather than 'is this ideal?'",
     },
     {
@@ -325,12 +306,12 @@ const PROFILE = {
       {
         title: "Ayin Confrontation (Saturn periods)",
         frequency: "Monthly · Saturn-heavy periods",
-        desc: "Ayin's practice is the direct confrontation of what you would prefer to avoid seeing about your material reality. Once per month, sit with your actual financial position, your actual operational status, and your actual progress toward Ninth Gate's structure — without narrative or framing. Just the numbers, the facts, the gaps. Ayin is the eye that sees clearly. The initiatory method of Capricorn Rising is not to transcend material reality but to see it so clearly that it becomes workable.",
+        desc: "Ayin's practice is the direct confrontation of what you would prefer to avoid seeing about your material reality. Once per month, sit with your actual financial position, your actual operational status, and your actual progress toward the long-horizon architecture you are building — without narrative or framing. Just the numbers, the facts, the gaps. Ayin is the eye that sees clearly. The initiatory method of Capricorn Rising is not to transcend material reality but to see it so clearly that it becomes workable.",
       },
       {
         title: "Gematria Name Work",
         frequency: "As needed · for major decisions",
-        desc: "Your operating name (Ethan Kay = Tiphareth/6) and your legal name (Ethan Joshua Kay = Chokmah/2) carry different Kabbalistic weights. For decisions involving your personal brand and everyday identity, operate from Ethan Kay — you are moving toward Tiphareth, and the name carries that current. For decisions involving your deepest strategic will — major equity moves, the Ninth Gate architecture, long-horizon choices — call on Ethan Joshua Kay. Chokmah's flash of pure creative will is available through your legal name. Use it consciously.",
+        desc: "Your operating name (the one you use day-to-day) and your legal name (birth-certificate form) carry different Kabbalistic weights. When the reduced gematria lands on different sefirot, each name grants you access to a different current. Use the name whose sefirot matches the decision you're making — shorter day-to-day, legal name for major equity moves and long-horizon commitments.",
       },
     ],
   },
@@ -780,159 +761,11 @@ const ANIMAL_TRAITS_MONKEY = {
   careerAffinity:"Entrepreneurship, finance, strategy, technology, consulting, anything requiring pattern recognition and agile problem-solving.",
 };
 
-// ─── TRANSITS (all re-interpreted through Capricorn Rising) ──────────────────
-const TRANSITS = {
-  weekly: [
-    {
-      planet:"Moon", sign:"Leo", ingress:"Apr 24", duration:"Apr 24–26",
-      raw:"Moon in Leo amplifies emotional confidence, performance drive, and the need to be seen. Bold, expressive energy.",
-      personal:"Moon crosses the 8th — the emotional register lands squarely in shared money, leverage, and transformation. Not surface confidence. The gut-level sense that you can move resources. This sits directly on natal Sun and Mars — one of the highest-charge windows of the month. Waste it on admin and it's gone. Book the investor call. Have the equity conversation.",
-      house:"8th", intensity:4, tags:["POWER WINDOW","LEVERAGE"],
-      kab:{
-        transit:"Yesod (Moon) activating the 19th Path (Tet/Strength) — your Foundation Sefira illuminating the territory where your natal Sun and Mars already live. Yesod's dreaming energy rises into Geburah/Tiphareth territory. The astral pattern finds its solar-martial expression.",
-        arc:"Your 8th house is already Geburah-Tiphareth fused (Mars-Sun conjunct). When Yesod transits this via Tet, all three middle and left pillar forces are simultaneously active. This is a convergence point on your arc — use it consciously.",
-        path:"19th Path · Tet (ט) · Strength/Lust", sefirot:"Yesod → Tiphareth",
-        instruction:"The Lust card (Thoth) shows the sovereign riding the Beast. Your 8th house is the Beast — power, leverage, shared money, transformation. Yesod transiting here means your emotional body is fully online in the domain of power. Ride it with awareness. Don't let the emotional charge of this window make you reactive in negotiations.",
-      },
-    },
-    {
-      planet:"Mercury", sign:"Taurus", ingress:"Apr 27", duration:"Apr 27–May 14",
-      raw:"Mercury slows from Aries impulse into deliberate Taurus. Contracts and financial conversations gain traction.",
-      personal:"Mercury enters the 5th and crosses the Taurus MC — language lands on the career peak. The window to formalise. Write the pricing page. Sign the Vantage agreement. File the GST registration. What you put on paper between now and mid-May carries more weight than what you say between now and mid-May.",
-      house:"5th", intensity:4, tags:["SIGN NOW","MC ACTIVATION"],
-      kab:{
-        transit:"Hod (Mercury) through the 16th Path (Vav/Hierophant) — your Left Pillar intellect tool moving through the path of encoded teaching, landing in the house of your MC. Hod crystallising Vav's permanence in the domain of your career peak.",
-        arc:"Your Soul Urge 8 (Hod) is your primary crossing tool. When Mercury activates Hod through Vav in the house of your career apex, your intellectual architecture is at its most structurally precise. What you write now carries Vav's permanence — it becomes the doctrine of your career.",
-        path:"16th Path · Vav (ו) · The Hierophant", sefirot:"Hod → Chesed",
-        instruction:"Vav is the nail. Anything you formalise under this transit in your 5th house carries permanent career-shaping weight. Sign agreements. Register entities. Write your brand positioning. The Hierophant doesn't allow 'we'll sort that later.'",
-      },
-    },
-    {
-      planet:"Moon", sign:"Libra", ingress:"Apr 28", duration:"Apr 28–30",
-      raw:"Moon conjunct natal Libra Moon — monthly emotional reset. Diplomacy, balance, relational clarity.",
-      personal:"Libra Moon return. 10th house. Forty-eight hours in which the public face is emotionally on-tune and senior people read you correctly the first time. Not a cleaning-the-inbox window. A being-in-front-of-someone-who-matters window.",
-      house:"10th", intensity:5, tags:["LUNAR RETURN","PUBLIC FACE"],
-      kab:{
-        transit:"Yesod returning to the 22nd Path (Lamed/Justice) — your Foundation cycling back to its natal position in the 10th house. Monthly recalibration of your public Yesod signature. Lamed in the 10th means the cosmic scales are being applied to your reputation and career standing.",
-        arc:"This is the most significant 48-hour window of your monthly cycle. Yesod returning to Lamed in your 10th means your entire arc — the Yesod-to-Tiphareth crossing — gets a public-facing alignment. What you project in these two days sets the emotional tone for your career relationships in the coming month.",
-        path:"22nd Path · Lamed (ל) · Justice/Adjustment", sefirot:"Yesod ↔ Tiphareth",
-        instruction:"Lamed is the ox-goad that moves things into right position. In your 10th house, it's adjusting your public identity toward truth. Ask: does how I present myself professionally reflect what I'm actually building? Correct any gap deliberately during this window.",
-      },
-    },
-    {
-      planet:"Moon", sign:"Scorpio", ingress:"Apr 30", duration:"Apr 30–May 2",
-      raw:"Scorpio Moon — emotional depth, strategic instincts, desire for control and investigation.",
-      personal:"Scorpio Moon, 11th house. Three days of sharp instinct about who in the network is aligned and who is orbit-noise. Good for quiet audits. Name the three people in the contact list carrying real leverage. Name the fifteen who are costing you attention for no return.",
-      house:"11th", intensity:3, tags:["NETWORK AUDIT","STRATEGIC CLARITY"],
-      kab:{
-        transit:"Yesod through the 24th Path (Nun/Death) — Foundation descending into transformation in your 11th house. What parts of your network architecture need to die so the next structure can live?",
-        arc:"Nun dissolves what Yesod has been holding that cannot cross into Tiphareth. In the 11th house this is about your community and long-term goal structures. Which alliances are real and which are astral glamours — patterns you've maintained out of habit?",
-        path:"24th Path · Nun (נ) · Death/Transformation", sefirot:"Yesod → Netzach",
-        instruction:"Name one network relationship or long-term goal you are still running that has already expired. Give it a conscious release during this window. The Death card doesn't destroy — it transforms. What becomes available when you stop maintaining the dead weight?",
-      },
-    },
-  ],
-  monthly: [
-    {
-      planet:"Sun", sign:"Taurus", ingress:"Apr 20", duration:"Apr 20–May 20",
-      raw:"Taurus season — solar focus on building, earning, consolidating. Material foundations highlighted.",
-      personal:"Sun transiting your 5th house (Taurus) and activating your MC in Taurus. The next 30 days your solar energy is directly aligned with your career apex point. Taurus in the 5th for Capricorn Rising is a powerful window for creative authority — making bold moves that are also structurally sound. Ninth Gate Holdings planning, brand development for kayebuilds, and any high-stakes creative proposal belong in this window.",
-      house:"5th", intensity:4, tags:["MC ACTIVATION","CREATIVE AUTHORITY"],
-      kab:{
-        transit:"Tiphareth (Sun) through the 16th Path (Vav/Hierophant) landing on your Midheaven — your destination Sefira activating the path of permanent encoded teaching at your career apex. Tiphareth is showing you what your integrated solar self looks like at its highest public expression.",
-        arc:"When the Sun transits your MC via Tiphareth/Vav, the Tree is showing you what you look like when the Yesod→Tiphareth crossing is complete. Pay attention to what you feel and what others reflect back to you this month. This is the preview of your integrated self.",
-        path:"16th Path · Vav (ו) · The Hierophant", sefirot:"Tiphareth → Chesed",
-        instruction:"Vav fastens the divine to the earthly at your career peak. What is the one thing you are here to build that is most permanent and most yours? This month, do one concrete thing to formalise it.",
-      },
-    },
-    {
-      planet:"Mars", sign:"Leo", ingress:"Apr 18", duration:"Apr 18–Jun 17",
-      raw:"Mars in Leo: bold action, competitive fire, peak leadership energy.",
-      personal:"Mars in Leo, 8th house — transiting Mars conjunct natal Mars conjunct natal Sun. Triple activation. Six weeks in which the year's most potent drive energy sits exactly where the chart governs equity, capital, and transformative moves. Nothing else comes this hot this year. Vantage's first placements. The equity conversation you've been drafting in your head. Make them happen now or watch the window close.",
-      house:"8th", intensity:5, tags:["TRIPLE ACTIVATION","CAPITAL & LEVERAGE"],
-      kab:{
-        transit:"Geburah (Mars) transiting the 19th Path (Tet/Strength) and entering the same space as your natal Geburah-Tiphareth fusion. Transiting severity amplifying natal severity — the sword arm of the Tree is doubled in your most powerful house.",
-        arc:"This is the most potent transit of the year for your arc. Geburah doubled in the 8th means the force available for crossing from Yesod toward Tiphareth is at maximum. The question is whether you direct it toward the crossing (conscious ambition, leverage, structured power moves) or let it discharge as reactive force.",
-        path:"19th Path · Tet (ט) · Strength/Lust", sefirot:"Geburah → Tiphareth",
-        instruction:"Geburah doubled means the Beast is at full charge. The Lust card requires a sovereign rider — not someone being dragged. For 6 weeks: every major decision goes through a filter of 'is this directed will or reactive force?' Directed will builds the empire. Reactive force burns bridges.",
-      },
-    },
-    {
-      planet:"Venus", sign:"Aries", ingress:"May 6", duration:"May 6–Jun 6",
-      raw:"Venus in Aries — assertive in relationships and money. Bold offers, fast deals.",
-      personal:"Venus entering your 4th house (Aries) — home base, foundations, and private life get a magnetic, direct energy. For business this activates the structural foundations of your operations. Bold offers made about your core infrastructure get traction. Also a window for strengthening the foundations at home — don't neglect the base while building the empire.",
-      house:"4th", intensity:3, tags:["FOUNDATION DEALS","BASE ENERGY"],
-      kab:{
-        transit:"Netzach (Venus) through the 15th Path (Heh/Emperor) in your 4th house — desire and creative magnetism activating sovereign authority in your foundation sector.",
-        arc:"Netzach ascending toward Chokmah via Heh in your 4th means your desire for empire-building is finding its structural container. The Emperor governs your 4th house: the foundations you lay under Venus-Heh in May carry sovereign permanence.",
-        path:"15th Path · Heh (ה) · The Emperor", sefirot:"Netzach → Chokmah",
-        instruction:"Heh means 'window.' Venus is holding a window open in your foundation sector. What base-level structure have you been deferring? Walk through the window — sort the thing you've been avoiding about your operational foundations.",
-      },
-    },
-    {
-      planet:"Mercury", sign:"Gemini", ingress:"May 14", duration:"May 14–May 30",
-      raw:"Mercury in Gemini: fast information, multiple conversations, sharp wit.",
-      personal:"Mercury in your 6th house (Gemini) — daily operations, routines, and work process communications sharpen. Your natal Venus is in Gemini in the 6th, so Mercury transiting here activates that placement. Good window for refining your automation stack, tightening your SOPs, and sharpening the communication systems within TEM and Vantage. Internal efficiency over external noise.",
-      house:"6th", intensity:2, tags:["OPERATIONS","SOPS"],
-      kab:{
-        transit:"Hod (Mercury) through the 17th Path (Zayin/Lovers) in your 6th house — your intellect tool activating the path of discernment in your daily work domain. Zayin is a sword: it separates what is working from what is not.",
-        arc:"Hod is your Soul Urge 8 — your primary crossing tool. When it transits Zayin in your 6th, your systems-thinking is at its most precise for operational refinement. Use it to cut complexity from your daily architecture before June's Jupiter Return window opens.",
-        path:"17th Path · Zayin (ז) · The Lovers", sefirot:"Hod ↔ Binah",
-        instruction:"Audit your automation stack. Which n8n workflows are actually running? Which are theoretical? Zayin cuts cleanly. Remove what doesn't function. Simplify what does. Arrive at June with a leaner operational system.",
-      },
-    },
-  ],
-  yearly: [
-    {
-      planet:"Jupiter", sign:"Cancer", ingress:"Jun 9", duration:"Jun 2026–Jun 2027",
-      raw:"Jupiter in Cancer — expansion through foundations, emotional intelligence. Once-in-12-years activation.",
-      personal:"Jupiter enters the 7th — once-in-twelve-years, the partnership year arrives. And it conjuncts natal Saturn. That is not a gentle expansion; that is grace landing directly on the pillar of your contract structure. New clients. New equity partners. The strategic alliance you would not have been ready for twelve months ago. H2 2026 into 2027 is the peak partnership window of your current arc. Filter less. Meet more.",
-      house:"7th", intensity:5, tags:["PARTNERSHIP PEAK","MAJOR ALLIANCES"],
-      kab:{
-        transit:"Chesed (Jupiter) through the 18th Path (Cheth/Chariot) in your 7th house — divine mercy and expansion flowing into the house of partnerships via the Chariot path. Chesed blesses the contracts and alliances held within Cancer's vessel.",
-        arc:"Chesed conjuncting your natal Binah (Saturn) in Cancer in the 7th is a direct meeting of mercy and structure in your partnership house. This is the Tree resolving the tension between Chesed and Geburah in the domain of your contracts. The result: partnerships that are both expansive and structurally sound. This is the year the right partners appear.",
-        path:"18th Path · Cheth (ח) · The Chariot", sefirot:"Chesed → Geburah",
-        instruction:"The Chariot holds opposing forces and moves forward. Jupiter in your 7th is bringing Chesed's grace to your Saturn-structured partnership house. Be open to alliances that are bigger than what you would have approached before June. The scale of what's available expands. Don't filter it through last year's frame.",
-      },
-    },
-    {
-      planet:"Saturn", sign:"Aries", ingress:"May 2025", duration:"2025–2028",
-      raw:"Saturn in Aries — discipline applied to new ventures. Tests initiative and structured beginnings.",
-      personal:"Saturn through the 4th, for three years, on its ruling signature — the chart's ruler inspecting the foundations. Every entity you register, every equity structure you formalise, every operational base you lay is being graded for permanence. Cut a corner now and Saturn will find it. What survives this transit is load-bearing for the next thirty years. Build accordingly.",
-      house:"4th", intensity:4, tags:["FOUNDATIONS FORGED","30-YEAR INFRASTRUCTURE"],
-      kab:{
-        transit:"Binah (Saturn) through the 15th Path (Heh/Emperor) in your foundational 4th house. Your chart ruler — Binah — building sovereign permanence into your operational base.",
-        arc:"Saturn rules your Capricorn Rising. Saturn transiting your 4th via the Emperor path means Binah is reinforcing the container of your entire operating structure. For your Yesod→Tiphareth crossing, the 4th house foundations are the ground you stand on during the ascent. If the ground isn't solid, the crossing fails. Binah is solidifying it.",
-        path:"15th Path · Heh (ה) · The Emperor", sefirot:"Binah → Chokmah",
-        instruction:"Every corner you cut in your foundational infrastructure right now will be exposed during this transit. Don't cut corners. Register entities properly. Document equity structures. Build the container that can hold what Jupiter in the 7th will bring in June.",
-      },
-    },
-    {
-      planet:"Neptune", sign:"Aries", ingress:"Mar 2025", duration:"2025–2038",
-      raw:"Neptune in Aries — generational dissolving of old identity structures. Visionary self-led archetype emerges.",
-      personal:"Neptune transiting your 4th house (Aries) alongside Saturn — a rare dual activation of your foundations. Neptune dissolves and Saturn solidifies, operating in the same house simultaneously. The result: old ideas of what 'home base' and 'security' look like are dissolving, while new, more Saturn-aligned structures are being built to replace them. Your brand and operational home — kayebuilds, Ninth Gate's structure — is being rebuilt from the ground up with both vision and form.",
-      house:"4th", intensity:3, tags:["VISION + STRUCTURE","FOUNDATION REBUILD"],
-      kab:{
-        transit:"Kether (Neptune) through the 15th Path (Heh/Emperor) in your 4th house simultaneously with Binah (Saturn). Kether and Binah — crown and understanding, the two poles of the left pillar's upper axis — are both active in your foundation house. The undifferentiated divine and the great mother of form are rebuilding your base simultaneously.",
-        arc:"Kether dissolves false foundations while Binah builds true ones. For your arc, this means the very ground you stand on during the Yesod→Tiphareth crossing is being transformed into something more permanently aligned with your actual nature. The foundations that emerge from this dual transit will hold.",
-        path:"15th Path · Heh (ה) · The Emperor", sefirot:"Kether → Chokmah",
-        instruction:"Neptune at Kether level communicates only in atmosphere and felt-sense. When you sit in your foundational space — your home, your core operating environment — what does it feel like? Does it feel like the base of an empire or something you've outgrown? Neptune is showing you what needs to dissolve. Saturn is showing you what needs to be built. Trust both signals.",
-      },
-    },
-    {
-      planet:"Pluto", sign:"Aquarius", ingress:"Nov 2024", duration:"2024–2044",
-      raw:"Pluto in Aquarius — generational transformation of networks, technology, collective systems.",
-      personal:"Pluto in your 2nd house (Aquarius) — the house of money, assets, and self-worth. For Capricorn Rising, the 2nd house is Aquarius — Pluto here for 20 years means your relationship to income, assets, and financial self-concept undergoes a complete transformation across your adult life. Technology-driven income, decentralised assets (crypto), and systems-based wealth are exactly what Pluto in Aquarius in the 2nd house rewards. False income models dissolve. Real ones compound. Ninth Gate, AI automation, and XRP/XLM positions are all directly aligned.",
-      house:"2nd", intensity:4, tags:["WEALTH TRANSFORMATION","20-YEAR ARC"],
-      kab:{
-        transit:"Da'ath/Kether (Pluto) through the 28th Path (Tzaddi/The Star) in your 2nd house — the hidden Sefira of transformative knowledge active in your money and assets sector for 20 years.",
-        arc:"Da'ath is the invisible Sefira — it destroys false knowledge and replaces it with real power. In your 2nd house of self-worth and income, Pluto/Da'ath is systematically removing every false income model and every inherited belief about what you are worth. What replaces it is your actual value — which is considerably larger. The process continues until 2044.",
-        path:"28th Path · Tzaddi (צ) · The Star", sefirot:"Da'ath → Yesod",
-        instruction:"The Star follows The Tower. Each financial structure that Pluto dissolves is making space for a more authentic one. Stop defending income models that Da'ath is already removing. Identify the one income architecture that is most genuinely yours — most aligned with Ninth Gate's actual vision — and put all available energy there.",
-      },
-    },
-  ],
-};
+// ─── TRANSITS — dynamic, computed per user chart ─────────────────────────────
+// The static, Ethan-specific TRANSITS constant has been replaced by
+// computeTransits(userTropicalChart, date, firstName) defined further down
+// (search for "function computeTransits"). The render path calls it via the
+// USER_TRANSITS memo inside App.
 
 const INTENSITY_LABEL = ["","Low","Moderate","Notable","Strong","Peak"];
 const INTENSITY_COLORS = ["","#718096","#718096","#D69E2E","#E07B39","#F6AD55"];
@@ -1311,6 +1144,34 @@ function App({ user, onReset }) {
     }
     return rows;
   }, [USER_NUM, USER_TROPICAL]);
+
+  // ─── TRANSITS — computed per user chart + "now" ─────────────────────────
+  const USER_TRANSITS = React.useMemo(() => {
+    try {
+      return computeTransits(USER_TROPICAL, new Date(), FIRST_NAME);
+    } catch (e) {
+      console.error("[astral-saas] computeTransits failed:", e);
+      return { weekly: [], monthly: [], yearly: [] };
+    }
+    // Recompute only when the user's chart changes (not on every render).
+  }, [USER_TROPICAL, FIRST_NAME]);
+
+  // Per-user Gematria (operating name + legal name) for the Kabbalah gematria tab.
+  const USER_GEMATRIA = React.useMemo(() => {
+    const full = USER_FULL_NAME || FIRST_NAME || "";
+    const parts = (full || "").split(/\s+/).filter(Boolean);
+    const first = parts[0] || FIRST_NAME || "";
+    const last  = parts.length > 1 ? parts[parts.length - 1] : "";
+    const middles = parts.length > 2 ? parts.slice(1, -1) : [];
+    const shortName = (first && last) ? `${first} ${last}` : first;
+    return {
+      full:   { label: full,      raw: calcG(full),     reduced: reduceS(calcG(full)) },
+      short:  { label: shortName, raw: calcG(shortName), reduced: reduceS(calcG(shortName)) },
+      first:  { label: first,     raw: calcG(first),     reduced: reduceS(calcG(first)) },
+      last:   { label: last,      raw: calcG(last),      reduced: reduceS(calcG(last)) },
+      middles: middles.map(m => ({ label: m, raw: calcG(m), reduced: reduceS(calcG(m)) })),
+    };
+  }, [USER_FULL_NAME, FIRST_NAME]);
 
   const isKab = mode === "kab";
   const isVedic = mode === "vedic";
@@ -1945,7 +1806,7 @@ function App({ user, onReset }) {
         )}
 
         {/* TRANSIT CARDS — only in western/kab mode */}
-        {!isVedic&&!isNum&&!isChi&&TRANSITS[tab].map((t,i)=>{
+        {!isVedic&&!isNum&&!isChi&&(USER_TRANSITS[tab]||[]).map((t,i)=>{
           const isOpen=expanded===i;
           const ic=INTENSITY_COLORS[t.intensity];
           const sp=SIGN_PATH[t.sign];
@@ -1990,7 +1851,16 @@ function App({ user, onReset }) {
                       <div className="sl" style={{color:"rgba(255,255,255,.3)"}}>Transit Energy</div>
                       <p className="bt" style={{color:"rgba(255,255,255,.65)",fontStyle:"italic"}}>{t.raw}</p>
                       <div className="ibox">
-                        <div className="sl" style={{color:"rgba(255,215,0,.75)"}}>† For You · Capricorn Rising · Leo Sun 8H · Libra Moon 10H</div>
+                        <div className="sl" style={{color:"rgba(255,215,0,.75)"}}>† For You · {(() => {
+                          const sun = USER_TROPICAL.planets.find(p => planetKey(p.planet) === "Sun");
+                          const moon = USER_TROPICAL.planets.find(p => planetKey(p.planet) === "Moon");
+                          const asc = USER_TROPICAL.ascendant;
+                          const parts = [];
+                          if (asc) parts.push(`${asc.sign} Rising`);
+                          if (sun) parts.push(`${sun.sign} Sun${sun.house?` ${sun.house}H`:""}`);
+                          if (moon) parts.push(`${moon.sign} Moon${moon.house?` ${moon.house}H`:""}`);
+                          return parts.join(" · ");
+                        })()}</div>
                         <p className="bt" style={{color:"rgba(255,255,255,.9)"}}>{t.personal}</p>
                         <div style={{marginTop:9,paddingTop:8,borderTop:"1px solid rgba(255,215,0,.1)"}}>
                           <span style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:8.5,color:"rgba(126,200,200,.7)",letterSpacing:1.5}}>
@@ -2106,21 +1976,29 @@ function App({ user, onReset }) {
             {/* GEMATRIA */}
             {profileTab==="gematria"&&(
               <div>
-                <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8,marginBottom:8}}>
-                  {[G.ethan,G.joshua,G.kay].map(g=>(
-                    <div key={g.label} style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(155,137,212,.15)",borderRadius:10,padding:"10px 12px",textAlign:"center"}}>
-                      <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(255,255,255,.4)",letterSpacing:1,marginBottom:4}}>{g.label}</div>
-                      <div style={{fontFamily:"'Crimson Pro',serif",fontSize:22,color:SEFIROT[g.reduced]?.color||"#B39DDB",fontWeight:600}}>{g.reduced}</div>
-                      <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:10,color:SEFIROT[g.reduced]?.color||"#B39DDB",marginTop:2}}>{SEFIROT[g.reduced]?.name}</div>
-                      <div style={{fontFamily:"'Crimson Pro',serif",fontSize:10,color:"rgba(255,255,255,.25)",marginTop:2}}>raw: {g.raw}</div>
+                {/* Per-word gematria — first, middle(s), last */}
+                {(() => {
+                  const parts = [USER_GEMATRIA.first, ...USER_GEMATRIA.middles, USER_GEMATRIA.last].filter(g => g && g.label);
+                  if (!parts.length) return null;
+                  const cols = Math.min(parts.length, 3);
+                  return (
+                    <div style={{display:"grid",gridTemplateColumns:`repeat(${cols},1fr)`,gap:8,marginBottom:8}}>
+                      {parts.map(g=>(
+                        <div key={g.label} style={{background:"rgba(255,255,255,.03)",border:"1px solid rgba(155,137,212,.15)",borderRadius:10,padding:"10px 12px",textAlign:"center"}}>
+                          <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(255,255,255,.4)",letterSpacing:1,marginBottom:4}}>{g.label}</div>
+                          <div style={{fontFamily:"'Crimson Pro',serif",fontSize:22,color:SEFIROT[g.reduced]?.color||"#B39DDB",fontWeight:600}}>{g.reduced}</div>
+                          <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:10,color:SEFIROT[g.reduced]?.color||"#B39DDB",marginTop:2}}>{SEFIROT[g.reduced]?.name}</div>
+                          <div style={{fontFamily:"'Crimson Pro',serif",fontSize:10,color:"rgba(255,255,255,.25)",marginTop:2}}>raw: {g.raw}</div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  );
+                })()}
                 <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8,marginBottom:14}}>
-                  {[G.ethanKay,G.full].map(g=>{
-                    const isOp=g.label==="Ethan Kay";
+                  {[USER_GEMATRIA.short, USER_GEMATRIA.full].filter(g => g && g.label).map((g,gi)=>{
+                    const isOp = gi === 0; // short (operating) name first
                     return(
-                      <div key={g.label} style={{background:isOp?"rgba(255,215,0,.06)":"rgba(155,137,212,.06)",
+                      <div key={g.label+gi} style={{background:isOp?"rgba(255,215,0,.06)":"rgba(155,137,212,.06)",
                         border:`1px solid ${isOp?"rgba(255,215,0,.3)":"rgba(155,137,212,.25)"}`,borderRadius:10,padding:"10px 12px",textAlign:"center"}}>
                         <div style={{fontFamily:"'IBM Plex Mono',monospace",fontSize:9,color:"rgba(255,255,255,.4)",letterSpacing:1,marginBottom:4}}>{g.label}</div>
                         <div style={{fontFamily:"'Crimson Pro',serif",fontSize:22,color:isOp?"#FFD700":SEFIROT[g.reduced]?.color||"#B39DDB",fontWeight:600}}>{g.reduced}</div>
@@ -2133,9 +2011,9 @@ function App({ user, onReset }) {
                 </div>
                 <div style={{padding:"12px 14px",background:"rgba(155,137,212,.05)",border:"1px solid rgba(155,137,212,.12)",borderRadius:10}}>
                   <p className="bt" style={{color:"rgba(255,255,255,.8)",fontSize:13}}>
-                    <strong style={{color:"#B0C4DE"}}>Ethan Joshua Kay</strong> → {G.full.reduced} → <strong style={{color:SEFIROT[G.full.reduced]?.color}}>{SEFIROT[G.full.reduced]?.name}</strong> — the first flash of divine will at the top of the right pillar. Your deepest root signature.<br/><br/>
-                    <strong style={{color:"#FFD700"}}>Ethan Kay</strong> → {G.ethanKay.reduced} → <strong style={{color:"#FFD700"}}>{SEFIROT[G.ethanKay.reduced]?.name}</strong> — your destination Sefira. You are not moving toward Tiphareth. You are remembering what Ethan Kay already is.<br/><br/>
-                    <strong style={{color:"#DC143C"}}>Joshua</strong> → {G.joshua.reduced} → <strong style={{color:"#DC143C"}}>{SEFIROT[G.joshua.reduced]?.name}</strong> — the warrior name, the force of the crossing. Geburah between Chokmah and Tiphareth: severity in service of integration.
+                    <strong style={{color:"#B0C4DE"}}>{USER_GEMATRIA.full.label}</strong> → {USER_GEMATRIA.full.reduced} → <strong style={{color:SEFIROT[USER_GEMATRIA.full.reduced]?.color}}>{SEFIROT[USER_GEMATRIA.full.reduced]?.name}</strong> — your legal-name signature. The reduced gematria of the name on your birth certificate lands on this Sefira; read it as the root Kabbalistic weight your full name carries.<br/><br/>
+                    <strong style={{color:"#FFD700"}}>{USER_GEMATRIA.short.label}</strong> → {USER_GEMATRIA.short.reduced} → <strong style={{color:SEFIROT[USER_GEMATRIA.short.reduced]?.color||"#FFD700"}}>{SEFIROT[USER_GEMATRIA.short.reduced]?.name}</strong> — your operating-name signature. The name you use day-to-day reduces to this Sefira; it is the current you draw on in ordinary decisions.<br/><br/>
+                    When the two reduce to different sefirot, each name gives access to a different current. Use the legal name consciously for major, long-horizon decisions; use the operating name for everyday work.
                   </p>
                 </div>
               </div>
@@ -2920,6 +2798,369 @@ const DASHA_COLOR = {
   Jupiter: "#FFA500", Saturn: "#8B9DC3", Mercury: "#89CFF0", Ketu: "#9370DB",
   Venus: "#F8B8D0",
 };
+
+// ─── TRANSITS ENGINE (dynamic per user) ───────────────────────────────────
+// computeTransits(userTropicalChart, currentDate, firstName)
+// Returns { weekly, monthly, yearly } — each an array of transit entries
+// with the same shape the render expects: { planet, sign, ingress, duration,
+// house, raw, personal, intensity, tags, kab }.
+//
+// Implementation strategy:
+//   - Uses globally-loaded Astronomy (astronomy-engine v2.1.19).
+//   - For each transiting body, computes current ecliptic longitude →
+//     sign + degree, projects into user's whole-sign houses (via their
+//     ascendant sign), checks for tight aspects to natal planets.
+//   - Moon is bucketed into "weekly" (next 4 sign ingresses).
+//   - Sun / Mercury / Venus / Mars → monthly.
+//   - Jupiter / Saturn / Uranus / Neptune / Pluto → yearly.
+//   - Generates prose from PLANET_IN_HOUSE, SIGN_PATH, ASPECT_MEANINGS
+//     + per-planet templates; inserts first name via {FN} substitution.
+
+const TRANSIT_BODIES = [
+  "Sun","Moon","Mercury","Venus","Mars","Jupiter","Saturn","Uranus","Neptune","Pluto",
+];
+
+// Bucket each planet's transit by natural cadence.
+const TRANSIT_BUCKET = {
+  Moon:    "weekly",
+  Sun:     "monthly",
+  Mercury: "monthly",
+  Venus:   "monthly",
+  Mars:    "monthly",
+  Jupiter: "yearly",
+  Saturn:  "yearly",
+  Uranus:  "yearly",
+  Neptune: "yearly",
+  Pluto:   "yearly",
+};
+
+// Peak intensity per transiting body (1-5).
+const TRANSIT_INTENSITY = {
+  Moon: 3, Sun: 3, Mercury: 2, Venus: 3, Mars: 4,
+  Jupiter: 5, Saturn: 4, Uranus: 3, Neptune: 3, Pluto: 4,
+};
+
+// Short lyrical signature for each transiting body (used in "raw" prose).
+const PLANET_TRANSIT_FLAVOR = {
+  Sun:     "The Sun illuminates the house it visits — identity, vitality, and focus land here for the next ~30 days.",
+  Moon:    "The Moon passes through quickly — the emotional register leans into this house's themes for ~2.5 days.",
+  Mercury: "Mercury speeds up communication, writing, and thought in the house it visits — deals and language gain traction.",
+  Venus:   "Venus sweetens relationships, money, and aesthetic life in the house it visits — attraction and agreement come more easily.",
+  Mars:    "Mars drives, pushes, competes — the house it visits becomes a site of directed will and friction.",
+  Jupiter: "Jupiter expands, blesses, and enlarges what it touches — a once-in-12-years window of growth in this house.",
+  Saturn:  "Saturn tests, structures, and demands integrity — the house it visits is audited for durability.",
+  Uranus:  "Uranus disrupts, electrifies, and liberates — expect the unexpected in this house across its 7-year passage.",
+  Neptune: "Neptune dissolves boundaries and spiritualises — the house it visits becomes dreamlike, mystified, and occasionally unclear.",
+  Pluto:   "Pluto transforms from the roots up — a generational dismantling and rebuilding of the house it occupies.",
+};
+
+// Standard orbs for aspect detection (degrees).
+const ASPECT_DEFS = [
+  { name: "conjunction", angle: 0,   orb: 3 },
+  { name: "opposition",  angle: 180, orb: 3 },
+  { name: "square",      angle: 90,  orb: 3 },
+  { name: "trine",       angle: 120, orb: 3 },
+];
+
+function _angularDiff(a, b) {
+  let d = Math.abs(a - b) % 360;
+  if (d > 180) d = 360 - d;
+  return d;
+}
+
+// Ecliptic longitude of body at given JS Date, via Astronomy-engine.
+function _longitudeAt(bodyName, date) {
+  if (typeof Astronomy === "undefined") return null;
+  try {
+    const t = new Astronomy.AstroTime(date);
+    if (bodyName === "Moon") {
+      const v = Astronomy.GeoMoon(t);
+      const e = Astronomy.Ecliptic(v);
+      let L = e.elon; while (L < 0) L += 360; return L % 360;
+    }
+    const v = Astronomy.GeoVector(Astronomy.Body[bodyName], t, true);
+    const e = Astronomy.Ecliptic(v);
+    let L = e.elon; while (L < 0) L += 360; return L % 360;
+  } catch (e) {
+    return null;
+  }
+}
+
+function _signFromLon(lon) {
+  const L = ((lon % 360) + 360) % 360;
+  return SIGNS[Math.floor(L / 30)];
+}
+function _signIdx(sign) { return SIGNS.indexOf(sign); }
+
+// Find the Date at which the body next crosses into a new zodiac sign.
+// Step forward by coarse increments then refine with bisection.
+function _nextIngressDate(bodyName, startDate, maxDays) {
+  const L0 = _longitudeAt(bodyName, startDate);
+  if (L0 == null) return null;
+  const sign0 = Math.floor(L0 / 30);
+  const stepHours = bodyName === "Moon" ? 2 : bodyName === "Sun" || bodyName === "Mercury" || bodyName === "Venus" || bodyName === "Mars" ? 12 : 72;
+  const maxMs = (maxDays || 400) * 86400 * 1000;
+  let prev = startDate.getTime();
+  let prevL = L0;
+  for (let t = prev + stepHours * 3600 * 1000; t < prev + maxMs; t += stepHours * 3600 * 1000) {
+    const d = new Date(t);
+    const L = _longitudeAt(bodyName, d);
+    if (L == null) return null;
+    const sign = Math.floor(L / 30);
+    // Crossed into a new sign (accounting for retrograde — sign changed)
+    if (sign !== sign0) {
+      // Bisect between prev and t for precision (~minutes)
+      let lo = prev, hi = t;
+      for (let i = 0; i < 24; i++) {
+        const mid = (lo + hi) / 2;
+        const Lm = _longitudeAt(bodyName, new Date(mid));
+        if (Lm == null) break;
+        if (Math.floor(Lm / 30) === sign0) lo = mid; else hi = mid;
+      }
+      return new Date(hi);
+    }
+    prev = t;
+    prevL = L;
+  }
+  return null;
+}
+
+// Find the Date at which the body previously entered its current sign.
+function _previousIngressDate(bodyName, startDate, maxDays) {
+  const L0 = _longitudeAt(bodyName, startDate);
+  if (L0 == null) return null;
+  const sign0 = Math.floor(L0 / 30);
+  const stepHours = bodyName === "Moon" ? 2 : bodyName === "Sun" || bodyName === "Mercury" || bodyName === "Venus" || bodyName === "Mars" ? 12 : 72;
+  const maxMs = (maxDays || 400) * 86400 * 1000;
+  let prev = startDate.getTime();
+  for (let t = prev - stepHours * 3600 * 1000; t > prev - maxMs; t -= stepHours * 3600 * 1000) {
+    const d = new Date(t);
+    const L = _longitudeAt(bodyName, d);
+    if (L == null) return null;
+    const sign = Math.floor(L / 30);
+    if (sign !== sign0) {
+      // Bisect between t and prev
+      let lo = t, hi = prev;
+      for (let i = 0; i < 24; i++) {
+        const mid = (lo + hi) / 2;
+        const Lm = _longitudeAt(bodyName, new Date(mid));
+        if (Lm == null) break;
+        if (Math.floor(Lm / 30) === sign0) hi = mid; else lo = mid;
+      }
+      return new Date(hi);
+    }
+    prev = t;
+  }
+  return null;
+}
+
+function _fmtDate(d) {
+  if (!(d instanceof Date) || isNaN(d)) return "—";
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${months[d.getMonth()]} ${d.getDate()} ${d.getFullYear()}`;
+}
+function _fmtShortDate(d) {
+  if (!(d instanceof Date) || isNaN(d)) return "—";
+  const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${months[d.getMonth()]} ${d.getDate()}`;
+}
+
+// Whole-sign house for a given sign given user's ascendant sign.
+function _houseForSign(sign, ascSign) {
+  const a = _signIdx(ascSign);
+  const s = _signIdx(sign);
+  if (a < 0 || s < 0) return null;
+  return ((s - a + 12) % 12) + 1;
+}
+
+// Detect tight aspects between transiting longitude and natal planets.
+function _detectAspects(transitLon, natalPlanets) {
+  const hits = [];
+  for (const p of (natalPlanets || [])) {
+    if (p == null || p.longitude == null) continue;
+    const diff = _angularDiff(transitLon, p.longitude);
+    for (const a of ASPECT_DEFS) {
+      if (Math.abs(diff - a.angle) <= a.orb) {
+        const natalKey = planetKey(p.planet);
+        hits.push({
+          aspect: a.name,
+          natalPlanet: natalKey,
+          natalSign: p.sign,
+          natalHouse: p.house,
+          orb: Math.abs(diff - a.angle),
+        });
+        break; // one aspect per natal planet
+      }
+    }
+  }
+  return hits;
+}
+
+// Build the `personal` prose for a transit entry.
+function _transitPersonalProse(planet, sign, house, aspects, firstName) {
+  const FN = firstName || "You";
+  const hseInterp = (typeof PLANET_IN_HOUSE !== "undefined" && PLANET_IN_HOUSE[planet])
+                    ? PLANET_IN_HOUSE[planet][house] || "" : "";
+  const houseTheme = (typeof HOUSE_THEMES !== "undefined") ? HOUSE_THEMES[ordinal(house)] || "" : "";
+  let prose = "";
+  if (hseInterp) {
+    prose = `${FN}, ${planet} is transiting your ${ordinal(house)} house (${sign}). ${hseInterp}`;
+  } else {
+    prose = `${FN}, ${planet} is transiting your ${ordinal(house)} house (${sign}) — ${houseTheme.toLowerCase()}.`;
+  }
+  if (aspects && aspects.length) {
+    const top = aspects.sort((a,b)=>a.orb-b.orb).slice(0,2);
+    for (const a of top) {
+      const am = (typeof ASPECT_MEANINGS !== "undefined") ? ASPECT_MEANINGS[a.aspect] : null;
+      const amBody = am && am.body ? am.body.split(". ")[0] + "." : "";
+      const hseStr = a.natalHouse ? ` in your ${ordinal(a.natalHouse)} house` : "";
+      prose += ` Activates your natal ${a.natalPlanet}${hseStr} via ${a.aspect} (orb ${a.orb.toFixed(1)}°). ${amBody}`;
+    }
+  }
+  return prose;
+}
+
+// Build the `kab` overlay for a transit entry.
+function _transitKabOverlay(planet, sign, house, firstName) {
+  const FN = firstName || "You";
+  const sefira = PLANET_SEFIRA[planet] || "";
+  const sefNum = Object.keys(SEFIROT).find(k => SEFIROT[k].name === sefira);
+  const sefMeaning = sefNum ? SEFIROT[sefNum].meaning : "";
+  const sp = SIGN_PATH[sign];
+  const pathStr = sp ? `${sp.n}th Path · ${sp.letter} · ${sp.tarot}` : "";
+  const sefirotPair = sefira ? `${sefira} active via ${sign}${sp ? " / " + sp.tarot : ""}` : "";
+  const transitText = sefira && sp
+    ? `${sefira} (${planet}) moving through the ${sp.n}th Path (${sp.letter}/${sp.tarot}) in your ${ordinal(house)} house. ${sefMeaning.split("—").slice(1).join("—").trim() || sefMeaning}`
+    : `${planet} transiting ${sign} in your ${ordinal(house)} house.`;
+  const arcText = sefira
+    ? `${FN}, this transit brings ${sefira}'s current into the ${ordinal(house)} house domain. Whatever that sphere governs in your life becomes a site of ${sefira.toLowerCase()}-work for the duration of the transit. The path of ${sp ? sp.tarot : sign} is the mode through which that work is done — not the result, but the method.`
+    : `${FN}, ${planet} in ${sign} activates the ${ordinal(house)} house as a site of conscious work.`;
+  const instruction = sp
+    ? `The ${sp.tarot} path asks a specific inner question. For ${planet} through ${sign} in your ${ordinal(house)} house: what in this domain of your life is ready for ${sp.tarot.toLowerCase()}'s lesson? Name one concrete action that matches the path's instruction and commit to it inside the transit window.`
+    : `Name one concrete action that brings this planet's force into directed service of the house it visits, and commit to it inside the transit window.`;
+  return { transit: transitText, arc: arcText, path: pathStr, sefirot: sefirotPair, instruction };
+}
+
+// Build human-readable tags from planet/house/aspects.
+function _buildTags(planet, house, aspects) {
+  const tags = [];
+  if (planet === "Jupiter")  tags.push("EXPANSION WINDOW");
+  if (planet === "Saturn")   tags.push("STRUCTURE TEST");
+  if (planet === "Mars")     tags.push("DRIVE ACTIVATED");
+  if (planet === "Venus")    tags.push("RELATIONAL SWEETENER");
+  if (planet === "Mercury")  tags.push("COMMS SHARPENED");
+  if (planet === "Sun")      tags.push("IDENTITY FOCUS");
+  if (planet === "Moon")     tags.push("EMOTIONAL TIDE");
+  if (planet === "Uranus")   tags.push("DISRUPTION");
+  if (planet === "Neptune")  tags.push("DISSOLUTION");
+  if (planet === "Pluto")    tags.push("DEEP TRANSFORMATION");
+  if (house === 1)  tags.push("IDENTITY");
+  if (house === 2)  tags.push("RESOURCES");
+  if (house === 4)  tags.push("FOUNDATIONS");
+  if (house === 5)  tags.push("CREATIVE AUTHORITY");
+  if (house === 7)  tags.push("PARTNERSHIP");
+  if (house === 8)  tags.push("POWER & LEVERAGE");
+  if (house === 10) tags.push("PUBLIC FACE");
+  if (house === 11) tags.push("NETWORK");
+  if (aspects && aspects.length) {
+    const conj = aspects.find(a => a.aspect === "conjunction");
+    if (conj) tags.push(`CONJUNCT NATAL ${conj.natalPlanet.toUpperCase()}`);
+    const opp  = aspects.find(a => a.aspect === "opposition");
+    if (opp)  tags.push(`OPPOSES NATAL ${opp.natalPlanet.toUpperCase()}`);
+  }
+  return tags.slice(0, 4);
+}
+
+function computeTransits(userTropicalChart, currentDate, firstName) {
+  const out = { weekly: [], monthly: [], yearly: [] };
+  if (typeof Astronomy === "undefined") return out;
+  const now = currentDate instanceof Date ? currentDate : new Date();
+  const FN = firstName || "You";
+
+  const ascSign = userTropicalChart?.ascendant?.sign;
+  const natalPlanets = (userTropicalChart?.planets || []).slice();
+
+  // Weekly: Moon's next 4 ingresses (Moon + current sign + next 3 sign-changes).
+  try {
+    let cursor = new Date(now);
+    // Start with moon at "now" and then 3 subsequent ingresses.
+    for (let i = 0; i < 4; i++) {
+      const L = _longitudeAt("Moon", cursor);
+      if (L == null) break;
+      const sign = _signFromLon(L);
+      const prevIngress = i === 0 ? _previousIngressDate("Moon", cursor, 4) : cursor;
+      const nextIngress = _nextIngressDate("Moon", new Date(cursor.getTime() + 3600 * 1000), 4);
+      const ingress = prevIngress || cursor;
+      const duration = nextIngress
+        ? `${_fmtShortDate(prevIngress || cursor)} – ${_fmtShortDate(nextIngress)}`
+        : `${_fmtShortDate(prevIngress || cursor)} onwards`;
+      const house = ascSign ? _houseForSign(sign, ascSign) : null;
+      const aspects = _detectAspects(L, natalPlanets);
+      const houseFallback = house || 1;
+      const raw = PLANET_TRANSIT_FLAVOR.Moon + ` Moon in ${sign} draws emotion into ${sign}'s register.`;
+      const personal = _transitPersonalProse("Moon", sign, houseFallback, aspects, FN);
+      const kab = _transitKabOverlay("Moon", sign, houseFallback, FN);
+      out.weekly.push({
+        planet: "Moon",
+        sign,
+        ingress: _fmtDate(prevIngress || cursor),
+        duration,
+        house: ordinal(houseFallback),
+        raw,
+        personal,
+        intensity: Math.min(5, TRANSIT_INTENSITY.Moon + (aspects.length ? 1 : 0)),
+        tags: _buildTags("Moon", houseFallback, aspects),
+        kab,
+      });
+      if (!nextIngress) break;
+      cursor = new Date(nextIngress.getTime() + 60 * 60 * 1000);
+    }
+  } catch (e) { /* fail quietly */ }
+
+  // Monthly: Sun / Mercury / Venus / Mars (and any other body presently in a sign that will change within 60 days).
+  // Yearly: Jupiter / Saturn / Uranus / Neptune / Pluto.
+  for (const body of TRANSIT_BODIES) {
+    if (body === "Moon") continue;
+    const bucket = TRANSIT_BUCKET[body];
+    const L = _longitudeAt(body, now);
+    if (L == null) continue;
+    const sign = _signFromLon(L);
+    const prev = _previousIngressDate(body, now, bucket === "yearly" ? 4000 : 400);
+    const next = _nextIngressDate(body, now, bucket === "yearly" ? 4000 : 400);
+    const house = ascSign ? _houseForSign(sign, ascSign) : 1;
+    const aspects = _detectAspects(L, natalPlanets);
+    const raw = PLANET_TRANSIT_FLAVOR[body] || `${body} in ${sign} — generic transit energy.`;
+    const personal = _transitPersonalProse(body, sign, house, aspects, FN);
+    const kab = _transitKabOverlay(body, sign, house, FN);
+    const entry = {
+      planet: body,
+      sign,
+      ingress: prev ? _fmtDate(prev) : _fmtDate(now),
+      duration: next
+        ? `${_fmtShortDate(prev || now)} ${prev ? prev.getFullYear() : now.getFullYear()} – ${_fmtShortDate(next)} ${next.getFullYear()}`
+        : `${_fmtShortDate(prev || now)} ${prev ? prev.getFullYear() : now.getFullYear()} onwards`,
+      house: ordinal(house),
+      raw,
+      personal,
+      intensity: Math.min(5, TRANSIT_INTENSITY[body] + (aspects.length ? 1 : 0)),
+      tags: _buildTags(body, house, aspects),
+      kab,
+    };
+    if (bucket === "yearly") out.yearly.push(entry);
+    else out.monthly.push(entry);
+  }
+
+  // Sort: weekly chronologically (Moon ingresses in order), monthly/yearly by intensity desc.
+  const byIntensity = (a,b) => (b.intensity||0) - (a.intensity||0);
+  out.weekly.sort((a,b) => {
+    const da = Date.parse(a.ingress); const db = Date.parse(b.ingress);
+    if (!isNaN(da) && !isNaN(db)) return da - db;
+    return 0;
+  });
+  out.monthly.sort(byIntensity);
+  out.yearly.sort(byIntensity);
+  return out;
+}
 
 // ─── NUMEROLOGY ENGINE (dynamic per user) ─────────────────────────────────
 function computeNumerology(fullName, dob, currentYear, firstName) {
