@@ -1117,7 +1117,13 @@ function App({ user, onReset }) {
 
         /* ── Starfield mount ─────────────────────────────────────── */
         #stars-mount{position:fixed;inset:0;z-index:0;pointer-events:none;}
+        /* Reading plane — darkens the stars behind content for legibility */
+        #stars-mount::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 70% 85% at 50% 50%, rgba(10,14,26,0.82) 0%, rgba(10,14,26,0.72) 40%, rgba(10,14,26,0.42) 70%, rgba(10,14,26,0) 100%);pointer-events:none;}
         .page{position:relative;z-index:1;}
+        .page::before{content:"";position:fixed;inset:0;z-index:-1;background:linear-gradient(180deg, rgba(10,14,26,0) 0%, rgba(10,14,26,0.15) 10%, rgba(10,14,26,0.35) 30%, rgba(10,14,26,0.35) 70%, rgba(10,14,26,0.15) 90%, rgba(10,14,26,0) 100%);pointer-events:none;}
+        .page > *{position:relative;}
+        .section-lead, .bt, .fullNote, p.bt, .entry-text, .num-body, .ed-table, .entry-body{position:relative;}
+        .reading-plate{background:rgba(10,14,26,0.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border-radius:4px;padding:14px 18px;}
 
         /* ── Staggered fade+rise on load ──────────────────────────── */
         @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
