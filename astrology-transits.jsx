@@ -1530,10 +1530,83 @@ function App({ user, onReset }) {
 
         .crow{display:grid;grid-template-columns:1.3fr 1fr 60px 1.5fr;gap:16px;padding:10px 0;border-bottom:1px solid var(--rule);align-items:center;}
         @media(max-width:720px){.crow{grid-template-columns:1fr;gap:4px;}}
+
+        /* ── Announcement bar (top-of-page) ───────────────────────── */
+        .announce-bar{width:100%;background:linear-gradient(90deg,rgba(200,160,82,0.04),rgba(200,160,82,0.10),rgba(200,160,82,0.04));border-bottom:1px solid rgba(200,160,82,0.22);position:sticky;top:0;z-index:30;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);}
+        .announce-inner{max-width:920px;margin:0 auto;padding:9px 32px;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;text-align:center;}
+        .announce-sigil{font-family:'Fraunces',serif;font-size:12px;color:var(--brass);line-height:1;opacity:0.9;}
+        .announce-text{font-family:'Crimson Pro',serif;font-style:italic;font-size:13.5px;color:var(--ink-dim);letter-spacing:0.005em;}
+        .announce-link{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--brass);text-decoration:none;border-bottom:1px solid rgba(200,160,82,0.4);padding-bottom:1px;transition:color .2s,border-color .2s;}
+        .announce-link:hover{color:var(--ink);border-bottom-color:var(--ink);}
+
+        /* ── J.P. Morgan pulled-quote (hero) ──────────────────────── */
+        .jpm-quote{margin:22px 0 4px;padding:14px 0 14px 18px;border-left:1px solid rgba(200,160,82,0.45);font-family:'Fraunces',serif;font-variation-settings:"opsz" 48;font-style:italic;font-weight:500;font-size:16px;line-height:1.45;color:rgba(200,160,82,0.92);letter-spacing:-0.005em;max-width:540px;}
+        .jpm-quote cite{display:block;font-family:'IBM Plex Mono',monospace;font-style:normal;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--ink-faint);margin-top:8px;}
+        .jpm-quote .jpm-ast{font-family:'Fraunces',serif;font-size:14px;color:var(--brass);text-decoration:none;margin-left:4px;vertical-align:super;line-height:0;opacity:0.8;transition:opacity .2s;}
+        .jpm-quote .jpm-ast:hover{opacity:1;}
+
+        /* ── Intelligence Layer section ───────────────────────────── */
+        .ilayer-wrap{margin:72px 0 48px;padding:0;position:relative;}
+        .ilayer-eyebrow{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.28em;text-transform:uppercase;color:var(--brass);margin-bottom:14px;text-align:center;}
+        .ilayer-title{font-family:'Fraunces',serif;font-variation-settings:"opsz" 144;font-weight:600;font-size:clamp(34px,5.2vw,48px);line-height:1.02;letter-spacing:-0.025em;color:var(--ink);margin:0 auto 14px;text-align:center;max-width:720px;}
+        .ilayer-sub{font-family:'Crimson Pro',serif;font-style:italic;font-size:17px;line-height:1.55;color:var(--ink-dim);margin:0 auto 38px;max-width:560px;text-align:center;}
+        .ilayer-rule{width:48px;height:1px;background:var(--brass);margin:0 auto 40px;border:0;opacity:0.8;}
+        .ilayer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;margin:0 auto;}
+        @media(min-width:760px){.ilayer-grid{grid-template-columns:repeat(2,1fr);}}
+        @media(min-width:1024px){.ilayer-grid{grid-template-columns:repeat(3,1fr);}}
+        .ilayer-card{position:relative;background:rgba(255,255,255,0.035);border:1px solid rgba(200,160,82,0.35);border-radius:2px;padding:28px 24px 22px;display:flex;flex-direction:column;gap:12px;transition:transform .5s cubic-bezier(.2,.7,.3,1),box-shadow .5s ease,border-color .3s ease,background .3s ease;opacity:0;transform:translateY(18px);}
+        .ilayer-card.is-visible{opacity:1;transform:translateY(0);}
+        .ilayer-card:hover{background:rgba(255,255,255,0.055);border-color:rgba(200,160,82,0.75);box-shadow:0 0 30px rgba(200,160,82,0.3);}
+        .ilayer-card .ilayer-sigil{width:28px;height:28px;color:var(--brass);margin-bottom:4px;opacity:0.85;}
+        .ilayer-card .ilayer-sigil svg{width:100%;height:100%;display:block;stroke:currentColor;fill:none;stroke-width:1.1;}
+        .ilayer-card h3{font-family:'Fraunces',serif;font-variation-settings:"opsz" 48;font-weight:600;font-size:22px;line-height:1.18;letter-spacing:-0.015em;color:var(--ink);margin:0;}
+        .ilayer-card .ilayer-desc{font-family:'Crimson Pro',serif;font-style:italic;font-weight:400;font-size:15.5px;line-height:1.55;color:var(--ink-dim);margin:0;flex-grow:1;}
+        .ilayer-cta{display:inline-flex;align-items:center;gap:8px;margin-top:6px;align-self:flex-start;padding:9px 14px;background:transparent;border:1px solid rgba(200,160,82,0.55);color:var(--brass);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;text-decoration:none;transition:background .2s ease,color .2s ease,border-color .2s ease,letter-spacing .2s ease;cursor:pointer;}
+        .ilayer-cta:hover{background:var(--brass);color:var(--bg-base);border-color:var(--brass);letter-spacing:0.24em;}
+        .ilayer-cta .ilayer-arrow{font-family:'Fraunces',serif;font-size:13px;line-height:1;transform:translateY(-0.5px);}
+
+        /* Staggered delays (progressive reveal) */
+        .ilayer-card.is-visible:nth-child(1){transition-delay:0ms;}
+        .ilayer-card.is-visible:nth-child(2){transition-delay:70ms;}
+        .ilayer-card.is-visible:nth-child(3){transition-delay:140ms;}
+        .ilayer-card.is-visible:nth-child(4){transition-delay:210ms;}
+        .ilayer-card.is-visible:nth-child(5){transition-delay:280ms;}
+        .ilayer-card.is-visible:nth-child(6){transition-delay:350ms;}
+        .ilayer-card.is-visible:nth-child(7){transition-delay:420ms;}
+
+        /* Constellation ornament between sections */
+        .constellation-ornament{display:flex;align-items:center;justify-content:center;gap:14px;margin:56px auto 40px;max-width:640px;opacity:0.85;}
+        .constellation-ornament .line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(200,160,82,0.45),transparent);}
+        .constellation-ornament svg{width:140px;height:22px;color:var(--brass);opacity:0.9;}
+
+        /* Section-level CTA footer */
+        .ilayer-footcta{margin:40px auto 0;text-align:center;}
+        .ilayer-footcta a{display:inline-flex;align-items:center;gap:10px;padding:14px 26px;border:1px solid var(--brass);color:var(--brass);font-family:'Fraunces',serif;font-size:13px;letter-spacing:0.2em;text-transform:uppercase;text-decoration:none;transition:background .25s ease,color .25s ease;}
+        .ilayer-footcta a:hover{background:var(--brass);color:var(--bg-base);}
+        .ilayer-footcta .foot-hint{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--ink-faint);margin-top:14px;}
+
+        /* Footnote for J.P. Morgan */
+        .footnote-block{margin-top:40px;padding:18px 22px;border-left:1px solid rgba(200,160,82,0.35);background:rgba(255,255,255,0.02);font-family:'Crimson Pro',serif;font-size:13.5px;line-height:1.62;color:var(--ink-dim);font-style:italic;max-width:640px;}
+        .footnote-block strong{color:var(--brass);font-family:'IBM Plex Mono',monospace;font-style:normal;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;margin-right:10px;}
+
+        @media(prefers-reduced-motion:reduce){
+          .ilayer-card{opacity:1;transform:none;transition:none;}
+          .ilayer-card:hover{box-shadow:none;}
+        }
 `}</style>
 
       {/* Starfield mount — sibling file owns render. Leave empty. */}
       <div id="stars-mount" aria-hidden="true"></div>
+
+      {/* ── Announcement bar — drives upgrade awareness ─────────────── */}
+      <div className="announce-bar" role="region" aria-label="Announcement">
+        <div className="announce-inner">
+          <span className="announce-sigil" aria-hidden="true">§</span>
+          <span className="announce-text">New — Daily Guidance + AI Oracle launching soon</span>
+          <span aria-hidden="true" style={{color:"var(--ink-faint)",fontFamily:"'Fraunces',serif",fontSize:13}}>·</span>
+          <a className="announce-link" href="https://astral-saas.vercel.app" target="_blank" rel="noopener noreferrer">Reserve your spot →</a>
+        </div>
+      </div>
 
       <div style={{maxWidth:920,margin:"0 auto",padding:"0 32px 96px",position:"relative",zIndex:1}}>
 
@@ -1558,6 +1631,11 @@ function App({ user, onReset }) {
           <div className="eyebrow">Volume I — {modeLabel} reading · {CURRENT_YEAR}</div>
           <h1>{heroTitle}</h1>
           <p className="sub">{heroSub}</p>
+          <blockquote className="jpm-quote">
+            "Millionaires don't use astrology. Billionaires do."
+            <a href="#jpm-footnote" className="jpm-ast" aria-label="See footnote about Evangeline Adams">*</a>
+            <cite>— J.P. Morgan</cite>
+          </blockquote>
           <div className="brass-rule"/>
           <p className="marginalia" style={{marginBottom:10}}>
             {USER_FULL_NAME} — {formatDOB(USER_DOB)}{USER_TIME_UNKNOWN?" — time withheld":` — ${pad2(USER_TIME.h)}:${pad2(USER_TIME.m)}`}{USER.city?` — ${USER.city}`:""}
@@ -2895,13 +2973,205 @@ function App({ user, onReset }) {
         </div>
         {/* end .mode-section */}
 
+        {/* Constellation ornament — divider before Intelligence Layer */}
+        <div className="constellation-ornament" aria-hidden="true">
+          <span className="line"/>
+          <svg viewBox="0 0 140 22" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" strokeWidth="1">
+            <circle cx="10" cy="11" r="1.6" fill="currentColor"/>
+            <circle cx="38" cy="5" r="1.1" fill="currentColor"/>
+            <circle cx="58" cy="17" r="1.4" fill="currentColor"/>
+            <circle cx="82" cy="7" r="1.2" fill="currentColor"/>
+            <circle cx="104" cy="15" r="1.1" fill="currentColor"/>
+            <circle cx="130" cy="11" r="1.6" fill="currentColor"/>
+            <path d="M10 11 L38 5 L58 17 L82 7 L104 15 L130 11" strokeOpacity="0.55"/>
+          </svg>
+          <span className="line"/>
+        </div>
+
+        {/* ── INTELLIGENCE LAYER — premium teasers driving to Next.js app ── */}
+        <IntelligenceLayer/>
+
+        {/* Constellation ornament — closing divider */}
+        <div className="constellation-ornament" aria-hidden="true">
+          <span className="line"/>
+          <svg viewBox="0 0 140 22" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" strokeWidth="1">
+            <circle cx="10" cy="11" r="1.2" fill="currentColor"/>
+            <circle cx="36" cy="14" r="1.1" fill="currentColor"/>
+            <circle cx="70" cy="5" r="1.8" fill="currentColor"/>
+            <circle cx="104" cy="14" r="1.1" fill="currentColor"/>
+            <circle cx="130" cy="11" r="1.2" fill="currentColor"/>
+            <path d="M10 11 L36 14 L70 5 L104 14 L130 11" strokeOpacity="0.55"/>
+          </svg>
+          <span className="line"/>
+        </div>
+
         <hr className="chapter-rule"/>
 
         <p className="marginalia" style={{textAlign:"center",marginTop:28,fontStyle:"normal"}}>
           Western — Vedic — Kabbalah — Numerology — Chinese — Human Design — Mayan — Astrocartography.&nbsp;&nbsp;Tap any entry to open its full reading.&nbsp;&nbsp;Ephemeris verified.
         </p>
+
+        {/* ── Footnote — J.P. Morgan / Evangeline Adams ─────────────── */}
+        <div id="jpm-footnote" className="footnote-block">
+          <strong>*</strong>
+          The quote is widely attributed to J.P. Morgan, who retained the American astrologer Evangeline Adams as a private consultant in the early 20th century. Adams advised Morgan on business and market timing and successfully defended astrology in a 1914 New York court case, after which a judge ruled that the practice, when applied with skill, constituted a science. Morgan reportedly kept her readings close and rarely discussed them publicly.
+        </div>
       </div>
     </div>
+  );
+}
+
+// ─── INTELLIGENCE LAYER ─────────────────────────────────────────────────────
+// Seven premium features teased on the static app, each linking to the
+// Next.js build for sign-up. Cards animate in on scroll via IntersectionObserver.
+const INTELLIGENCE_FEATURES = [
+  {
+    key: "daily",
+    title: "Daily Guidance",
+    desc: "A single line of counsel, cast fresh each morning against your natal chart and the sky above.",
+    sigil: (
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="16" cy="16" r="5"/>
+        <line x1="16" y1="3" x2="16" y2="7"/>
+        <line x1="16" y1="25" x2="16" y2="29"/>
+        <line x1="3" y1="16" x2="7" y2="16"/>
+        <line x1="25" y1="16" x2="29" y2="16"/>
+        <line x1="6.8" y1="6.8" x2="9.6" y2="9.6"/>
+        <line x1="22.4" y1="22.4" x2="25.2" y2="25.2"/>
+        <line x1="6.8" y1="25.2" x2="9.6" y2="22.4"/>
+        <line x1="22.4" y1="9.6" x2="25.2" y2="6.8"/>
+      </svg>
+    ),
+  },
+  {
+    key: "monthly",
+    title: "Monthly Forecast",
+    desc: "A composed essay mapping the lunation, ingresses and transits that will shape your coming thirty days.",
+    sigil: (
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M22 5 a11 11 0 1 0 0 22 a8 8 0 0 1 0 -22 z"/>
+        <circle cx="26" cy="10" r="0.9" fill="currentColor" stroke="none"/>
+      </svg>
+    ),
+  },
+  {
+    key: "compat",
+    title: "Compatibility Readings",
+    desc: "Synastry and composite between two charts — where you meet, where you grind, where the gold lives.",
+    sigil: (
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="12" cy="16" r="7"/>
+        <circle cx="20" cy="16" r="7"/>
+      </svg>
+    ),
+  },
+  {
+    key: "alerts",
+    title: "Transit Alerts",
+    desc: "A quiet notice when a transit is exact — so the weather never arrives without warning.",
+    sigil: (
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M16 4 L16 22"/>
+        <path d="M9 13 L16 22 L23 13"/>
+        <circle cx="16" cy="27" r="1.8" fill="currentColor" stroke="none"/>
+      </svg>
+    ),
+  },
+  {
+    key: "purpose",
+    title: "Life Purpose Synthesis",
+    desc: "Five traditions collapsed into one reading — the thread that runs through Vedic, Kabbalah, Numerology, Human Design and the West.",
+    sigil: (
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <polygon points="16,4 19.3,12.5 28,12.5 21,18 23.5,26.5 16,21.5 8.5,26.5 11,18 4,12.5 12.7,12.5"/>
+      </svg>
+    ),
+  },
+  {
+    key: "shadow",
+    title: "Shadow Work Prompts",
+    desc: "Questions drawn from your 8th, 12th and Chiron — the work that will not be read in pleasant weather.",
+    sigil: (
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M16 3 a13 13 0 0 0 0 26 a10 10 0 0 1 0 -26 z" fill="currentColor" fillOpacity="0.18"/>
+        <path d="M16 3 a13 13 0 0 0 0 26 a10 10 0 0 1 0 -26 z"/>
+      </svg>
+    ),
+  },
+  {
+    key: "wealth",
+    title: "Wealth & Career Timing",
+    desc: "Dashas, 2nd-house progressions and Jupiter cycles mapped to when to expand, when to retreat, when to sign.",
+    sigil: (
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <circle cx="16" cy="16" r="11"/>
+        <path d="M12 20 L13 13 L16 18 L19 13 L20 20"/>
+        <line x1="11.5" y1="15.5" x2="20.5" y2="15.5"/>
+      </svg>
+    ),
+  },
+];
+
+const INTEL_SIGNUP_URL = "https://astral-saas.vercel.app";
+
+function IntelligenceLayer() {
+  const gridRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (typeof window === "undefined" || !gridRef.current) return;
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const cards = gridRef.current.querySelectorAll(".ilayer-card");
+    if (reduce || !("IntersectionObserver" in window)) {
+      cards.forEach(c => c.classList.add("is-visible"));
+      return;
+    }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14, rootMargin: "0px 0px -40px 0px" });
+    cards.forEach(c => io.observe(c));
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <section className="ilayer-wrap" aria-labelledby="ilayer-heading">
+      <div className="ilayer-eyebrow">§ The Intelligence Layer — Coming Soon</div>
+      <h2 id="ilayer-heading" className="ilayer-title">Beyond the chart — daily counsel, composed.</h2>
+      <p className="ilayer-sub">
+        The atlas above is the foundation. The intelligence layer is the voice — seven instruments of timing, interpretation and synthesis, built on the same verified ephemeris and delivered to you daily.
+      </p>
+      <hr className="ilayer-rule"/>
+
+      <div className="ilayer-grid" ref={gridRef}>
+        {INTELLIGENCE_FEATURES.map((f) => (
+          <article className="ilayer-card" key={f.key}>
+            <div className="ilayer-sigil" aria-hidden="true">{f.sigil}</div>
+            <h3>{f.title}</h3>
+            <p className="ilayer-desc">{f.desc}</p>
+            <a
+              className="ilayer-cta"
+              href={INTEL_SIGNUP_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`Unlock ${f.title} — sign up`}
+            >
+              <span>Unlock</span>
+              <span className="ilayer-arrow" aria-hidden="true">→</span>
+              <span>Sign up</span>
+            </a>
+          </article>
+        ))}
+      </div>
+
+      <div className="ilayer-footcta">
+        <a href={INTEL_SIGNUP_URL} target="_blank" rel="noopener noreferrer">Reserve your seat at the table →</a>
+        <span className="foot-hint">Synastra · the full intelligence layer · launching in phases</span>
+      </div>
+    </section>
   );
 }
 
